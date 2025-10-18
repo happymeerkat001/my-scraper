@@ -1,24 +1,21 @@
-const axios = require('axios');
-const fs = require('fs');
+const axios = require('axios');                           // Organize ▸ imports
+const fs = require('fs');                                 // Organize ▸ imports
 
-(async () => {
-  let allResults = [];
-  let url = 'https://taxsales.lgbs.com/api/property_sales/';
-  let params = {
-    in_bbox: '-127.8,-10.8,-65.6,69.2',
-    sale_type: 'SALE,RESALE,STRUCK OFF,FUTURE SALE',
-    limit: 100
-  };
+(async () => {                                            // Run ▸ Trigger
+  const response = await axios.get('https://taxsales.lgbs.com/api/property_sales/', { // Run ▸ Controller
+    params: {                                             // Run ▸ Controller
+      in_bbox: '-127.8,-10.8,-65.6,69.2',  // Full US bounding box  // Run ▸ Controller
+      sale_type: 'SALE,RESALE,STRUCK OFF,FUTURE SALE',              // Run ▸ Controller
+      limit: 100  // Default is 10, you can go higher (up to 1000 depending on API) // Run ▸ Controller
+    }
+  });
 
-  while (url) {
-    const res = await axios.get(url, { params });
-    const data = res.data;
+  const data = response.data;                             // Run ▸ Controller
+  const results = data.results; // ✅ the actual array    // Run ▸ Controller
 
-    allResults.push(...data.results);
-    url = data.next;
-    params = {}; // `next` already includes query params
-  }
+  console.log(`Got ${results.length} properties`);        // Run ▸ Controller
+  console.log(results.slice(0, 3)); // Just show first 3  // Run ▸ Controller
 
-  console.log(`Fetched ${allResults.length} properties`);
-  fs.writeFileSync('lgb-full-results.json', JSON.stringify(allResults, null, 2));
-})();
+  // Save to file
+  fs.writeFileSync('lgb-results.json', JSON.stringify(results, null, 2)); // Run ▸ Renderer
+})();                                                     // Run ▸ Trigger
