@@ -177,7 +177,7 @@ async function getPropertyDetails(uid) {
 }
 
 function isVacantLot(legalDesc = '', address = '') {
-  const vacantTerms = ['LOT', 'VACANT', 'LANDLOCKED', 'UNDEVELOPED', 'UNIMPROVED', 'TRACT'];
+  const vacantRegex = /\b(VACANT|LOT(S)?|ACRES?|LAND(S)?|TRACT(S)?|PARCEL|UNDEVELOPED|RURAL)\b/i;
   const hasNoAddress = !address || address.trim() === '';
   const hasLegalDesc = !!(legalDesc && legalDesc.trim());
   const containsVacantTerm = vacantTerms.some(t => (legalDesc || '').toUpperCase().includes(t));
@@ -229,7 +229,18 @@ async function main() {
           continue;
         }
         const details = await getPropertyDetails(p.uid);
+
+
         // Determine address precedence: uidMap -> details -> listing -> fallback (approximated)
+        
+        const coords = p.geometry?.coordinates // Extract coordinates and sale_notes directly from list (p)
+          ? JSON.stringify(p.geometry.coordinates)
+          : details.geometry?.coordinates
+          ? JSON.stringify(details.geometry.coordinates)
+          : '';
+        const saleNotes = p.sale_notes || details.sale_notes || '';
+        
+        // Determine address precedence
         let chosenAddress = '';
         let addressSource = '';
         const uidStr = (p.uid || '').toString();
@@ -251,10 +262,41 @@ async function main() {
           approximated.push(uidStr);
         }
 
+
         const actualSaleDate = p.sale_date || details.sale_date || saleDate;
         const formattedSaleDate = actualSaleDate && actualSaleDate !== 'unknown'
           ? new Date(actualSaleDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
           : '';
+
+        // 🧩 Enhanced Vacant Property Detection
+        const vacancyKeywords = [
+          "VACANT", "LOT", "LOTS", "ACRE", "ACRES", "LAND", "LANDS",
+          "TRACT", "TRACTS", "PARCEL", "PARCELS", "UNDEVELOPED", "UNIMPROVED", "RURAL"
+        ];
+
+        function detectVacancy(legalDesc = "", saleNotes = "") {
+          const upperLegal = legalDesc.toUpperCase();
+          const upperNotes = saleNotes.toUpperCase();
+
+          for (const term of vacancyKeywords) {
+            if (upperLegal.includes(term)) return { match: term, source: "legalDesc" };
+            if (upperNotes.includes(term)) return { match: term, source: "saleNotes" };
+          }
+          return null;
+        }
+
+        const vacancyMatch = detectVacancy(details.legal_description || "", saleNotes || "");
+
+        // ⏭️ Skip if no vacant keyword match
+        if (!vacancyMatch) {
+          console.log(`⏭️ Skipping non-vacant property: ${county} (${p.uid})`);
+          continue;
+        }
+
+// ✅ Otherwise record which keyword and where it was found
+const { match: vacant_keyword, source: vacant_source } = vacancyMatch;
+
+
         results.push({
           uid: p.uid,
           county,
@@ -266,11 +308,16 @@ async function main() {
           status: p.status || '',
           sale_type: p.sale_type || '',
           cause_number: p.cause_nbr || '',
-          owner_name: details.owner_name || '',
+
+          // ⬇️ Replaced owner_name with case_style
+          case_style: details.case_style || '',
           legal_description: details.legal_description || '',
-          coordinates: details.coordinates ? JSON.stringify(details.coordinates) : '',
-          is_vacant: details.is_vacant ? 'YES' : 'NO'
+          coordinates: coords, '',
+          sale_notes: saleNotes,
+          vacant_keyword,
+          vacant_source,
         });
+
         await delay(150);
         // If test limit is enabled, break early
         if (TEST_LIMIT && results.length >= TEST_LIMIT) break;
@@ -302,7 +349,11 @@ async function main() {
 
   console.log(`🧮 Address source totals: api_list=${totalAddressSourceCounts.api_list}, detail=${totalAddressSourceCounts.detail}, listing=${totalAddressSourceCounts.listing}, approximated=${totalAddressSourceCounts.approximated}`);
 
-  const fields = ['uid','address','address_source','county','sale_date','adjudged_value','min_bid','status','sale_type','cause_number','owner_name','legal_description','coordinates','is_vacant'];
+  const fields = [
+    'uid','address','address_source','county','sale_date','adjudged_value','min_bid','status',
+    'sale_type','cause_number','case_style','legal_description','coordinates','sale_notes',
+    'vacant_keyword','vacant_source'
+  ];
   const csv = parse(results, { fields });
   fs.writeFileSync(INPUT_FILE, csv);
   console.log(`✅ Saved ${results.length} records to ${INPUT_FILE} (non-metro, sorted by min_bid)`);
