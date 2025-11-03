@@ -173,11 +173,23 @@ async function fetchUidAddressMapForCounty(county) { // Listen > Start
 // → Creates a quick-lookup Map so later functions can get addresses instantly by UID.
 
 
-// Add this function right before getPropertyDetails():
-function isVacantLot(legal_description = '', address = '') {
-  const vacancyKeywords = ["VACANT", "LOT", "LOTS", "ACRE", "ACRES", "LAND", "LANDS", "TRACT", "TRACTS", "PARCEL", "PARCELS", "UNDEVELOPED", "UNIMPROVED", "RURAL"];
-  const text = `${legal_description} ${address}`.toUpperCase();
-  return vacancyKeywords.some(term => text.includes(term));
+// Consolidated vacancy detection helper (returns match+source or null)
+function detectVacancy(legal_description = '', address = '', saleNotes = '') {
+  const vacancyKeywords = [
+    "VACANT", "LOT", "LOTS", "ACRE", "ACRES", "LAND", "LANDS",
+    "TRACT", "TRACTS", "PARCEL", "PARCELS", "UNDEVELOPED", "UNIMPROVED", "RURAL"
+  ];
+
+  const upperLegal = (legal_description || '').toUpperCase();
+  const upperNotes = (saleNotes || '').toUpperCase();
+  const upperAddress = (address || '').toUpperCase();
+
+  for (const term of vacancyKeywords) {
+    if (upperLegal.includes(term)) return { match: term, source: 'legalDesc' };
+    if (upperNotes.includes(term)) return { match: term, source: 'saleNotes' };
+    if (upperAddress.includes(term)) return { match: term, source: 'address' };
+  }
+  return null;
 }
 
 async function getPropertyDetails(uid) {
@@ -185,11 +197,16 @@ async function getPropertyDetails(uid) {
     const { data } = await axios.get(`${BASE_URL}/property_sales/${uid}/`);
     await delay(200);
     console.log('DEBUG property DATA', data);
+    // normalize fields once here so callers can rely on them
+    const legal_description = data.legal_desc_l || data.legal_desc_s || '';
+    const coordsArray = data.geometry?.coordinates || [];
+    const coordinates = JSON.stringify(coordsArray);
     return {
       ...data,
-      legal_description: data.legal_desc_l || data.legal_desc_s || '', // Use long description, fall back to short
-      coordinates: JSON.stringify(data.geometry?.coordinates || []),
-      is_vacant: isVacantLot(data.legal_desc_l || data.legal_desc_s || '', data.prop_address_one || '')
+      legal_description,
+      coordinates,
+      // keep a boolean quick-check in details as well
+      is_vacant: !!detectVacancy(legal_description, data.prop_address_one || '', data.sale_notes || '')
     };
   } catch (err) {
     console.warn(`Details fetch failed for ${uid}:`, err.message);
@@ -274,21 +291,10 @@ async function main() {                                  // Connect > Entry  (pr
           ? new Date(actualSaleDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
           : '';                                           // Run > Execute > Work
 
-        // Vacancy detection
-        const vacancyKeywords = ["VACANT", "LOT", "LOTS", "ACRE", "ACRES", "LAND", "LANDS", "TRACT", "TRACTS", "PARCEL", "PARCELS", "UNDEVELOPED", "UNIMPROVED", "RURAL"]; // Memory > Values
-        function detectVacancy(legalDesc = "", saleNotes = "") {              // Memory > Helpers
-          const upperLegal = legalDesc.toUpperCase();
-          const upperNotes = saleNotes.toUpperCase();
-          for (const term of vacancyKeywords) {
-            if (upperLegal.includes(term)) return { match: term, source: "legalDesc" };
-            if (upperNotes.includes(term)) return { match: term, source: "saleNotes" };
-          }
-          return null;
-        }
-
-        const vacancyMatch = detectVacancy(details.legal_description || "", p.sale_notes || ""); // Run > Execute > Work
-        if (!vacancyMatch) {                               // Run > Plan > Check
-          console.log(`⏭️ Skipping non-vacant property: ${county} (${p.uid})`); // Render > Internal
+        // Vacancy detection (use centralized helper)
+        const vacancyMatch = detectVacancy(details.legal_description || '', details.prop_address_one || '', p.sale_notes || '');
+        if (!vacancyMatch) { // Run > Plan > Check
+          console.log(`⏭️ Skipping non-vacant property: ${county} (${p.uid})`);
           continue;
         }
 
@@ -306,7 +312,7 @@ async function main() {                                  // Connect > Entry  (pr
           cause_number: p.cause_nbr || '',
           case_style: details.case_style || '',
           legal_description: details.legal_description || '',
-          coordinates: JSON.stringify(details.geometry?.coordinates || ''),
+          coordinates: details.coordinates || JSON.stringify(details.geometry?.coordinates || []),
           sale_notes: p.sale_notes || '',
           vacant_keyword: vacancyMatch.match,
           vacant_source: vacancyMatch.source
