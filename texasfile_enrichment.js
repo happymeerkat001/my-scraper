@@ -235,7 +235,7 @@ async function getTexasFileData(county, name) {
                 while ((m = re.exec(raw)) !== null) {
                     if (m[1]) {
                         searchId = searchId || m[1];
-                        console.log('[Debug] Found potential searchId via regex in init HTML:', m[1]);
+                        console.log('[Debug] Found potential searchId via  in init HTML:', m[1]);
                     }
                 }
                 // generic fallback: any 6-9 digit sequence bounded by slashes
@@ -697,6 +697,7 @@ async function processCSV() {
         console.error('Error processing CSV:', error);
         throw error;
     }
+    //log the results [{},{},...]
 }
 
 // Run the main process
