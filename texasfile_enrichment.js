@@ -6,9 +6,22 @@ import { setTimeout } from 'timers/promises';
 import * as cheerio from 'cheerio';
 import https from 'https';
 
-const caCert = readFileSync('./DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem');
-const agent = new https.Agent({ rejectUnauthorized: true, ca: caCert });
-const client = axios.create({ httpsAgent: agent, withCredentials: true });
+// Load DigiCert intermediate and wire it into a single HTTPS agent
+const caPath = new URL('./DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem', import.meta.url);
+const caBuffer = readFileSync(caPath);
+
+console.log('Loading CA from', caPath.href);
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: true,
+  ca: caBuffer,
+});
+
+// Use this client for every outbound request
+const client = axios.create({
+  httpsAgent,
+  withCredentials: true,
+});
 
 
 // Constants for API interaction
