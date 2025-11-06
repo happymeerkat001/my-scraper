@@ -1,0 +1,119 @@
+{
+  "topKeys": [
+    "data"
+  ],
+  "candidates": {
+    "root.data.searchable_info": {
+      "length": 199,
+      "sample": [
+        {
+          "id": 1,
+          "term": [
+            "Cart"
+          ],
+          "topic": "Adding documents to your Cart on TexasFile",
+          "url": "https://www.texasfile.com/my/cart/",
+          "UrlTitle": "My Cart",
+          "description": "My Cart is a feature on TexasFile allowing users to purchase and download multiple documents in a single zip file including an Excel index report. To add docs to your Cart, click the Cart icon in search results then visit the Cart page."
+        },
+        {
+          "id": 5,
+          "term": [
+            "Driver's License"
+          ],
+          "topic": "Looking for information about a Texas Driver's License?",
+          "url": "https://www.dps.texas.gov/section/driver-license",
+          "UrlTitle": "Texas Dept of Public Safety",
+          "description": "TexasFile does not provide information about driver's licenses. For more information, contact the Texas Department of Public Safety using the link below."
+        },
+        {
+          "id": 6,
+          "term": [
+            "Criminal Records"
+          ],
+          "topic": "Looking for criminal records?",
+          "url": "/texas-deed-records-directory/",
+          "UrlTitle": "County Directory",
+          "description": "Criminal records are not available on TexasFile. To locate this information, contact the District Clerk's office by using our County Directory below."
+        }
+      ]
+    },
+    "root.data.help_data": {
+      "length": 20,
+      "sample": [
+        {
+          "term": [
+            "texas",
+            "county clerk records",
+            "deed records",
+            "coverage",
+            "how often are counties updated"
+          ],
+          "url": "/texas-land-records-coverage/",
+          "topic": "Texas Courthouse Records Coverage"
+        },
+        {
+          "term": [
+            "contact county clerks directly",
+            "how do I contact a county clerk",
+            "county clerk directory",
+            "county clerk phone number",
+            "district clerk",
+            "how do I contact a district clerk",
+            "how to contact a clerk"
+          ],
+          "url": "/texas-deed-records-directory/",
+          "topic": "County Clerk Directory"
+        },
+        {
+          "term": [
+            "pricing",
+            "what do you charge",
+            "charges",
+            "cost",
+            "what does this cost",
+            "how much does this cost"
+          ],
+          "url": "/pricing/",
+          "topic": "TexasFile Pricing"
+        }
+      ]
+    },
+    "root.data.help_info": {
+      "length": 9,
+      "sample": [
+        {
+          "term": [
+            "birth",
+            "birth certificates"
+          ],
+          "url": "/texas-deed-records-directory/",
+          "UrlTitle": "County directory",
+          "topic": "Looking for birth certificates?",
+          "description": "Birth certificates are not available on TexasFile. To obtain birth certificate contact the County Clerk's office using our county directory below."
+        },
+        {
+          "term": [
+            "death",
+            "death certificate"
+          ],
+          "url": "/texas-deed-records-directory/",
+          "UrlTitle": "County directory",
+          "topic": "Looking for death certificates?",
+          "description": "Death certificates are not available on TexasFile. To obtain a death certificate contact the County Clerk's office using our county directory below."
+        },
+        {
+          "term": [
+            "marriage",
+            "marriage certificate",
+            "marriage license"
+          ],
+          "url": "/texas-deed-records-directory/",
+          "UrlTitle": "County directory",
+          "topic": "Looking for a marriage license?",
+          "description": "Marriage certificates are not available on TexasFile. To obtain a marriage certificate contact the County Clerk's office using our county directory below."
+        }
+      ]
+    }
+  }
+}
