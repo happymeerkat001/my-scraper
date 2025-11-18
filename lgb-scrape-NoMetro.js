@@ -341,13 +341,6 @@ async function main() {                                  // Connect > Entry  (pr
     return;                                              // Run > Execute > Flow (exit)
   }
 
-  // Sort records by min_bid
-  results.sort((a, b) => {                               // Run > Execute > Flow
-    const aNum = parseFloat((a.min_bid || '').toString().replace(/[^0-9.]/g, '')) || 0;
-    const bNum = parseFloat((b.min_bid || '').toString().replace(/[^0-9.]/g, '')) || 0;
-    return aNum - bNum;
-  });
-
   console.log(`🧮 Address source totals: api_list=${totalAddressSourceCounts.api_list}, detail=${totalAddressSourceCounts.detail}, listing=${totalAddressSourceCounts.listing}, approximated=${totalAddressSourceCounts.approximated}`); // Render > Internal
 
   const fields = ['uid','address','address_source','county','sale_date','adjudged_value','min_bid','status','sale_type','cause_number','case_style','legal_description','coordinates','sale_notes','vacant_keyword','vacant_source']; // Memory > Values

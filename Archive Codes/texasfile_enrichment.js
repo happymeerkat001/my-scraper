@@ -12,7 +12,6 @@ let httpsAgent;
 try {
     const caPath = new URL('./DigiCertGlobalG2TLSRSASHA2562020CA1.crt.pem', import.meta.url);
     const caBuffer = readFileSync(caPath);
-    console.log('Loading CA from', caPath.href);
     // Respect NODE_TLS_REJECT_UNAUTHORIZED env for debugging. If set to '0' we will allow unauthenticated TLS.
     const rejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0';
     // Merge Node's default root certificates with the provided DigiCert bundle to avoid replacing trusted roots.
@@ -21,7 +20,6 @@ try {
     defaultRoots.push(caBuffer.toString());
     httpsAgent = new https.Agent({ rejectUnauthorized, ca: defaultRoots });
 } catch (e) {
-    console.warn('Could not load CA bundle, falling back to default agent:', e.message);
     const rejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0';
     httpsAgent = new https.Agent({ rejectUnauthorized });
 }
@@ -41,7 +39,6 @@ async function seedCookies() {
   for (const p of parts) {
     const idx = p.indexOf('=');
     if (idx === -1) {
-      console.debug('Cookie failed to parse (no =):', p);
       continue;
     }
     const name = p.slice(0, idx).trim();
@@ -119,17 +116,14 @@ async function getTexasFileData(county, name) {
 
     // Step 1: GET init search page to establish session and extract searchId/csrf
     const initUrl = `${API_BASE_URL}/search/texas/${countyName}-county/county-clerk-records/`;
-    console.log(`[Step 1] GET init page: ${initUrl}`);
     let initResp;
     try {
         initResp = await client.get(initUrl, { headers: { ...baseHeaders, Cookie: buildCookieHeader() } });
         updateCookiesFromResponse(initResp);
     } catch (e) {
-        console.error('[Step 1] init GET failed:', e.message);
         // If this is a TLS certificate verification failure and the user allows insecure retries, try once with a permissive agent
         const isCertError = (e && (String(e.message).includes('unable to get issuer certificate') || String(e.message).includes('certificate') || e.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE' || e.code === 'DEPTH_ZERO_SELF_SIGNED_CERT'));
         if (isCertError && process.env.ALLOW_INSECURE === '1') {
-            console.warn('[Step 1] Detected TLS cert error. Retrying init GET with a permissive TLS agent because ALLOW_INSECURE=1');
             try {
                 const insecureAgent = new https.Agent({ rejectUnauthorized: false });
                 const insecureClient = axios.create({ httpsAgent: insecureAgent, withCredentials: true });
@@ -138,7 +132,6 @@ async function getTexasFileData(county, name) {
                 initResp = await client.get(initUrl, { headers: { ...baseHeaders, Cookie: buildCookieHeader() } });
                 updateCookiesFromResponse(initResp);
             } catch (e2) {
-                console.error('[Step 1] Retry with permissive TLS agent failed:', e2.message);
                 throw e2;
             }
         } else {
@@ -171,7 +164,6 @@ async function getTexasFileData(county, name) {
             });
         }
     } catch (e) {
-        console.debug('Failed to parse init page for tokens:', e.message);
     }
     // Try to extract a county code/id mapping from __NEXT_DATA__ if present
     let countyCodeFound = null;
@@ -205,7 +197,7 @@ async function getTexasFileData(county, name) {
                     return null;
                 }
                 countyCodeFound = findCountyCode(parsed, countyName) || null;
-                if (countyCodeFound) console.log('[Debug] Found county code from init data:', countyCodeFound);
+               
             }
         }
     } catch (e) {
@@ -215,7 +207,6 @@ async function getTexasFileData(county, name) {
         searchId = process.env.SEARCH_ID || null;
     }
     if (!searchId) {
-        console.warn('searchId not found — calls to search-results may 404. Provide SEARCH_ID env or ensure init page contains token.');
     }
 
     // When debugging, write the raw init page HTML to a file and try a raw-regex search for numeric searchId tokens
@@ -225,7 +216,7 @@ async function getTexasFileData(county, name) {
             const dir = './debug_responses';
             try { mkdirSync(dir, { recursive: true }); } catch (e) {}
             const htmlFile = `${dir}/init_${safeCounty}_${Date.now()}.html`;
-            try { writeFileSync(htmlFile, initResp.data); console.log('[Debug] Wrote init page HTML to', htmlFile); } catch (e) { console.error('[Debug] Failed to write init HTML:', e.message); }
+        
 
             // Try regex scan for numeric tokens used in Referer (e.g., /.../51499099/)
             try {
@@ -235,7 +226,6 @@ async function getTexasFileData(county, name) {
                 while ((m = re.exec(raw)) !== null) {
                     if (m[1]) {
                         searchId = searchId || m[1];
-                        console.log('[Debug] Found potential searchId via  in init HTML:', m[1]);
                     }
                 }
                 // generic fallback: any 6-9 digit sequence bounded by slashes
@@ -246,12 +236,10 @@ async function getTexasFileData(county, name) {
                         const val = m[1];
                         if (val && !String(val).startsWith('20')) {
                             searchId = searchId || val;
-                            console.log('[Debug] Found fallback numeric token in init HTML:', val);
                         }
                     }
                 }
             } catch (e) {
-                console.debug('[Debug] init HTML regex scan failed:', e.message);
             }
         }
     } catch (e) {
@@ -263,12 +251,10 @@ async function getTexasFileData(county, name) {
         const prefix = encodeURIComponent(searchName.split(' ')[0].slice(0, 5));
         const countyCode = process.env.COUNTY_CODE || '1';
         const suggestUrl = `${API_BASE_URL}/fetch-name-suggestions?prefix=${prefix}&name-type=${name_type}&county=${countyCode}`;
-        console.log(`[Step 2] GET fetch-name-suggestions: ${suggestUrl}`);
         const fetchResp = await client.get(suggestUrl, { headers: { ...baseHeaders, Referer: initUrl, 'X-Requested-With': 'XMLHttpRequest', Cookie: buildCookieHeader() } });
         updateCookiesFromResponse(fetchResp);
         await setTimeout(300);
     } catch (e) {
-        console.debug('[Step 2] fetch-name-suggestions failed (continuing):', e.message);
     }
 
     // Step 3: GET search-results-single-api (use base endpoint; searchId belongs in Referer)
@@ -280,9 +266,9 @@ async function getTexasFileData(county, name) {
         endDate,
         county: countyCodeFound || countyName
     };
+    console.log('[STEP 3] API call details:', { resultsUrl, params });
     // Use Referer that includes the numeric searchId (if found) to match browser behavior
     const refererForResults = searchId ? `${initUrl}${searchId}/` : initUrl;
-    console.log(`[Step 3] GET search-results-single-api: ${resultsUrl} params=${JSON.stringify(params)} Referer=${refererForResults}`);
     let resultsResp;
     try {
         // Ensure common search state is present as cookies (the browser often stores name/type/date in cookies)
@@ -301,24 +287,18 @@ async function getTexasFileData(county, name) {
         resultsResp = await client.get(resultsUrl, { headers, params });
         updateCookiesFromResponse(resultsResp);
     } catch (e) {
-        console.error('[Step 3] search-results GET failed:', e.message);
         if (e.response) {
-            console.error('Status:', e.response.status, 'Headers:', e.response.headers);
             // print a bit more of the response body for debugging
             try { console.error('Body snippet:', String(e.response.data).slice(0, 2000)); } catch (_) {}
         }
         throw e;
     }
-    console.log('[Step 3] Response status:', resultsResp.status, 'content-type:', resultsResp.headers['content-type']);
     if (!resultsResp.headers['content-type'] || !resultsResp.headers['content-type'].includes('application/json')) {
-        console.error('[Step 3] Non-JSON response (likely auth/flow issue) — snippet:');
-        console.error(String(resultsResp.data).slice(0, 1000));
     }
 
     // Lightweight debug: log top-level keys and scan for candidate arrays that may contain document hits
     try {
         const topKeys = resultsResp.data && typeof resultsResp.data === 'object' ? Object.keys(resultsResp.data) : [];
-        console.log('[Debug] Result top-level keys:', topKeys.slice(0,50));
 
         if (process.env.DUMP_JSON === '1') {
             // Heuristic: find arrays of objects that contain likely document fields
@@ -349,18 +329,15 @@ async function getTexasFileData(county, name) {
             const summaryF = `${dir}/${params.county || 'county'}_${safeName}_summary_${Date.now()}.json`;
             try {
                 writeFileSync(summaryF, JSON.stringify({ topKeys, candidates }, null, 2));
-                console.log('[Debug] Wrote response summary to', summaryF);
-            } catch (e) { console.error('[Debug] Failed to write summary:', e.message); }
+            } catch (e) {  }
         }
     } catch (e) {
-        console.debug('[Debug] Failed to scan response for candidates:', e.message);
     }
 
     // Heuristic: if the response looks like the site navigation payload (contains data.cities_list etc.)
     // then attempt one retry using cookies (name1 etc) and county code if we found one.
     try {
         if (resultsResp && resultsResp.data && resultsResp.data.data && resultsResp.data.data.cities_list) {
-            console.log('[Debug] Response appears to be site/navigation payload (no search hits). Attempting one retry with cookies/county code.');
             // Refresh cookies and retry once with the same params (but ensure cookie header is present)
             try {
                 // ensure cookies already set above
@@ -368,9 +345,7 @@ async function getTexasFileData(county, name) {
                 const retryResp = await client.get(resultsUrl, { headers: headers2, params });
                 updateCookiesFromResponse(retryResp);
                 resultsResp = retryResp;
-                console.log('[Debug] Retry response status:', resultsResp.status);
             } catch (e) {
-                console.debug('[Debug] Retry failed:', e.message);
             }
         }
     } catch (e) {
@@ -385,9 +360,7 @@ async function getTexasFileData(county, name) {
             try { mkdirSync(dir, { recursive: true }); } catch (e) {}
             const fname = `${dir}/${countyName}_${safeName}_${Date.now()}.json`;
             writeFileSync(fname, JSON.stringify(resultsResp.data, null, 2));
-            console.log('[Debug] Wrote JSON response to', fname);
         } catch (e) {
-            console.error('[Debug] Failed to write JSON dump:', e.message);
         }
     }
     return resultsResp.data;
@@ -570,7 +543,6 @@ function extractLienInfo(apiResponse, searchName = '') {
             matching_doc_urls: Array.from(matchingUrls)
         };
     } catch (error) {
-        console.error('Error extracting lien info:', error);
         return {
             lien_present: false,
             lien_types: [],
@@ -585,6 +557,9 @@ function extractLienInfo(apiResponse, searchName = '') {
  * Main processing function to enrich CSV data with lien information
  */
 async function processCSV() {
+    console.log('TexasFile enrichment started', {
+    testLimit: process.env.TEST_LIMIT || null,
+     });
     const results = [];
     
     try {
@@ -599,9 +574,10 @@ async function processCSV() {
                     const county = row.County || row.county;
                     const name = row.Name || row.case_style;
                     if (!county || !name) {
-                        console.warn('Skipping row missing county or name:', row);
                         return;
                     }
+
+
                     // Normalize the row to have expected field names
                     row.County = county;
                     row.Name = name;
@@ -615,7 +591,9 @@ async function processCSV() {
                 .on('end', resolve)
                 .on('error', reject);
         });
-
+    // ✅ STEP 1 – Validate CSV parse
+            console.log('[STEP 1] Parsed rows:', results.length);
+            console.table(results.slice(0, 5));
         // Process records sequentially with rate limiting
         const enrichedResults = [];
         for (const row of results) {
@@ -632,7 +610,6 @@ async function processCSV() {
                         attempt++;
                         if (attempt > maxRetries) throw e;
                         const backoff = 1000 * Math.pow(2, attempt);
-                        console.warn(`Transient error for ${row.County} - ${row.Name}, retry ${attempt}/${maxRetries} after ${backoff}ms:`, e.message);
                         await setTimeout(backoff);
                     }
                 }
@@ -655,7 +632,6 @@ async function processCSV() {
                 await setTimeout(REQUEST_DELAY_MS);
                 
             } catch (error) {
-                console.error(`Error processing ${row.County} - ${row.Name}:`, error.message);
                 enrichedResults.push({
                     ...row,
                     lien_types: [],
@@ -691,17 +667,15 @@ async function processCSV() {
             }
             return out;
         }));
-        console.log('Data processing completed — wrote', enrichedResults.length, 'rows to', outputPath);
+        console.log('TexasFile enrichment finished', { rows: enrichedResults.length, output: outputPath });
 
     } catch (error) {
-        console.error('Error processing CSV:', error);
         throw error;
     }
-    //log the results [{},{},...]
 }
 
 // Run the main process
 processCSV().catch(error => {
-    console.error('Fatal error:', error);
-    process.exit(1);
+     console.error('TexasFile enrichment failed', err.message);
+  process.exit(1);  
 });

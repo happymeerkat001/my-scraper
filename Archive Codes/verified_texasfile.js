@@ -9,7 +9,6 @@ import https from 'https';
 import tls from 'tls';
 //#endregion
 
-//#region Step 0.1 – Shared Constants (API targets, rate limiting, browser headers)
 const API_BASE_URL = 'https://www.texasfile.com';
 const SEARCH_ENDPOINT = '/search/texas/';
 const RESULTS_ENDPOINT = '/search-results-single-api/';
@@ -45,7 +44,7 @@ let client = axios.create({ httpsAgent, withCredentials: true });
 
 // Memory > State — cookie helpers preserve session data between LISTEN/API calls
 const cookieStore = Object.create(null);
-const cookieEnv = process.env.COOKIES || '';
+const cookieEnv = process.env.COOKIES || 'sessionid=t0sk0w5mn183t8abaipebxxtyhzs01zm; csrftoken=Lps1pt6D0JQzwg5pHP730rZbhipJGWJi; name1="MARTIN A C"; name_type1=GRGE; startDate=1846-07-01; endDate=2025-10-31';
 
 async function seedCookies() {
     if (!cookieEnv) return;
@@ -142,13 +141,17 @@ function extractOwnerName(row) {
 }
 
 // Memory > Helper — prepare consistent query params for Step 2 URL validation
-function buildSearchParams(ownerName) {
-    return {
+function buildSearchParams(ownerName, countySlug, searchId) {
+    const params = {
+    county: countySlug,
+        search_id: searchId,
         name1: ownerName,
         name_type1: 'GRGE',
         startDate: '1846-07-01',
         endDate: new Date().toISOString().split('T')[0]
     };
+    console.log('buildSearchParams:', params);
+    return params;
 }
 //#endregion
 
@@ -156,57 +159,71 @@ function buildSearchParams(ownerName) {
 async function fetchData(ownerName, county = '') {
     const rawCounty = county ? String(county).trim() : '';
     const countyBase = rawCounty.replace(/\s*county\s*$/i, '').trim().toLowerCase();
-    const countySlug = countyBase ? `${countyBase}-county` : 'statewide';
+    const countySlug = 'anderson-county'; // Placeholder: replace with actual mapping if needed 
     const searchName = ownerName.trim();
-    
-    // Memory > State — ensure cookieStore mirrors user-provided session before hitting endpoints
+
     await seedCookies();
 
-    // Listen — Step 2: GET county search form so Research Notes “Connect” promise is verified
-    const initUrl = `${API_BASE_URL}/search/texas/${countySlug}/county-clerk-records/`;
-    let searchId = null;
-    
+    const searchId = "51608411"; // Placeholder: replace with Puppeteer later
+    const initUrl = `${API_BASE_URL}/search-results-single-api/${searchId}/`;
+    console.log('Init URL:', initUrl);
+
+    const results = await fetch(initUrl, {
+  headers: {
+    "accept": "application/json",
+    "referer": `https://www.texasfile.com/search/texas/anderson-county/county-clerk-records/${searchId}/`,
+    "user-agent": "Mozilla/5.0"
+  }
+}).then(r => r.json());
+
+console.log(results);
+
+
+
     try {
-        const initResp = await safeGet(initUrl, { 
-            headers: { ...baseHeaders, Cookie: buildCookieHeader() } 
+        const initResp = await safeGet(initUrl, {
+            headers: { ...baseHeaders, Cookie: buildCookieHeader() }
         });
         updateCookiesFromResponse(initResp);
-        
-        // Run > Plan > Check — derive searchId token if present to keep downstream Referer valid
         const urlMatch = initResp.request?.path?.match(/\/(\d+)\/?$/);
         if (urlMatch) searchId = urlMatch[1];
+        console.log('Derived searchId:', searchId);
     } catch (e) {
-        // Continue anyway as the working script does
+        console.warn('[Init] Failed to get init page:', e.message);
     }
 
-    // Listen — Step 3: call JSON endpoint with name+county, the heart of the enrichment
+
     const resultsUrl = `${API_BASE_URL}${RESULTS_ENDPOINT}`;
-    const params = buildSearchParams(searchName);
+    const params = buildSearchParams(searchName, countySlug, searchId);
     const refererUrl = searchId ? `${initUrl}${searchId}/` : initUrl;
 
+    cookieStore.name1 = searchName;
+    cookieStore.name_type1 = params.name_type1;
+    cookieStore.startDate = params.startDate;
+    cookieStore.endDate = params.endDate;
+
+    const headers = {
+        ...baseHeaders,
+        Origin: API_BASE_URL,
+        Referer: refererUrl,
+        Cookie: buildCookieHeader(),
+        'X-Requested-With': 'XMLHttpRequest',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-Dest': 'empty'
+    };
+
     try {
-        // Memory > State — align cookie payload with browser behavior before the JSON fetch
-        cookieStore['name1'] = searchName;
-        cookieStore['name_type1'] = params.name_type1;
-        cookieStore['startDate'] = params.startDate;
-        cookieStore['endDate'] = params.endDate;
-
-        const headers = { 
-            ...baseHeaders, 
-            Referer: refererUrl,
-            Cookie: buildCookieHeader(),
-            'X-Requested-With': 'XMLHttpRequest'
-        };
-
         const resp = await safeGet(resultsUrl, { headers, params });
         updateCookiesFromResponse(resp);
-        
         if (!resp.headers['content-type']?.includes('application/json')) {
             throw new Error('Invalid response type');
         }
-
         return resp.data;
+        console.log('Results URL:', resultsUrl,   
+            params);
     } catch (e) {
+        console.error('[Search] Failed to get results:', e.message);
         throw e;
     }
 }
@@ -221,7 +238,9 @@ function extractLiens(results) {
                     results?.data?.hits?.hits ||
                     results?.documents ||
                     [];
-        
+        console.log('extractLiens keys:', Object.keys(results || {}));
+        console.log('hits length:', hits.length);
+T
         for (const hit of hits.slice(0, 5)) {
             const doc = hit._source || hit;
             if (doc.documentType?.toLowerCase().includes('lien') ||
@@ -259,6 +278,35 @@ function resolveInputFile() {
 }
 //#endregion
 
+// temporary test function
+async function testTexasFileAPI() {
+  const searchId = "51603973"; // The ID from your browser
+  const initUrl = `https://www.texasfile.com/search-results-single-api/${searchId}/`;
+
+  console.log("Requesting:", initUrl);
+
+  try {
+    const res = await fetch(initUrl, {
+      headers: {
+        "accept": "application/json",
+        "referer": `https://www.texasfile.com/search/texas/anderson-county/county-clerk-records/${searchId}/`,
+        "user-agent": "Mozilla/5.0"
+      }
+    });
+
+    console.log("Status:", res.status);
+
+    const json = await res.json();
+    console.log("JSON keys:", Object.keys(json));
+    console.log(json);
+
+  } catch (err) {
+    console.error("TEST ERROR:", err);
+  }
+}
+
+testTexasFileAPI();
+
 // #region Step 5 – Orchestrate read → fetch → parse → write
 async function main() {
     const inputFile = resolveInputFile();
@@ -279,24 +327,7 @@ async function main() {
                 try {
                     // Step 2/3: remote lookup for the owner
                     const data = await fetchData(ownerName, countyValue);
-                    while (retries > 0) {
-                try {
-                    // Step 2/3: remote lookup for the owner
-                    const data = await fetchData(ownerName, countyValue);
-                    // Step 4: extract liens from JSON
-                    const liens = extractLiens(data);
-                    // Step 4b: normalize into row form
-                    results.push(formatResults(ownerName, liens));
-                } catch (e) {
-                    retries--;
-                    if (retries === 0) {
-                        results.push({ owner_name: ownerName, error: e.message });
-                    } else {
-                        await setTimeout(REQUEST_DELAY_MS);
-                    }
-                }
-            }
-            
+                    console.log('payload type:', typeof data.data, Array.isArray(data.data), Object.keys(data.data || {}));
                     // Step 4: extract liens from JSON
                     const liens = extractLiens(data);
                     // Step 4b: normalize into row form
@@ -338,6 +369,7 @@ async function main() {
         await csvWriter.writeRecords(results);
         
     } catch (e) {
+        console.error('Script failed:', e);
         process.exit(1);
     }
 }
