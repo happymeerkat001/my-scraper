@@ -1,0 +1,1847 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en"><head>
+  	<base href="https://countyfusion10.kofiletech.us/countyweb/search/SearchMainView.jsp"><title>Search</title>
+
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="">
+    <meta http-equiv="description" content="">
+
+    <!------------------- START STYLE SHEETS -------------------->
+
+	<link rel="stylesheet" type="text/css" media="screen" href="/countyweb/styles/jquery/easyui/easyui.css?ver=6">
+	<link rel="stylesheet" type="text/css" media="screen" href="/countyweb/styles/jquery/easyui/icon.css?ver=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="/countyweb/styles/jquery/easyui/customicon.css?ver=8">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/styles.css?ver=1">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/LimestoneTX/countystyles.css?ver=1">
+<style type="text/css">
+	<!--
+		a:hover {
+			font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+			color:#3D4689; text-decoration:underline;
+		}
+		#headerInfo {
+			position:absolute; left:0; top:0; width:540;
+			height:45;
+		}
+		#searchContent {
+			position:absolute; top:40px; left:20px;
+
+				width:920px;
+
+			height:350px; visibility:hidden; z-index:1;
+		}
+		#dynSearchContent {
+			position:absolute; top:40px; left:20px;
+
+				width:920px;
+
+			height:350px; visibility:hidden; z-index:1;
+		}
+		#resultsContent {
+			position:absolute; top:40px; left:0px; visibility:hidden; z-index:1;
+		}
+		#documentContent {
+			position:absolute; top:40px; left:0px; width:760px;
+			height:350px; display:none; z-index:1;
+		}
+		#progressContent {
+			position:absolute; top:40px; left:9px; width:100%; height:100%; visibility:hidden;
+			text-align:center; vertical-align: middle; visibility:hidden; z-index:2;
+		}
+		#criterianavdiv {
+			position:absolute;
+				
+			top:50;
+			width:130; height:45;
+			visibility:hidden; z-index:2;
+		}
+		#resultsnavdiv {
+			position:absolute; left:500; top:5;
+			width:600; height:32;
+			visibility:hidden;
+		}
+		#popupdiv {
+			position:absolute; left:250; top:100; width:10; height:10; visibility:hidden; z-index:2;
+		}
+		#timingdiv {
+			position:absolute; left:250; top:100; width:10; height:10; visibility:hidden; z-index:3;
+		}
+		#downloaddiv {
+			position:absolute; left:250; top:100; width:10; height:10; visibility:hidden; z-index:3;
+		}
+/* 		#viewerdiv { */
+/* 			position:absolute; left:10; top:60; width:10; height:10; visibility:hidden; z-index:3; */
+/* 		} */
+		#ccDoneDiv {
+			position:absolute; left:250; top:100; width:10; height:10; visibility:hidden; z-index:3;
+		}
+		#hiddenFrameSRDiv {
+			position:absolute; left:250; top:100; width:10; height:10; visibility:hidden; z-index:3;
+		}
+		.datagrid-row-selected {
+    		background: #b7d2ff;
+    		color: black
+		}
+		
+	-->
+	</style>
+
+    <!-------------------- END STYLE SHEETS --------------------->
+
+
+    <!-------------------- START JAVASCRIPT --------------------->
+
+	<script src="/countyweb/scripts/utils.js?ver=9"></script>
+	<script src="/countyweb/scripts/validate.js?ver=2"></script>
+	<script src="/countyweb/scripts/dhtml.js?ver=2"></script>
+	<script src="/countyweb/scripts/popup.js?ver=5"></script>
+	<script src="/countyweb/scripts/mousemove.js?ver=2"></script>
+	<script src="/countyweb/scripts/search.js?ver=2"></script>
+	<script src="/countyweb/scripts/searchMainView.js?ver=3"></script>
+	<script src="/countyweb/scripts/dialog.js?ver=6"></script>
+	<script src="/countyweb/scripts/print.js?ver=2"></script>
+	<script src="/countyweb/scripts/progress.js?ver=4"></script>
+	<script src="/countyweb/scripts/creditcard.js?ver=3"></script>
+	<script src="/countyweb/scripts/jquery/jquery-3.6.3.min.js"></script>
+	<script src="/countyweb/scripts/jquery/easyui/jquery.easyui.min.js"></script>
+	<script src="/countyweb/scripts/jquery/jqueryutils.js?ver=28"></script>
+	<script src="/countyweb/scripts/searchDetails.js?ver=9"></script>
+	<script src="/countyweb/scripts/secondaryWindow.js?ver=4"></script>
+	
+    <script language="JavaScript" type="text/javascript">
+    <!--
+    	var isThickClient = false;
+    	var	activeSearchFrame = "dynSearchFrame";
+    	var	activeSearchDiv = "dynSearchContent";
+    	var	dynSearchLoaded = false;
+    	var	pageRootName = "/countyweb";		// needed by creditcard.js
+    	var enhancedSearchPanelState = new Array();
+		var previousEastState = {};
+		var hasDataGrid = false;
+		var gridIsReady = false;
+		
+		var quickViewWidth = 950;
+		var quickViewHeight = 500;
+		
+		var imageWindow = null;
+		
+		var resizeCount = 0;
+		var isIOS = false;
+		
+		function setImageWindow(iWnd) {
+   			imageWindow = iWnd;
+   		}
+		
+		function getImageWindow() {
+			return imageWindow;
+		}
+		
+		function saveNoShowState () {
+			$.ajax({
+			    url: "/countyweb/user/setDoNotShowBrowserWarning.do",
+			    type: "POST",
+			    dataType: "json",
+			    data: {state: "true"}
+			});			
+		}
+		
+		function closeCompatibilityDialog() {
+			if (document.getElementById("noshow").checked) {
+				try {
+					saveNoShowState ();
+				} catch (ex) {}
+			}
+			$('#dialog_iecompat').dialog('close');			
+		}
+		
+    	function setPanelState(dynamic) {
+    		try {
+	    		if (dynamic) {
+	    			if (dynSearchLoaded)
+	   					window.frames["dynSearchFrame"].setPanelState();
+	    		}
+	    		else {
+	   				window.frames["searchFrame"].setPanelState();
+	    		}
+	    	}
+			catch(e) {
+			}
+    	}
+
+    	//===============================================
+	    //===============================================
+		function setResnavframeWidth(tableWidth) {
+			if (tableWidth > 580) {
+				document.getElementById("resnavframe").width = tableWidth;
+			}
+		}
+
+		function setActiveSearch(dynamic, searchType) {
+		
+			if (dynamic) {
+				activeSearchFrame = "dynSearchFrame";
+				activeSearchDiv = "dynSearchContent";
+				
+				document.getElementById ("searchContent").style.visibility = "hidden";
+				document.getElementById ("dynSearchContent").style.visibility = "visible";
+				
+				if (searchType != "") {
+					if (! dynSearchLoaded) {
+						window.frames["dynSearchFrame"].location   = "/countyweb/search/searchCriteria.do?searchCategory=ADVANCED&dynamic=true&enhanced=true&searchType=" + searchType;
+						dynSearchLoaded = true;
+					}
+					else {
+						window.frames[activeSearchFrame].initSearchType (searchType);
+					}
+				}
+			}
+			else {
+				activeSearchFrame = "searchFrame";
+				activeSearchDiv = "searchContent";
+
+				document.getElementById ("searchContent").style.visibility = "visible";
+				document.getElementById ("dynSearchContent").style.visibility = "hidden";
+
+				if (searchType != "") {
+					window.frames[activeSearchFrame].initSearchType (searchType);
+				}
+			}
+		}
+
+		function getSearchFrame () {
+			return activeSearchFrame;
+		}
+
+		function getSearchDiv () {
+			return activeSearchDiv;
+		}
+		
+		
+		function isCriteriaVisible() {
+			// see showContent(activeSearchPanel), for use from thick client to determine if we cab show print etc buttons
+			if (document.getElementById ("criterianavdiv").style.visibility != "hidden") {
+				return "true";
+			}
+		}
+
+		function isResultsVisible() {
+			return document.getElementById ("resultsContent").style.visibility != "hidden";
+		}
+
+		function isDetailsVisible() {
+			return document.getElementById ("documentContent").style.display != "none";
+		}
+
+    	//===============================================
+	    //===============================================
+
+		normalize = false;	// mouse capture here, stays here
+
+		//===============================================
+	    //===============================================
+		function executeSearchNav (cmd) {
+			
+			closePopup();
+			
+			if(false) {
+			window.frames[getSearchFrame()].clearFields();
+			}
+			showContent(cmd);
+		}
+
+		//===============================================
+	    //===============================================
+		function showMap () {
+			
+			getScreenCenter(800, 865);
+            var goUrl = "/countyweb/transaction/addrMap.jsp?showall=true";
+			var	wnd = window.open (goUrl, "AddressMap", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=800,height=865,toolbar=0,location=0,directories=0,status=0,menubar=1,scrollbars=1,resizable=1");
+			wnd.focus();
+		}
+	    	
+	    //===============================================
+	    //===============================================
+		function selectDate (date, ctrl) {
+			window.frames[getSearchFrame()].selectDate (date, ctrl);
+		}
+
+
+		//===============================================
+	    //===============================================
+        function showAdobeReaderPage(cmd) {
+			getScreenCenter(800, 865);
+            var goUrl = "http://www.adobe.com/products/reader/";
+			var	wnd = window.open (goUrl, "certifieddoc", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=800,height=865,toolbar=0,location=0,directories=0,status=0,menubar=1,scrollbars=1,resizable=1");
+			wnd.focus();
+			return true;
+        }
+
+		//===============================================
+	    //===============================================
+		function executePrint (cmd, data, printer) {
+			if (document.getElementById("documentContent").style.display == "none") {
+				return false;
+			}
+
+			var		addrdata = "";
+			if(arguments.length >= 4)
+				addrdata = arguments[3];
+			var		forcePrintWM = null;
+			if(arguments.length >= 5)
+				forcePrintWM = arguments[4];
+				
+			document.getElementById("documentFrame").contentWindow.executeCommand (cmd, data, printer, addrdata, forcePrintWM);
+            if (typeof document.getElementById("documentFrame").contentWindow.clearAllSelectedPages !== "undefined")
+				document.getElementById("documentFrame").contentWindow.clearAllSelectedPages ();			
+			
+			return true;
+		}
+
+		function executePrintResults (cmd, data, printer, printAll) {
+		
+			if (printAll && window.frames["resultFrame"].frames["resultListFrame"].parent.searchResultObj.resultsCount > 1500) {
+				alert ("Total item count exceeds the maximum Print All size of 1500 items.\nTo Print All items, please modify the Search Criteria and search again.");
+		   		return false;
+		   	}
+		
+			getScreenCenter(1000, 600);
+			var command = "viewresults";
+			if (printAll)
+				command = "viewallresults";
+            var goUrl = "/countyweb/search/searchPrintPaid.do?cmd=" + command + "&printdata=" + data;
+            var message = "Generating Search Results, please wait...";
+			var	wnd = window.open ("/countyweb/postServletProgressMessage.jsp?message=" + message + "&src=" + escape(goUrl), "printResults_" + (new Date().getTime()), "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=1000,height=600,toolbar=0,location=0,directories=0,status=0,menubar=1,scrollbars=1,resizable=1");
+			wnd.focus();
+			return true;
+		}
+		
+		function isViewerImageRedacted () {
+			var	redacted = true;
+			if (typeof document.getElementById("documentFrame").contentWindow.getCurImage == "function")
+				redacted = document.getElementById("documentFrame").contentWindow.getCurImage () == 0;
+			return redacted;
+		}
+
+		//===============================================
+	    //===============================================
+		function executeCertify (cmd, data) {
+			if (document.getElementById("documentContent").style.display == "none") {
+				return false;
+			}
+			
+			var	redacted = isViewerImageRedacted();
+			getScreenCenter(800, 865);
+            var goUrl = "/countyweb/certify/processCertify.do?cmd=viewdoc&redacted=" + redacted;
+			var	wnd = window.open (goUrl, "certifieddoc", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=800,height=865,toolbar=0,location=0,directories=0,status=0,menubar=1,scrollbars=1,resizable=1");
+			wnd.focus();
+			return true;
+		}
+
+		//===============================================
+	    //===============================================
+		function executeThickCertify (cmd, cmt) {
+			if (document.getElementById("documentContent").style.display == "none") {
+				return false;
+			}
+
+			var	redacted = isViewerImageRedacted();
+			getScreenCenter(800, 865);
+            var goUrl = "/countyweb/certify/processCertify.do?cmd=thickcert&certcomment=" + cmt + "&redacted=" + redacted;
+			var	wnd = window.open (goUrl, "certifieddoc", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=800,height=865,toolbar=0,location=0,directories=0,status=0,menubar=1,scrollbars=1,resizable=1");
+			wnd.focus();
+			return true;
+		}
+
+		//===============================================
+	    //===============================================
+		function processCreditCard () {
+		
+			getScreenCenter(650, 540);
+			var	wnd = window.open ("/countyweb/blank.jsp", "ccProcWnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=650,height=540,toolbar=0,location=1,directories=0,status=1,menubar=0,scrollbars=1,resizable=1");
+			wnd.focus();
+			startCCTimer(wnd);
+			return wnd;
+		}
+	    	
+		//===============================================
+	    //===============================================
+		function printResults () {
+			
+
+				//Get params so we know which print we are supposed to grab.
+				var	src = window.frames["resultFrame"].frames["resultListFrame"].location.href;
+				
+				src = src.substring(0, src.indexOf("?")); // URL without params
+				src = src.substring(src.indexOf("/countyweb") + 10, src.length);
+				
+				var params = window.frames["resultFrame"].location.href;
+				params = params.substring(params.indexOf("?") ,params.length);
+				src += params;
+				src = "search/searchPrint.do?countyPrintPath=" + src;
+				getScreenCenter(1000, 600);
+				var	wnd = window.open(src, "resultprintview_LimestoneTX" , "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=1000,height=600,toolbar=0,location=0,directories=0,status=0,menubar=1,scrollbars=1,resizable=1");
+				wnd.focus();
+
+		}
+
+		//===============================================
+	    //===============================================
+		function loadRecord (pos) {
+			window.frames["resultFrame"].frames["resultListFrame"].loadRecordEx(pos);
+		}
+	    	
+	    //===============================================
+	    //===============================================
+		function hasPrintResultsPermission() {
+			// First check permissions
+			var restTypes = "";
+			if(window.frames[getSearchFrame()]) {
+				var searchType = "";
+
+					searchType = window.frames[getSearchFrame()].getSelectedSearchTypeValue();
+					
+				var types = restTypes.split("|");
+				for(var i=0; i<types.length; i++) {
+					if(searchType == types[i]) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		//===============================================
+	    //===============================================
+
+		function startPrint () {
+
+			if (document.getElementById("documentFrame").contentWindow.showImagePrint) {
+				document.getElementById("documentFrame").contentWindow.showImagePrint (false);
+			}
+		}
+		
+		
+		function endPrint () {
+
+			if (document.getElementById("documentFrame").contentWindow.showImagePrint) {
+				document.getElementById("documentFrame").contentWindow.showImagePrint (true);
+			}
+		}
+
+		//===============================================
+	    //===============================================
+		var	printopts = null;
+
+		function showPrintOptions () {
+			var disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to print image.  User not authorized to view or print images.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To print image, image must first be displayed.");
+				return;
+			}
+			
+			if (false && false) {
+				var messageObj;
+			    $.ajax({
+				    url: "/countyweb/print/getPrintServiceStatus.do",
+				    type: "POST",
+				    dataType: "json",
+				    success: function (data) {
+				    	if (! data.isAlive) {
+							if (typeof document.getElementById("documentFrame").contentWindow.showImageViewer == "function") {
+								document.getElementById("documentFrame").contentWindow.showImageViewer(false);
+							}				    	
+							messageObj = $.messager.confirm({
+								closable: false,
+								width: 420,
+    							height: 180,
+								title: "Print Service",
+   								msg: "Print Service does not appear to be running.<br><br><br>Would you like to continue and create a print job that will print once the Print Service is running or cancel this print job?",
+   								ok: "Continue",
+   								fn: function (retVal) {
+									if (typeof document.getElementById("documentFrame").contentWindow.showImageViewer == "function") {
+										document.getElementById("documentFrame").contentWindow.showImageViewer(true);
+									}				    	
+   									if (retVal) {
+   										showPrintOptionsEx();
+   									}
+   									else {
+					     				return false;
+					     			}
+					     		}
+					    	});
+						}
+						else
+							showPrintOptionsEx();
+					}
+				});
+				return;
+			}
+			showPrintOptionsEx();
+		}
+		
+		function showPrintOptionsEx () {
+			var	instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?isPrint=true&instrId=" + instrId + "&redacted=" + redacted;
+
+			var		height = 325;
+
+
+			showPrint(true, src, "Print Options", 400, height);
+		}
+
+		function showDownloadOptions() {
+			var messageObj;
+			var isPrint = false;
+		   	if (arguments.length > 0)
+	    		isPrint = arguments[0];
+			
+			$.ajax({
+			    url: "/countyweb/search/checkConcurrentDownload.do",
+			    type: "GET",
+			    dataType: "json",
+			    success: function(data) {
+			    	if (data.downloadActive) {
+						messageObj = $.messager.alert({
+							title: "Download In Progress",
+							msg: "A previous download is currently in progress. Please wait for that download to finish before starting a new one.",
+							icon: "error",
+							height: 'auto',
+							width: 550
+						});
+					} else {
+						continueDownloadOptions(isPrint);
+					}
+				},
+				error: function() {
+					continueDownloadOptions(isPrint);
+				}
+			});
+		}
+		
+		function continueDownloadOptions(isPrint) {
+		
+			var disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to Download image.  User not authorized to view or print images.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To Download image, image must first be displayed.");
+				return;
+			}
+
+			var	instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?instrId=" + instrId + "&searchDownload=true" + (isPrint ? "&isVirtualPrint=true" : "") + "&redacted=" + redacted;
+
+			var		height = 325;
+
+
+			showPrint(true, src, "Download Options", 400, height);
+		}
+
+
+		//===============================================
+	    //===============================================
+		var	printopts = null;
+
+		function automaticPrint() {
+			var disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to print image.  User not authorized to view or print images.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To print image, image must first be displayed.");
+				return;
+			}
+
+			var	instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?isPrint=true&instrId=" + instrId + "&autoPrint=true&redacted=" + redacted;
+
+			showPrint(true, src, "Print Options", 400, 325);
+
+			//getScreenCenter (400, 325);
+		    //printopts = window.open (src, "printopts", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=400,height=325,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
+		}
+
+		//===============================================
+	    //===============================================
+		function showFaxOptions () {
+			var	disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to fax image.  User not authorized to fax images.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To fax image, image must first be displayed.");
+				return;
+			}
+
+			var instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?instrId=" + instrId + "&fax=true&redacted=" + redacted;
+
+			showPrint(true, src, "Fax Options", 400, 325);
+
+			//getScreenCenter (400, 325);
+		    //printopts = window.open (src, "printopts", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=400,height=325,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
+		}
+
+		//===============================================
+	    //===============================================
+		function showEmailOptions () {
+			var	disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to email image.  User not authorized to email images.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To email image, image must first be displayed.");
+				return;
+			}
+
+			var instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?instrId=" + instrId + "&email=true&redacted=" + redacted;
+
+			showPrint(true, src, "Email Options", 400, 325);
+
+			//getScreenCenter (400, 325);
+		    //printopts = window.open (src, "printopts", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=400,height=325,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
+		}
+
+		//===============================================
+	    //===============================================
+		function showRequestImageOptions () {
+			var	disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to request image.  User not authorized to request images.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To request image, image must first be displayed.");
+				return;
+			}
+
+			var instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?instrId=" + instrId + "&requestImage=true&redacted=" + redacted;
+
+			showPrint(true, src, "Request Document Options", 400, 325 + 8);
+
+			//getScreenCenter (400, 325);
+		    //printopts = window.open (src, "printopts", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=400,height=325,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
+		}
+
+		//===============================================
+	    //===============================================
+		function showCertifyOptions () {
+            if (0 == 0) {
+				alert ("User is not authorized to generate certified documents.");
+				return;
+            }
+
+			var	disp = document.getElementById("documentFrame").contentWindow.imageDisplayed ();
+			if (disp == -1) {
+				alert ("Unable to certify document.  User not authorized to generate certified documents.");
+				return;
+			}
+			else if (disp == 0) {
+				alert ("To certify document, image must first be displayed.");
+				return;
+			}
+
+			var instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+			var	redacted = isViewerImageRedacted();
+			
+			var	src = "/countyweb/print/ImagePrintOptions.jsp?instrId=" + instrId + "&certify=true&redacted=" + redacted;
+			
+			var offset = 0;
+			if (isFireFox() || isThickClient)
+				offset = 30;		
+
+
+				showPrint(true, src, "eCertify Options", 400, 325 + offset);
+
+
+			//getScreenCenter (400, 325);
+		    //printopts = window.open (src, "printopts", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=400,height=325,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
+		}
+
+
+		//===============================================
+	    //===============================================
+		function getPage () {
+			return document.getElementById("documentFrame").contentWindow.getPage ();
+		}
+
+		//===============================================
+	    //===============================================
+		function getSelectedPages () {
+			return document.getElementById("documentFrame").contentWindow.getSelectedPages ();
+		}
+
+		function getNumPages () {
+			return document.getElementById("documentFrame").contentWindow.getNumPages ();
+		}
+
+		function getPrintVisibleData () {
+			return document.getElementById("documentFrame").contentWindow.getPrintVisibleData ();
+		}
+
+		//===============================================
+	    //===============================================
+    	function showContent(activeSearchPanel) {
+    		var searchElem 	= document.getElementById(getSearchDiv ());
+    		var resultsElem = document.getElementById("resultsContent");
+    		var resultsFrm = document.getElementById("resultFrame");
+    		var dataElem 	= document.getElementById("documentContent");
+    		var	navElem		= document.getElementById("criterianavdiv");
+
+	    	if (window.frames["documentFrame"] != null && document.getElementById("documentFrame").contentWindow.isPrinting && document.getElementById("documentFrame").contentWindow.isPrinting()) {
+    			alert ("Printing in progress, unable to complete request until print job is complete.");
+    			return;
+    		}
+
+    		if(activeSearchPanel == "eVerify") {
+    			searchElem.style.visibility 	= "visible";
+    			resultsFrm.style.visibility 	= "hidden";
+    			resultsElem.style.zIndex		= -1;
+    			resultsElem.style.visibility 	= "hidden";
+    			dataElem.style.display 			= "none";
+    			navElem.style.visibility 		= "visible";
+    		}
+    		else if(activeSearchPanel == "search") {
+    			searchElem.style.visibility 	= "visible";
+    			resultsFrm.style.visibility 	= "hidden";
+    			resultsElem.style.zIndex		= -1;
+    			resultsElem.style.visibility 	= "hidden";
+    			dataElem.style.display 			= "none";
+    			navElem.style.visibility 		= "visible";
+    			if(resultFrame.docInfoLoading) {
+    				showProgressBar(true, null, false);
+    			}
+    			updateHeader("search.advanced");
+    			//updateHeader("search.advanced");
+    			updateSearchTimer ("stop");
+
+    			if (window.frames["resultFrame"].isResults) {
+	    			if (window.frames["resultFrame"].isResults())
+    					updateNavbar ("search.critresults");
+	    			else
+    					updateNavbar ("");
+    			}
+    			else {
+    				updateNavbar ("");
+    			}
+    		}
+    		else if(activeSearchPanel == "results") {
+    			if (openModal) {
+					try {
+						$(".panel.window").show();
+						$(".window-mask").show();
+						$(".window-shadow").show();
+					}
+					catch (e) {}
+	    		}
+    		
+    			resultsFrm.style.visibility 	= "visible";
+
+
+    			resultsElem.style.visibility 	= "visible";
+    			resultsElem.style.zIndex		= 1;
+    			dataElem.style.display 			= "none";
+    			searchElem.style.visibility 	= "hidden";
+    			navElem.style.visibility 		= "hidden";
+    			if(resultFrame.docInfoLoading) {
+    				showProgressBar(true,null, false);
+    			}
+    			updateHeader ("search.results");
+
+
+					if(hasPrintResultsPermission()) {
+	    				updateNavbar ("search.results");
+	    			}
+	    			else {
+	    				updateNavbar ("search.results.noprint");
+	    			}
+
+   				updateSearchTimer ("start");
+   				updatePrintQueueState();
+    		}
+    		else if(activeSearchPanel == "info") {
+    			dataElem.style.display 			= "block";
+    			searchElem.style.visibility 	= "hidden";
+    			resultsFrm.style.visibility 	= "hidden";
+    			resultsElem.zIndex				= -1;
+    			resultsElem.style.visibility 	= "hidden";
+    			navElem.style.visibility = "hidden";
+    			if(resultFrame.docInfoLoading) {
+    				var msg = "Loading Document Details...";
+
+    				var modulePath = getSearchModuleUIPath();
+    				if(modulePath.length != "" &&  ".casefile".indexOf(modulePath) != -1) {
+    					msg = "Loading Case File Details...";
+    				}
+
+    				showProgressBar(true, msg, false);
+    			}
+    			updateHeader ("search.details");
+    			
+    				updateNavbar ("search.details.external");
+    			
+    		}
+    	}
+
+		//===============================================
+   		//===============================================
+		function updateHeader (page) {
+			closePopup();
+			window.frames["headerFrame"].location = "/countyweb/header.do?page=" + page + getSearchModuleUIPath();
+		}
+
+		//===============================================
+   		//===============================================
+		function updateNavbar (page) {
+			closePopup();
+			if (page == "")
+				document.getElementById ("resultsnavdiv").style.visibility = "hidden";
+			else {
+				document.getElementById ("resultsnavdiv").style.visibility = "visible";
+				window.frames["resnavframe"].location = "/countyweb/navbar.do?page=" + page + getSearchModuleUIPath() + "&searchnav=1&supportwrap=true";
+			}
+		}
+
+		//===============================================
+   		//===============================================
+		function getSearchModuleUIPath() {
+			if(window.frames[getSearchFrame()].getSearchModuleUIPath) {
+				var searchModule = window.frames[getSearchFrame()].getSearchModuleUIPath();
+				if(searchModule != null && searchModule != "") {
+					searchModule = "." + searchModule;
+				}
+				else {
+					searchModule = "";
+				}
+				return searchModule;
+			}
+			return "";
+		}
+
+
+		//===============================================
+		// jquery popup
+   		//===============================================
+   		function jqShowResultDataPopup(data, title, e) {
+   			jqShowResultDataPopupWH(data, title, e, 500, 100);
+		}
+		
+		//===============================================
+		// jquery popup + width, height and class
+   		//===============================================
+   		function jqShowResultDataPopupWH(data, title, e, width, height, cls) {
+		    $.ajax({
+			    url: "/countyweb/search/setSearchResultPopupData.do",
+			    type: "POST",
+			    dataType: "json",
+			    data: {popupData: data},
+			    success: function (d) {
+		   			handleMouseMove(e); // Get position of where event occured.
+		   			var src = "search/ResultDataPopup.jsp?title=" + escape(title);
+					if (cls != undefined) {
+						src += "&displayDataClass=" + escape(cls);
+					}
+					if (data.length > 0)
+						src += "&displayData=" + escape(data)
+					jqShowPopup(src, width, height, title, true, false, false);
+			    }
+			});
+		}
+		
+		//===============================================
+		// jquery associated docs popup
+   		//===============================================
+   		function jqShowAssocDocsPopup(instId, instNum, title, e) {
+   			jqShowAssocDocsPopupWH(instId, instNum, title, e, 450, 100);
+		}
+		
+		//================================================
+		// jquery associated docs popup + width and height
+   		//================================================
+   		function jqShowAssocDocsPopupWH(instId, instNum, title, e, width, height) {
+   	
+				jqShowAssocDocsDetailPopup(instId, instNum, title, e);
+						
+		}
+		
+		//===============================================
+		// jquery field code popup
+   		//===============================================
+   		function jqShowFieldCodePopup(instId, fieldcode, title, e) {
+   			handleMouseMove(e); // Get position of where event occured.
+   			var src = "search/FieldCodePopup.jsp?instId=" + instId + "&fieldcode=" + fieldcode;
+			jqShowPopup(src, 500, 100, title, true, false, false);
+		}
+		
+		//===============================================
+		// jquery alt associated docs popup
+   		//===============================================
+   		function jqShowAltAssocDocsPopup(instId, instNum, title, e) {
+   	
+				jqShowAltAssocDocsDetailPopup(instId, instNum, title, e);
+						
+		}
+
+		//===============================================
+		// jquery associated cases popup
+   		//===============================================
+   		function jqShowAssocCasesPopup(caseId, caseNum, title, e) {
+   			handleMouseMove(e); // Get position of where event occured.
+   			var src = "search/AssociatedCasesPopup.jsp?caseId=" + caseId +
+   			"&caseNum="+caseNum+"&loadDocCallBack=window.frames['resultFrame'].loadCase";
+			jqShowPopup(src, 450, 100, title, true, false, false);
+		}
+
+		//===============================================
+		// jquery associated inst cases popup
+   		//===============================================
+   		function jqShowAssocInstCasesPopup(instId, instNum, title, e) {
+   			handleMouseMove(e); // Get position of where event occured.
+   			var src = "search/AssociatedCasesPopup.jsp?instId=" + instId +
+   			"&instNum="+instNum+"&loadDocCallBack=window.frames['resultFrame'].loadCase";
+			jqShowPopup(src, 450, 100, title, true, false, false);
+		}
+		
+		//===============================================
+   		//===============================================
+   		function jqShowAssocDocsDetailPopup(instId, instNum, title, e) {
+   			jqShowAssocDocsDetailPopupWH(instId, instNum, title, e, quickViewWidth, quickViewHeight);
+		}
+		
+		//================================================
+		// jquery associated docs detail popup + width and height
+   		//================================================
+   		function jqShowAssocDocsDetailPopupWH(instId, instNum, title, e, width, height) {
+   			$("#resultFrame").blur();	// force blur to remove focus from iframe
+   			
+   			handleMouseMove(e); // Get position of where event occured.
+   			var src = "search/SearchResultsDetailPanel.jsp?instId=" + instId + "&width=" +  (width - 20) +
+   			"&instNum="+instNum+"&usage=QV_ASSOC_DOCS&loadDocCallBack=window.frames['resultFrame'].loadDocument";
+   			if (instNum != "")
+   				title += " for " + instNum;
+			jqShowPopup(src, width, height, title, false, true, true);
+		}
+		
+		//===============================================
+   		//===============================================
+   		function jqShowAltAssocDocsDetailPopup(instId, instNum, title, e) {
+   			jqShowAltAssocDocsDetailPopupWH(instId, instNum, title, e, quickViewWidth, quickViewHeight);
+		}
+		
+		//================================================
+		// jquery associated docs detail popup + width and height
+   		//================================================
+   		function jqShowAltAssocDocsDetailPopupWH(instId, instNum, title, e, width, height) {
+   			$("#resultFrame").blur();	// force blur to remove focus from iframe
+   			
+   			handleMouseMove(e); // Get position of where event occured.
+   			var src = "search/SearchResultsDetailPanel.jsp?instId=" + instId + "&altDocs=true&width=" +  (width - 20) +
+   			"&instNum="+instNum+"&usage=QV_ASSOC_DOCS&loadDocCallBack=window.frames['resultFrame'].loadDocument";
+   			if (instNum != "")
+   				title += " for " + instNum;
+			jqShowPopup(src, width, height, title, false, true, true);
+		}
+
+
+
+		//================================================
+		// jquery quick view popup + width and height
+   		//================================================
+   		function jqShowInstrumentQuickView(jsonData, title, width, height) {
+		    $.ajax({
+			    url: "/countyweb/search/setQuickViewData.do",
+			    type: "POST",
+			    dataType: "json",
+			    data: {quickViewData: JSON.stringify(jsonData)},
+			    success: function (data) {
+		   			var src = "search/SearchResultsDetailPanel.jsp?width=" +  (width - 20) + "&usage=QV_SCH_RESULTS&loadDocCallBack=window.frames['resultFrame'].loadDocument";
+					jqShowPopup(src, width, height, title, false, true, true);
+			    }
+			});
+		}
+
+		//===============================================
+   		//===============================================
+   		function showResultDataPopup(data, title, e) {
+   			showResultDataPopupWH(data, title, e, 500, 100);
+		}
+		
+		//===============================================
+   		//===============================================
+   		function showResultDataPopupWH(data, title, e, w, h, cls) {
+   			if (hasDataGrid) {
+   				jqShowResultDataPopupWH(data, title, e, w, h, cls);
+   			}
+   			else {
+	   			handleMouseMove(e); // Get position of where event occured.
+	   			var src = "search/ResultDataPopup.jsp?displayData=" + escape(data);
+				var baseUrl = '/countyweb/popupBase.jsp';
+				var width = w;
+				var height = h;
+				if (cls != undefined) {
+					src += "&displayDataClass=" + escape(cls);
+				}
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+		//===============================================
+   		//===============================================
+   		function showFieldCodePopup(instId, fieldcode, title, e) {
+   			if (hasDataGrid) {
+   				jqShowFieldCodePopup(instId, fieldcode, title, e);
+   			}
+   			else {
+	   			handleMouseMove(e); // Get position of where event occured.
+	   			var src = "search/FieldCodePopup.jsp?instId=" + instId + "&fieldcode=" + fieldcode;
+				var baseUrl = '/countyweb/popupBase.jsp';
+				var width = 500;
+				var height = 100;
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+
+		//===============================================
+   		//===============================================
+   		function showAssocDocsPopup(instId, instNum, title, e) {
+   			showAssocDocsPopupWH(instId, instNum, title, e, 450, 400);
+		}
+		
+   		function showAssocDocsPopupWH(instId, instNum, title, e, w, h) {
+   			if (hasDataGrid) {
+   				jqShowAssocDocsPopupWH(instId, instNum, title, e, w, h);
+   			}
+   			else {
+	   			handleMouseMove(e); // Get position of where event occured.
+				var width = w;
+				var height = h;
+	   			var src = "search/AssociatedDocsPopup.jsp?instId=" + instId + "&width=" +  (width - 20) +
+	   			"&instNum="+instNum+"&loadDocCallBack=parent.window.frames['resultFrame'].loadDocument";
+				var baseUrl = '/countyweb/popupBase.jsp';
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+
+		//===============================================
+   		//===============================================
+   		function showAltAssocDocsPopup(instId, instNum, title, e) {
+   			if (hasDataGrid) {
+   				jqShowAltAssocDocsPopup(instId, instNum, title, e);
+   			}
+   			else {
+	   			handleMouseMove(e); // Get position of where event occured.
+	   			var src = "search/AltAssociatedDocsPopup.jsp?instId=" + instId +
+	   			"&instNum="+instNum+"&loadDocCallBack=parent.window.frames['resultFrame'].loadDocument";
+				var baseUrl = '/countyweb/popupBase.jsp';
+				var width = 450;
+				var height = 400;
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+
+		//===============================================
+   		//===============================================
+   		function showAssocCasesPopup(caseId, caseNum, title, e) {
+   			if (hasDataGrid) {
+   				jqShowAssocCasesPopup(caseId, caseNum, title, e);
+   			}
+   			else {
+	   			handleMouseMove(e); // Get position of where event occured.
+	   			var src = "search/AssociatedCasesPopup.jsp?caseId=" + caseId +
+	   			"&caseNum="+caseNum+"&loadDocCallBack=parent.window.frames['resultFrame'].loadCase";
+				var baseUrl = '/countyweb/popupBase.jsp';
+				var width = 450;
+				var height = 400;
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+
+   		function showAssocInstCasesPopup(instId, instNum, title, e) {
+   			if (hasDataGrid) {
+   				jqShowAssocInstCasesPopup(instId, instNum, title, e);
+   			}
+   			else {
+	   			handleMouseMove(e); // Get position of where event occured.
+	   			var src = "search/AssociatedCasesPopup.jsp?instId=" + instId +
+	   			"&instNum="+instNum+"&loadDocCallBack=parent.window.frames['resultFrame'].loadCase";
+				var baseUrl = '/countyweb/popupBase.jsp';
+				var width = 450;
+				var height = 400;
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+
+		//===============================================
+   		//===============================================
+   		function showCriteriaPopup(sessionid, title, e) {
+   			handleMouseMove(e); // Get position of where event occured.
+   			var src = "search/CriteriaPopup.jsp?searchSessionId=" + sessionid;
+
+			if (hasDataGrid) {
+				jqShowPopup(src, 500, 100, title, true, false, false);
+			}
+			else {
+				var baseUrl = '/countyweb/popupBase.jsp';
+				var width = 500;
+				var height = 450;
+				showPopup(baseUrl, src, width, height, title);
+			}
+		}
+
+		//===============================================
+	    //===============================================
+		function updateSearchTimer(cmd) {
+			if(!isThickClient) {
+				window.frames["timingframe"].location   = "/countyweb/search/searchTiming.do?cmd=" + cmd;
+			}
+		}
+		//===============================================
+	    //===============================================
+
+	    function downloadDocImageDetails() {
+			var instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+
+
+				var src = "/countyweb/print/validatePrint.do?searchDownload=true&printopt=printall&printdata=" + getNumPages() + "&instrId=" + document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+				showPrint(true, src, "Download Options", 400, 325);
+
+		}
+		    	
+	    function downloadDocImage(instrId) {
+			var pdf = true;
+			
+	    	if (arguments.length > 1) {
+	    		pdf = arguments[1];
+	    	}
+
+	    	var pages = "";
+			
+	    	if (arguments.length > 2) {
+	    		pages = arguments[2];
+	    	}
+
+	    	var printopt = "printall";
+			
+	    	if (arguments.length > 3) {
+	    		printopt = arguments[3];
+	    	}
+
+	    	var isPreview = "false";
+			
+	    	if (arguments.length > 4 && arguments[4] != undefined) {
+	    		isPreview = arguments[4];
+	    	}
+			
+			var messageObj;
+			
+			$.ajax({
+			    url: "/countyweb/search/checkConcurrentDownload.do",
+			    type: "GET",
+			    dataType: "json",
+			    success: function(data) {
+			    	if (data.downloadActive) {
+						messageObj = $.messager.alert({
+							title: "Download In Progress",
+							msg: "A previous download is currently in progress. Please wait for that download to finish before starting a new one.",
+							icon: "error",
+							height: 'auto',
+							width: 550
+						});
+					} else {
+						continueDownloadDocImage(instrId, pdf, pages, printopt, isPreview);
+					}
+				},
+				error: function() {
+					continueDownloadDocImage(instrId, pdf, pages, printopt, isPreview);
+				}
+			});
+		}
+		    	
+	    function continueDownloadDocImage(instrId, pdf, pages, printopt, isPreview) {
+			if (instrId == "")
+	    		instrId = document.getElementById("documentFrame").contentWindow.getInstrumentId ();
+	    	
+			var	redacted = isViewerImageRedacted();
+			var uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[x]/g, function(c) {
+    			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    			return v.toString(16);
+  			});
+
+			var messageObj;
+            
+		    $.ajax({
+			    url: "/countyweb/search/startLongDownloadWatch.do",
+			    type: "POST",
+			    dataType: "json",
+			    data: {id: uuid},
+			    success: function(data) {
+			    	if (data.showMessage) {
+						messageObj = $.messager.alert({
+							title: "Processing Download",
+							msg: "This file is being processed for downloading. Depending on the size of the file, processing may take up to several minutes. You may continue working while the file processes. Please do not log out until the download is complete.",
+							icon: "info",
+							height: 'auto',
+							width: 550
+						});
+					}
+				}
+			});
+
+            var goUrl = "/countyweb/download/downloadImages.do?cmd=download&instrId=" + 
+				instrId + "&pdfformat=" + pdf + "&printopt=" + printopt + "&pages=" + pages + "&redacted=" + redacted + "&isPreview=" + isPreview + "&uuid=" + uuid;
+				
+			if (printopt == "printvisible" && document.getElementById("documentFrame").contentWindow.getPrintVisibleData) {
+				var printVisible = document.getElementById("documentFrame").contentWindow.getPrintVisibleData();
+				if (printVisible != null)
+					goUrl += "&printVisible=" + printVisible;	
+			}
+				
+			if (false && pdf) {
+				if (isEdge()) {
+					getScreenCenter(800, 865);
+					var	wnd = window.open (goUrl, "PrintPDF", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=800,height=865,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+					wnd.focus();
+				}
+				else
+					jqShowPopup("print/showPDF.jsp?pdf=" + encodeURIComponent(goUrl), 800, 865, "Save/Print PDF", false, true, true, false);
+				
+			} else {
+				window.frames["dlframe"].location = goUrl;
+			}
+            if (typeof document.getElementById("documentFrame").contentWindow.clearAllSelectedPages !== "undefined")
+				document.getElementById("documentFrame").contentWindow.clearAllSelectedPages ();
+		}
+
+	    //===============================================
+	    //===============================================
+		function initSearch() {
+			closePopup();
+		
+				showProgressBar(true,"Loading Search...", false);
+		
+		}
+
+		//===============================================
+	    //===============================================
+		function automateSearch (searchtype, criteria) {
+
+			showContent("search");
+			window.frames[getSearchFrame()].automateSearch (searchtype, criteria);
+		}
+
+		//===============================================
+	    //===============================================
+	    /** Show/Hide the progress bar window. **/
+		function showProgressBar(show, msg, showCancel) {
+			if(show) {
+	    		document.getElementById("progressContent").style.visibility = "visible";
+	    		var progUrl = "/countyweb/ProgressBar.jsp?message="+msg;
+	    		if(showCancel == true) {
+	    			progUrl += "&showCancel="+showCancel+"&cancelLabel=Cancel Search&cancelProcess=CancelSearch";
+	    		}
+	    		window.frames["progressFrame"].location = progUrl;
+	    		document.getElementById ("criterianavdiv").style.visibility = "hidden";
+	    	}
+	    	else {
+	    		document.getElementById("progressContent").style.visibility = "hidden";
+	    		window.frames["progressFrame"].location  = "/countyweb/blank.jsp";
+	    	}
+		}
+
+		//===============================================
+	    //===============================================
+	    /** Cancel Search Button has been executed. Disable buttons **/
+		function preCancelAction() {
+			updateNavbar("");
+		}
+
+		//===============================================
+	    //===============================================
+	    /** Search Cancelled - Show criteria frame. **/
+	    function postCancelAction() {
+    		updateNavbar("");
+    		document.getElementById("criterianavdiv").style.visibility = "visible";
+    		window.frames[getSearchFrame()].visibility = "visible";
+    		if(window.frames["resultFrame"]) {
+    			window.frames["resultFrame"].resultsReturned = false;
+    		}
+    		window.frames[getSearchFrame()].setDisplayMsg("Search Cancelled.");
+	    	document.getElementById("progressContent").style.visibility = "hidden";
+	    	window.frames["progressFrame"].location  = "/countyweb/blank.jsp";
+	    }
+
+		//===============================================
+	    //===============================================
+		function loadChildren() {
+			window.frames["headerFrame"].location   = "/countyweb/header.do?page=search.advanced";
+
+			window.frames["dynSearchFrame"].location   = "/countyweb/search/searchCriteria.do?searchCategory=ADVANCED&dynamic=true&enhanced=true";
+
+				document.getElementById("criterianavdiv").style.display = "none";
+
+			window.frames["resnavframe"].location 	= "/countyweb/navbar.do?page=search.advanced&searchnav=1";
+			window.frames["popupframe"].location 	= "/countyweb/blank.jsp";
+		}
+
+		function reloadNav() {
+			//window.frames["navframe"].location  	= window.frames["navframe"].location;
+			window.frames["resnavframe"].location  	= window.frames["resnavframe"].location.href;
+		}
+		//===============================================
+	    //===============================================
+		var		topoffset = 40;
+
+		function setTopOffset (offset, dbl_nav) {
+
+			topoffset = offset;
+
+			if (dbl_nav) {
+				document.getElementById ("resultsnavdiv").style.height = 64;
+			}
+			else {
+				document.getElementById ("resultsnavdiv").style.height = 32;
+			}
+
+	        document.getElementById ("searchContent").style.top = topoffset - 10;
+	        document.getElementById ("dynSearchContent").style.top = topoffset - 10;
+	        document.getElementById ("resultsContent").style.top = topoffset;
+	        document.getElementById ("documentContent").style.top = topoffset;
+	        document.getElementById ("progressContent").style.top = topoffset;
+
+			handleResize ();
+		}
+
+		function handleResize () {
+		
+			if (isIOS && resizeCount > 4)
+				return;
+		
+			if (!gridIsReady)
+				return;
+			
+		    var height;
+		    var	width;
+			if (isMozillaClient ()) {
+				height = window.innerHeight;
+				width = window.innerWidth;
+			}
+			else {
+		        height = window.document.body.clientHeight;
+		        width = window.document.body.clientWidth;
+		    }
+
+		    if (height > topoffset + 10) {
+		        document.getElementById ("searchContent").style.height = height - topoffset - 10;
+		        document.getElementById ("dynSearchContent").style.height = height - topoffset - 10;
+		        document.getElementById ("resultsContent").style.height = height - topoffset - 10;
+		        document.getElementById ("documentContent").style.height = height - topoffset - 10;
+		        document.getElementById ("progressContent").style.height = height - topoffset - 10;
+		    }
+		    else {
+		        document.getElementById ("searchContent").style.height = topoffset;
+		        document.getElementById ("dynSearchContent").style.height = topoffset;
+		        document.getElementById ("resultsContent").style.height = topoffset;
+		        document.getElementById ("documentContent").style.height = topoffset;
+		        document.getElementById ("progressContent").style.height = topoffset;
+		    }
+
+		    var	offset = 0;
+		    if (width <= 1024)
+				width = 1024;
+			else
+				offset = (width - 1024) / 2;
+
+		    
+			    var	enhancedOffset = 0;
+				var enhancedWidth = width;		    
+			    if (enhancedWidth <= 960)
+					enhancedWidth = 960;
+				else if (width >= 1200) {
+					enhancedOffset = ((width - 1200) / 2) - 20;
+					enhancedWidth = 1200;
+				}
+
+
+			document.getElementById ("searchContent").style.left = enhancedOffset + 10;
+			document.getElementById ("dynSearchContent").style.left = enhancedOffset + 10;
+		    
+				document.getElementById ("searchContent").style.width = enhancedWidth;
+				document.getElementById ("dynSearchContent").style.width = enhancedWidth;
+		    
+				document.getElementById ("criterianavdiv").style.right = (enhancedOffset > 0 ? enhancedOffset + 30 : 30) + "px";
+					
+
+	        document.getElementById ("resultsContent").style.width = width;
+	        document.getElementById ("documentContent").style.width = width;
+			document.getElementById ("resultsnavdiv").style.left = width - 600;
+			
+			if (window.frames["resultFrame"] != null && window.frames["resultFrame"].handleResizeCols)
+				window.frames["resultFrame"].handleResizeCols(width);
+
+			if (window.frames["resultFrame"] && window.frames["resultFrame"].frames["resultListFrame"] && window.frames["resultFrame"].frames["resultListFrame"].handleResizeCols) {
+				window.frames["resultFrame"].frames["resultListFrame"].handleResizeCols(width);
+			}
+			
+			resizeCount++;
+		}
+
+		//===============================================
+	    //===============================================
+// 		function initImageViewer () {
+
+// 		}
+
+		//===============================================
+	    //===============================================
+		function updateFooter () {
+
+			if(!isThickClient) {
+				if (arguments.length > 0)
+					parent.updateFooter (arguments[0]);
+				else
+					parent.updateFooter ();
+			}
+		}
+
+		//===============================================
+	    //===============================================
+		function handleOnLoadMain () {
+			// moved to ready
+		}
+
+		$(document).ready(function() {
+			gridIsReady = true;
+			
+			var agent = navigator.userAgent;
+			if (agent.indexOf('iPhone') >= 0 || agent.indexOf('iPad') >= 0 || agent.indexOf('iPod') >= 0) {
+				isIOS = true;;
+			}
+		
+						
+			handleResize();
+			loadChildren();
+			initSearch();
+			if (! isThickClient)
+				initPrint();
+			//initImageViewer();
+			initProgressMsg();
+		});
+		
+		   function handleAddToQueue() {
+				var	resultListForm = window.frames["resultFrame"].frames["resultListFrame"].document.resultListForm;
+				var	queueListForm = document.QueueListForm;	//window.frames["resultFrame"].frames["resultListFrame"].document.resultListForm;
+				var navCBChecked = false;
+				var navCBArray = resultListForm.navCB;
+				var count = 0;
+				var	ids = "";
+
+				if (! isNaN(navCBArray.length)) {
+					for(var i=0; i < navCBArray.length; i++) {	
+						if(navCBArray[i].checked) {
+							count++;
+							if (ids != "")
+								ids += ",";
+							ids += navCBArray[i].value;
+						}
+					}
+				}
+				else if (navCBArray.checked) {
+					count++;
+					ids = navCBArray.value;
+				}
+				
+			    if(count < 1) {
+				  alert("No documents have been selected. You must select at least one document (check boxes).");
+				  return false;
+		        }
+
+				var	refname = "";
+
+
+					refname = prompt ("Please enter a print queue reference name.", "");
+
+					if (refname == null || refname == "") {
+						alert ("You must specify a reference name for the print queue.");
+						return;
+					}
+
+				showProgressMsg(true, "Adding Selected Documents to Print Queue", true);				
+
+				queueListForm.navCB.value = ids;
+				queueListForm.nameRef.value = refname;
+				queueListForm.action =  "/countyweb/print/printQueue.do";
+				queueListForm.target = "hiddenFrameSR";
+								
+				queueListForm.submit();
+				
+				return false;
+			}
+		   
+		   function addToQueueComplete () {
+			   
+			   hideProgressMsg ();
+			   updatePrintQueueState();
+			   alert("The selected verified documents have been added to the print queue.");
+		   }
+		   
+		   function updatePrintQueueState () {
+
+			   
+			   		window.frames["hiddenFrameSR"].location ="/countyweb/search/UpdatePrintQueueState.jsp";
+			   		
+		   }
+		   
+		   function processPrintQueueState (ids) {
+
+			   
+					if (window.frames["resultFrame"].frames["resultListFrame"]) {	
+				   		window.frames["resultFrame"].frames["resultListFrame"].clearMarks();
+				   		for (var i = 0; i < ids.length; i++)
+					   		window.frames["resultFrame"].frames["resultListFrame"].markInQueue (ids[i]);
+					}
+				   
+		   }
+
+			function showQuickView() {
+				if (! hasDataGrid)
+					return;
+			
+				$("#resnavframe").blur();	// force blur to remove focus from iframe
+			
+				var	resultListForm = window.frames["resultFrame"].frames["resultListFrame"].document.resultListForm;
+				var navCBChecked = false;
+				var navCBArray = resultListForm.navCB;
+				var count = 0;
+				var	ids = "";
+				var docInfoArray = window.frames["resultFrame"].frames["resultListFrame"].documentRowInfo;
+				
+				var jsonData = new Array();
+				if (! isNaN(navCBArray.length)) {
+					var addedArray = new Array();
+					for(var i=0; i < docInfoArray.length; i++) {	
+						var docInfo = docInfoArray[i];
+						if (docInfo && docInfo.instId) {
+							if(navCBArray[i].checked) {
+								if (addedArray.indexOf(docInfo.instId) < 0) {
+									var instObj = {};
+					            	instObj.instId = docInfo.instId;
+					            	instObj.instNum = docInfo.instNum;
+					            	instObj.instType = docInfo.instType;
+					           		jsonData.push(instObj);
+					           		addedArray.push(docInfo.instId);
+									count++;
+								}
+							}
+						}
+					}
+				}
+				else if (navCBArray.checked) {
+					var row = findRow(navCBArray.value);
+					docInfo = docInfoArray[row];
+					if (docInfo && docInfo.instId) {
+						var instObj = {};
+		            	instObj.instId = docInfo.instId;
+		            	instObj.instNum = docInfo.instNum;
+		            	instObj.instType = docInfo.instType;
+		           		jsonData.push(instObj);
+						count++;
+					}
+				}
+	
+			    if(count < 1) {
+	  				alert("No documents have been selected. You must select at least one document (check boxes).");
+	  				return false;
+       			}
+       			
+				jqShowInstrumentQuickView(jsonData, "Quick View", quickViewWidth, quickViewHeight);       			
+
+				return false;
+			}
+			
+		function loadRecentSearch (criteria, enhanced) {
+	    	var cmd = "LoadCriteria";
+	    	if (enhanced)
+	    		cmd += "Enhanced";
+	    
+	    	window.frames[getSearchFrame()].setDisplayMsg("");
+	    	window.frames[getSearchFrame()].document.getElementById("recentCriteria").value = criteria;
+	    	window.frames[getSearchFrame()].document.getElementById("cmd").value = cmd;
+	    	window.frames[getSearchFrame()].document.searchForm.target = "";
+	    	window.frames[getSearchFrame()].document.searchForm.submit();
+		}
+		
+		var quickViewDocsDetailRowInfo = new Array();
+		
+		function setQuickViewDocsDetailRowInfo (docInfo) {
+		   	quickViewDocsDetailRowInfo[docInfo[0]]			= new Object();
+		 	quickViewDocsDetailRowInfo[docInfo[0]].instId	= docInfo[0];
+			quickViewDocsDetailRowInfo[docInfo[0]].instNum	= docInfo[1];
+			quickViewDocsDetailRowInfo[docInfo[0]].instType = docInfo[2];
+		}
+		
+		function loadQuickViewDocsDetail(id, showVisited) {
+
+			if (showVisited) {
+				$("#" + id + "detail").removeClass("linknounder visitedlinknounder");
+				$("#" + id + "detail").addClass("visitedlinknounder");
+			}
+			try {
+				$(".panel.window").hide();
+				$(".window-mask").hide();
+				$(".window-shadow").hide();
+			}
+			catch (e) {}
+			openModal = true; 	
+			
+			var docInfo = quickViewDocsDetailRowInfo[id];
+			window.frames["resultFrame"].loadDocument(docInfo);
+		}
+		
+		function quickViewDocsDetailPopupOnLoad (dlObj, quickViewHist) {
+		
+			var jsonArray = null;
+			if (quickViewHist != "")
+				jsonArray = JSON.parse(quickViewHist);
+		
+			var rows = dlObj.datalist("getRows");
+			if (rows.length > 0) {
+				quickViewDocsDetailRowInfo = [];
+				$.each(rows, function (index, row) {
+					var docInfoAttr = $("[value=" + row.value + "]").attr("docInfo");
+					if (docInfoAttr) {
+						var docInfo = docInfoAttr.split(":");
+						setQuickViewDocsDetailRowInfo(docInfo);
+					}					
+					if (jsonArray != null && jsonArray.length > 0) {
+						$.each(jsonArray, function (i, json) {
+							if (json.id == row.value) {
+								$("[datagrid-row-index=" + index + "]").css("background", "rgba(217, 220, 242, 0.75)");
+								return false;
+							}
+						});
+					}
+				});
+				dlObj.datalist("selectRow", 0);
+			}
+		}
+		
+		function quickViewDocsDetailPopupFormatText (value, row) {
+			return "<div class='base'" + value + "</div>";
+		}
+		
+		function handleQuickViewKeyDown (key) {
+			var row = $("#docDataList").datalist("getSelected");
+			var index = $("#docDataList").datalist("getRowIndex", row);
+
+			if (key == 38) {	// arrow up
+				try {
+					if (index > 0) {
+						$("#docDataList").datalist("selectRow", index-1);
+					}
+				} catch (dataListError) {}
+				
+			}else if (key == 40) {	// arrow down
+				try {
+					var rowCount = $("#docDataList").datalist("getRows").length;
+					if (index+1 < $("#docDataList").datalist("getRows").length) {
+						$("#docDataList").datalist("selectRow", index+1);
+					}
+				} catch (dataListError) {}
+				
+			}else if(key == 87){	// "w" - open in new window
+    			openImageInWindow('1000', '744', "/countyweb", getSecondaryWindowQueryString(), 'WEB', 'JxBrowser');
+    	    }
+			
+		}
+		
+		function quickViewBeforeSelect (curIndex, curRow, hiliteViewed) {
+			var row = $("#docDataList").datalist("getSelected");
+			var index = $("#docDataList").datalist("getRowIndex", row);
+			if (hiliteViewed)
+				$("[datagrid-row-index=" + index + "]").css("background", "rgba(217, 220, 242, 0.75)");
+			if (curRow.value == -1)
+				return false;
+			if (hiliteViewed)
+				$("[datagrid-row-index=" + curIndex + "]").css("background", "#b7d2ff");				
+		}
+		
+    	function getQuickViewState(){
+    		var quickViewState = {};
+			var requestData = new Array();
+			
+			var dialogPanel = $("#easyUIPopup").dialog("panel");
+			if (dialogPanel.length) {
+	          	var state = {};
+	            state.panel = "parent";
+	            state.width = dialogPanel.outerWidth();
+	            state.height = dialogPanel.outerHeight();
+	            quickViewWidth = state.width;
+	            quickViewHeight = state.height;
+	           	requestData.push(state);
+			}			
+			var westPanel = $("#main").layout("panel", "west");
+	       	if (westPanel.length) {
+	          	var state = {};
+	            state.panel = "west";
+	            state.width = westPanel.panel("panel").outerWidth();
+	            state.height = westPanel.panel("panel").outerHeight();
+	            state.collapsed = westPanel.panel("options").collapsed;
+	           	requestData.push(state);
+	      	}
+	        quickViewState.state = requestData;
+	        return quickViewState;
+		}
+		
+		function jqHandlePopupOnClose() {
+		
+			if ($("#docDataList").length) {
+				var state = getQuickViewState();
+			
+			   	$.ajax({
+				    url: "/countyweb/user/quickViewState.do",
+				    type: "POST",
+				    dataType: "json",
+				    data: {state: JSON.stringify(state)}
+				});
+			}
+		}	
+		
+		function showSelectedPagesMessage() {
+			$.messager.confirm({
+				closable: false,
+				width: 360,
+   				height: 120,
+				title: "Selected Pages",
+				msg: "Selecting an area will clear all selected pages.<br><br>Would you like to continue?",
+				ok: "Continue",
+				fn: function (retVal) {
+					if (retVal)
+						document.getElementById("documentFrame").contentWindow.toggleCropper ();
+				}
+			});
+		}
+		
+		window.onresize=handleResize;
+    -->
+    </script>
+
+	<!--------------------- END JAVASCRIPT ---------------------->
+
+  </head>
+
+  <body class="base" onload="handleOnLoadMain()">
+  
+<!------------------- START HEADER/TITLE INFO ------------------->
+	<div class="headerInfo" id="headerInfo">
+		<iframe name="headerFrame" id="headerFrame" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="45" scrolling="no">
+		</iframe>
+	</div>
+
+  	<!-------------------- END HEADER/TITLE INFO ------------------->
+
+	<!-------------------- START SEARCH CONTENT --------------------->
+	<div class="searchContent" id="searchContent" style="height: 367px; left: 10px; width: 1024px; top: 35px;">
+		<iframe id="searchFrame" name="searchFrame" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+
+	<div class="dynSearchContent" id="dynSearchContent" style="height: 367px; left: 10px; width: 1024px; top: 35px; visibility: visible;">
+		<iframe id="dynSearchFrame" name="dynSearchFrame" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+	<!--------------------- END SEARCH CONTENT ---------------------->
+
+	<!-------------------- START RESULTS CONTENT --------------------->
+	<div class="resultsContent" id="resultsContent" style="height: 367px; width: 1024px; top: 45px; z-index: -1; visibility: hidden;">
+		<iframe id="resultFrame" name="resultFrame" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no" style="visibility: hidden;">
+		</iframe>
+	</div>
+	<!--------------------- END RESULTS CONTENT ---------------------->
+
+	<!-------------------- START DOCUMENT CONTENT -------------------->
+	<div class="documentContent" id="documentContent" style="height: 367px; width: 1024px; top: 45px; display: none;">
+		<iframe id="documentFrame" name="documentFrame" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+	<!--------------------- END DOCUMENT CONTENT --------------------->
+
+	<!-------------------- START PROGRESS CONTENT -------------------->
+	<div class="progressContent" id="progressContent" align="center" style="height: 367px; visibility: hidden; top: 45px;">
+		<iframe id="progressFrame" name="progressFrame" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+	<!--------------------- END PROGRESS CONTENT --------------------->
+
+	<div class="criterianavdiv" id="criterianavdiv" style="right: 30px; display: none; visibility: visible;">
+		<iframe name="navframe" id="navframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="45" scrolling="no">
+		</iframe>
+	</div>
+
+	<div class="resultsnavdiv" id="resultsnavdiv" style="left: 424px; height: 32px; visibility: hidden;">
+		<iframe name="resnavframe" id="resnavframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+
+	<div class="popupdiv" id="popupdiv" style="visibility: hidden;">
+		<iframe name="popupframe" id="popupframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" style="border-style:outset; border-width:2" scrolling="no">
+		</iframe>
+	</div>
+
+	<div id="easyUIPopup" style="padding:4px;"></div>
+
+	<div class="timingdiv" id="timingdiv">
+		<iframe name="timingframe" id="timingframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+
+	<div class="downloaddiv" id="downloaddiv">
+		<iframe name="dlframe" id="dlframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+
+<!-- 	<div class="viewerdiv" id="viewerdiv"> -->
+<!-- 		frameborder=0 width="100%" height="100%" scrolling="no"> -->
+<!-- 		</iframe> -->
+<!-- 	</div> -->
+
+	<div class="ccDoneDiv" id="ccDoneDiv">
+		<iframe name="ccDoneframe" id="ccDoneframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+
+	<div class="hiddenFrameSRDiv" id="hiddenFrameSRDiv">
+		<iframe name="hiddenFrameSR" id="hiddenFrameSR" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no">
+		</iframe>
+	</div>
+
+	
+	<form name="QueueListForm">
+		<input type="hidden" id="navCB" name="navCB" value="">
+		<input type="hidden" id="nameRef" name="nameRef" value="">
+	</form>
+
+  
+</body></html>

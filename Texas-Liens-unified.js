@@ -25,8 +25,7 @@ const BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|LP|LLP|LTD|CO|COMPANY|TRUST|ESTATE|BA
 const NOISE_PATTERNS = [
   /\b(DECEASED|ESTATE OF|TRUSTEE|AS TRUSTEE|EXECUTOR OF|EXECUTRIX|HEIR|HEIRS OF)\b/gi,
   /\b(INDEPENDENT SCHOOL DISTRICT|SCHOOL DISTRICT|ISD|COUNTY SHERIFF|SHERIFF'?S DEED)\b/gi,
-  /\s+COUNTY(?!\s+CLERK)/gi,
-  /,?\s*(ET AL|AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i
+  /,?\s*(AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i
 ];
 
 const RATE_LIMIT_MS = 2000;
@@ -64,6 +63,9 @@ async function writeCSV(data, path) {
       { id: 'sale_notes', title: 'sale_notes' },
       { id: 'vacant_keyword', title: 'vacant_keyword' },
       { id: 'vacant_source', title: 'vacant_source' },
+      { id: 'scrape_status', title: 'scrape_status' },
+      { id: 'scrape_error', title: 'scrape_error' },
+      { id: 'driver_used', title: 'driver_used' },
       ...Array.from({ length: 3 }, (_, i) => [
         { id: `row${i + 1}_grantor`, title: `row${i + 1}_grantor` },
         { id: `row${i + 1}_grantee`, title: `row${i + 1}_grantee` },
@@ -83,13 +85,21 @@ async function writeCSV(data, path) {
 function parseName(caseStyle, driverType = 'default') {
   if (!caseStyle) return { original: '', variations: [] };
 
-  let text = caseStyle.trim();
-  NOISE_PATTERNS.forEach(pattern => { text = text.replace(pattern, ''); });
-
+  // Split on VS first before cleaning
+  const text = caseStyle.trim();
   const parts = text.split(/\s+(?:VS|V\.?)\s+/i);
   if (parts.length < 2) return { original: '', variations: [] };
 
-  let defendant = parts[1].trim()
+  // Now clean noise from defendant side only
+  let defendant = parts[1].trim();
+
+  // Remove ET AL and everything after it
+  defendant = defendant.replace(/,?\s*ET AL.*$/i, '');
+
+  // Apply other noise patterns
+  NOISE_PATTERNS.forEach(pattern => { defendant = defendant.replace(pattern, ''); });
+
+  defendant = defendant
     .replace(/\./g, '')
     .replace(/,/g, '')
     .replace(/\s+/g, ' ')
@@ -114,8 +124,15 @@ function parseName(caseStyle, driverType = 'default') {
       variations.push(`${last} ${given[0]}`);  // "PRICE C"
     }
     variations.push(last);  // "PRICE"
+  } else if (driverType === 'publicsearch') {
+    // PublicSearch prefers "LAST, FIRST" format with comma
+    if (given.length > 0) {
+      variations.push(`${last}, ${given.join(' ')}`);  // "SMITH, JOHN ROBERT"
+      variations.push(`${last}, ${given[0]}`);         // "SMITH, J"
+    }
+    variations.push(last);                              // "SMITH"
   } else {
-    // PublicSearch and others: "LAST FIRST MIDDLE"
+    // Other drivers: "LAST FIRST MIDDLE"
     variations.push([last, ...given].join(' '));
     if (given.length > 0) {
       variations.push([last, given[0]].join(' '));
@@ -137,8 +154,13 @@ function findDriver(county) {
 }
 
 // STEP 5: Enrich row with lien data
-function enrichRow(row, records) {
+function enrichRow(row, records, metadata = {}) {
   const out = { ...row };
+
+  // Add scrape metadata
+  out.scrape_status = metadata.status || 'unknown';
+  out.scrape_error = metadata.error || '';
+  out.driver_used = metadata.driver || 'none';
 
   for (let i = 0; i < 3; i++) {
     const rec = records[i] || {};
@@ -188,7 +210,7 @@ async function main() {
       console.log(`\n[${i + 1}/${rows.length}] ⚠️  ${county} - No driver available`);
       unsupportedCount++;
       unsupportedCounties.add(county);
-      results.push(enrichRow(row, []));
+      results.push(enrichRow(row, [], { status: 'unsupported', error: 'No driver for county', driver: 'none' }));
       continue;
     }
 
@@ -203,26 +225,50 @@ async function main() {
 
     if (!nameObj.variations.length) {
       console.log(`⚠️  Could not parse name from: "${row.case_style}"`);
-      results.push(enrichRow(row, []));
+      results.push(enrichRow(row, [], { status: 'parse_failed', error: 'Could not parse defendant name', driver: driverName }));
       continue;
     }
 
     console.log(`👤 Name: ${nameObj.original}`);
     console.log(`📋 Variations: ${nameObj.variations.join(', ')}`);
 
-    // Try each name variation
+    // Try each name variation with retry logic
     let records = [];
+    let searchError = null;
+
     for (let v = 0; v < nameObj.variations.length && records.length === 0; v++) {
       console.log(`\n🔍 Trying variation ${v + 1}/${nameObj.variations.length}: "${nameObj.variations[v]}"`);
-      records = await driver.search(county, nameObj.variations[v]);
 
-      if (records.length > 0) {
-        console.log(`✓ Found ${records.length} records`);
-        break;
+      // Retry up to 3 times with exponential backoff
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          records = await driver.search(county, nameObj.variations[v]);
+
+          if (records.length > 0) {
+            console.log(`✓ Found ${records.length} records`);
+            break;
+          }
+          // No records found, move to next variation
+          break;
+        } catch (e) {
+          searchError = e.message;
+          if (attempt < 3) {
+            const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+            console.log(`⚠️  Attempt ${attempt}/3 failed: ${searchError}`);
+            console.log(`   Retrying in ${delay / 1000}s...`);
+            await setTimeout(delay);
+          } else {
+            console.log(`❌ All retry attempts failed: ${searchError}`);
+          }
+        }
       }
+
+      if (records.length > 0) break;
     }
 
-    results.push(enrichRow(row, records));
+    // Determine status
+    const status = records.length > 0 ? 'success' : (searchError ? 'failed' : 'no_records');
+    results.push(enrichRow(row, records, { status, error: searchError || '', driver: driverName }));
 
     if (records.length > 0) success++;
 

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:tarrant.tx.publicsearch.us)",
+      "Bash(node:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(INPUT_FILE=test-tarrant.csv OUTPUT_FILE=texas-test-output.csv node:*)",
+      "Bash(INPUT_FILE=test-tarrant2.csv OUTPUT_FILE=texas-test-output2.csv node:*)",
+      "Bash(INPUT_FILE=test-dallas.csv OUTPUT_FILE=test-dallas-output.csv node:*)",
+      "Bash(INPUT_FILE=test-kaufman.csv OUTPUT_FILE=test-kaufman-output.csv node:*)",
+      "Bash(INPUT_FILE=test-multi-publicsearch.csv OUTPUT_FILE=test-multi-output.csv node:*)",
+      "Bash(INPUT_FILE=test-kaufman-5.csv OUTPUT_FILE=test-kaufman-5-output.csv node:*)",
+      "Bash(INPUT_FILE=test-lamar.csv OUTPUT_FILE=test-lamar-output.csv node:*)",
+      "Bash(INPUT_FILE=test-limestone.csv OUTPUT_FILE=test-limestone-output.csv node:*)",
+      "Bash(INPUT_FILE=test-limestone-1.csv OUTPUT_FILE=test-limestone-1-output.csv node:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

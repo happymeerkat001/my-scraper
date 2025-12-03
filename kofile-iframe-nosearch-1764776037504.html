@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en"><head>
+    <base href="https://countyfusion10.kofiletech.us/countyweb/welcome.jsp"><title>welcome.jsp</title>
+
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/styles.css?ver=1">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/LimestoneTX/countystyles.css?ver=1">
+<link rel="stylesheet" type="text/css" media="screen" href="/countyweb/styles/jquery/easyui/easyui.css?ver=6">
+	<link rel="stylesheet" type="text/css" media="screen" href="/countyweb/styles/fontawesome/css/font-awesome.css">
+
+ 	<style type="text/css">
+		<!--
+		a:hover { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; color:#903326; text-decoration:underline }
+		all.positions {}
+		#titlediv {text-align:center;}
+		#masterdiv {position:absolute; left:20; top:50; width:99%; overflow:auto}
+		#maindiv {position:absolute; width:400; text-align:center;}
+		#statediv {position:absolute; left:0; top:0; visibility:hidden}
+		#popupdiv { position:absolute; left:250; top:100; width:10; height:10; visibility:hidden }
+		
+		#maindiv .datagrid .panel-body {
+      		border-width:0px
+    	}
+    	
+		.datagrid-row-over{
+        	cursor: pointer
+    	}    	
+		-->
+	</style>
+
+	<script src="/countyweb/scripts/utils.js?ver=9"></script>
+	<script src="/countyweb/scripts/validate.js?ver=2"></script>
+	<script src="/countyweb/scripts/dhtml.js?ver=2"></script>
+	<script src="/countyweb/scripts/popup.js?ver=5"></script>
+	<script src="/countyweb/scripts/mousemove.js?ver=2"></script>
+	<script src="/countyweb/scripts/jquery/jquery-3.6.3.min.js"></script>
+	<script src="/countyweb/scripts/jquery/easyui/jquery.easyui.min.js"></script>
+
+	<script>
+
+		var			transfocus = false;
+		var			docfocus = false;
+		var			helpWnd = null;
+		var			disclaimerWnd = null;
+		var			executing = false;
+		var 		menuItemDisplayOrder = new Array();
+		
+					
+	 		menuItemDisplayOrder[1] = "search/searchMain.do";
+
+	 		menuItemDisplayOrder[2] = "transaction/eMarriage/eMarriageDynamicUI.jsp?Reload=true";
+	
+	 		menuItemDisplayOrder[3] = "user/user.action?cmd=EditPrefs";
+
+		 		menuItemDisplayOrder[4] = "#showHelpWindow ('https://countyfusion10.kofiletech.us/LimestoneTX/PublicSearch_Tutorial_Ex.pdf', true, false, 1);";
+			
+	 		menuItemDisplayOrder[5] = "#showDisclaimer();";
+
+ 		menuItemDisplayOrder[6] = "#showSupport();";
+									
+				
+ 		menuItemDisplayOrder[7] = "logout.do?cmd=defcounty";
+									
+		
+
+		normalize = false;	// mouse capture here, stays here
+		
+		var ignoreOnSelect = false;
+		
+		$(document).ready(function() {			
+			$("#HomeQSDisplay").mouseenter(function() {
+				ignoreOnSelect = true;
+			}).mouseleave(function() {
+				ignoreOnSelect = false;
+			});
+			$(".ignoreSelect").mouseenter(function() {
+				ignoreOnSelect = true;
+			}).mouseleave(function() {
+				ignoreOnSelect = false;
+			});
+		});
+
+		function executeCommand (cmd, readonly) {
+
+			if (executing)
+				return;
+			executing = true;
+
+			if (! validateData (cmd))
+				return;
+
+			document.welcomeform.cmd.value = cmd;
+			document.welcomeform.readonly.value = readonly;
+			document.welcomeform.action = "home.do";
+			document.welcomeform.submit ();
+		}
+
+		function handleLink (cmd, page) {
+			alert ("The feature '" + cmd + "' is not implemented yet.");
+		}
+
+		function validateData (cmd) {
+
+			if (cmd == "EditOrder") {
+				if (document.getElementById("transid").value == "") {
+					alert ("You must specifiy a Transaction Number.");
+					executing = false;
+					return false;
+				}
+			}
+
+			if (cmd == "EditOrderDoc") {
+				if (document.getElementById("docid").value == "") {
+					alert ("You must specifiy a Document Number.");
+					executing = false;
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+
+		function showHelpWindow1 (target) {
+
+			showHelpWindow ("help/LimestoneTX/" + target, true);
+		}
+
+		function showHelpWindow (target) {
+
+			//src = "/countyweb/help/CountyFusionTutorials.pdf#" + target;
+			if (arguments.length > 1 && arguments[1] == true)
+				src = target;
+			else
+				src = "help/" + target;
+
+			var		name = "helpwnd";
+			if (arguments.length > 3)
+				name += arguments[3];
+
+			getScreenCenter (900, 700);
+			if (arguments.length > 2 && arguments[2] == true)
+				helpWnd = window.open ("/countyweb/blank.jsp", name, "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=900,height=700,toolbar=1,location=1,directories=1,status=1,menubar=1,scrollbars=1,resizable=1");
+			else
+				helpWnd = window.open ("/countyweb/blank.jsp", name, "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=900,height=700,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+			
+		    helpWnd.location = src;
+		    helpWnd.focus ();
+
+		    //helpWnd.location = "";
+		}
+		
+		function showDisclaimer () {
+		
+			src = "disclaimer.do?showaccept=false";
+
+			getScreenCenter (900, 700);
+		    disclaimerWnd = window.open ("/countyweb/blank.jsp", "helpwnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=900,height=700,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+		    disclaimerWnd.location = src;
+		    disclaimerWnd.focus ();
+		}
+
+		function toggleDisplayWithState (id) {
+
+			// toggle display
+			toggleDisplay (id);
+
+			// set state in session
+			src = "state.do?cmd=session_attr&name=" + id + "&value=" + document.getElementById (id).style.display;
+			window.frames["state"].location = src;
+
+			// if showing - set focus in transaction id field
+			if (document.getElementById (id).style.display != "none")
+				document.getElementById("transid").focus();
+		}
+		
+		function showSupport() {
+			try {
+				parent.showSupport();
+			} catch (e) {}
+		}
+
+/*		function handleReturn () {
+			//return false;	// causes double submits - can't figure out why
+
+			// if focus in trans id or doc id field, execute buttons
+			//if (transfocus) {
+				executeCommand ('EditOrder', false);
+				return false;
+			//}
+
+//			if (docfocus) {
+//				executeCommand ('EditOrderDoc', false);
+//				return false;
+//			}
+
+			return false;
+		}
+*/
+		function handleTransFocus () {
+			transfocus = true;
+		}
+
+		function handleTransBlur () {
+			transfocus = false;
+		}
+
+		function handleDocFocus () {
+			docfocus = true;
+		}
+
+		function handleDocBlur () {
+			docfocus = false;
+		}
+
+		function handleOnLoad () {
+		}
+
+		$(document).ready(function() {
+			handleResize ();
+			
+	  		window.focus ();
+		});
+
+		function handleResize () {
+
+		    var     height;
+		    var 	width;
+
+			if (isMozillaClient ()) {
+				height = window.innerHeight;
+				width = window.innerWidth;
+			}
+			else {
+		        height = window.document.body.clientHeight;
+		        width = window.document.body.clientWidth;
+		    }
+
+			var	min_ht = 395;
+
+	        document.getElementById ("masterdiv").style.height = height - 50;
+	        
+        	$("#layout").layout("resize", {height: height - 60, width: width - 25});
+		}
+		
+		window.onresize=handleResize;
+
+	</script>
+
+  </head>
+
+  <body onload="handleOnLoad ()">
+
+	<form name="welcomeform" method="post" action="">
+  	<div class="positions" id="statediv">
+  		<iframe name="state" id="state" width="10" height="10" src="/countyweb/blank.jsp"></iframe>
+  	</div>
+
+	<div class="positions subheader" id="titlediv">
+		Welcome Public User to Limestone County Online Services</div>
+
+	<div class="positions" id="masterdiv" style="height: 372px;">
+		<div class="positions base" id="maindiv" style="width:98%;height:98%;">
+			<input type="hidden" name="cmd" id="cmd" value="">
+			<input type="hidden" name="readonly" id="readonly" value="false">
+				
+			<div class="easyui-layout layout" id="layout" style="width: 989px; height: 362px;">
+				<div class="panel layout-panel layout-panel-west panel-htop easyui-fluid" style="width: 98px; left: 0px; top: 0px;"><div data-options="region:'west', split:false, collapsible:false, border:false" style="width: 98px; height: 362px;" title="" class="panel-body panel-body-noheader panel-body-noborder layout-body" id=""></div></div>
+
+				<div class="panel layout-panel layout-panel-center panel-htop" style="width: 793px; left: 98px; top: 0px;"><div data-options="region:'center'" title="" class="panel-body panel-body-noheader layout-body panel-noscroll" id="" style="width: 793px; height: 362px;">
+					<div class="easyui-layout layout easyui-fluid" data-options="fit:true" style="width: 791px; height: 360px;">	
+						<div class="panel layout-panel layout-panel-center panel-htop" style="width: 316px; left: 0px; top: 0px;"><div class="panel-header centerText" style="width: 316px;"><div class="panel-title">What would you like to do today?</div><div class="panel-tool"><a href="javascript:;" class="panel-tool-collapse" style="display: none;"></a></div></div><div data-options="region:'center', headerCls:'centerText', minWidth:'20%', maxWidth:'40%'" title="" style="width: 316px; height: 332px;" class="panel-body layout-body panel-noscroll" id="">
+							<div class="panel datagrid panel-htop datalist easyui-fluid" style="width: 314px;"><div class="datagrid-wrap panel-body panel-body-noheader" title="" id="" style="width: 314px; height: 331px;"><div class="datagrid-view" style="width: 314px; height: 331px;"><div class="datagrid-view1" style="width: 0px;"><div class="datagrid-header" style="width: 0px; height: 0px;"><div class="datagrid-header-inner" style="display: none;"><table class="datagrid-htable" border="0" cellspacing="0" cellpadding="0" style="height: 0px;"><tbody></tbody></table></div></div><div class="datagrid-body" style="width: 0px; margin-top: 0px; height: 331px;"><div class="datagrid-body-inner"></div></div><div class="datagrid-footer" style="width: 0px;"><div class="datagrid-footer-inner" style="display: none;"></div></div></div><div class="datagrid-view2" style="width: 314px;"><div class="datagrid-header" style="width: 314px; height: 0px;"><div class="datagrid-header-inner" style="display: none;"><table class="datagrid-htable" border="0" cellspacing="0" cellpadding="0" style="height: 0px;"><tbody><tr class="datagrid-header-row"><td class="" style="" field="text"><div class="datagrid-cell datagrid-cell-c1-text"><span></span><span class="datagrid-sort-icon"></span></div></td></tr></tbody></table></div></div><div class="datagrid-body" style="width: 314px; margin-top: 0px; height: 331px; overflow-x: hidden;"><table class="datagrid-btable" cellspacing="0" cellpadding="0" border="0" style=""><tbody><tr id="datagrid-row-r1-2-0" datagrid-row-index="0" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+										<i class="fa fa-search fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Search Public Records</div></td></tr><tr id="datagrid-row-r1-2-1" datagrid-row-index="1" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+										<i class="fa fa-arrow-circle-right fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Complete Marriage Application</div></td></tr><tr id="datagrid-row-r1-2-2" datagrid-row-index="2" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+									<i class="fa fa-user-circle fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Modify My User Preferences</div></td></tr><tr id="datagrid-row-r1-2-3" datagrid-row-index="3" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+										<i class="fa fa-arrow-circle-right fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Search Guide</div></td></tr><tr id="datagrid-row-r1-2-4" datagrid-row-index="4" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+									<i class="fa fa-exclamation-circle fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Disclaimer</div></td></tr><tr id="datagrid-row-r1-2-5" datagrid-row-index="5" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+								<i class="fa fa-question-circle-o fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Need Help?</div></td></tr><tr id="datagrid-row-r1-2-6" datagrid-row-index="6" class="datagrid-row  "><td field="text"><div style="height:auto;" class="datagrid-cell datagrid-cell-c1-text">
+								<i class="fa fa-sign-out fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Log out</div></td></tr></tbody></table></div><div class="datagrid-footer" style="width: 314px;"><div class="datagrid-footer-inner" style="display: none;"></div></div></div><ul class="easyui-datalist datagrid-f" data-options="
+								fit: true,
+								onSelect:function(index,row){
+									$(this).datalist('unselectRow', index);
+									if (ignoreOnSelect)
+										return false; 
+									var menuValue = menuItemDisplayOrder[row.value];
+									if (menuValue.substring(0,1) == '#') {
+										eval(menuValue.substring(1));
+									}
+									else {
+										if (menuValue.substring(0, 'logout.do'.length) == 'logout.do')
+											window.top.location = menuValue;
+										else 
+											window.location = menuValue;
+									}
+								}
+								" style="display: none;">
+<li value="1">
+										<i class="fa fa-search fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Search Public Records</li>
+<li value="2">
+										<i class="fa fa-arrow-circle-right fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Complete Marriage Application</li>
+<li value="3">
+									<i class="fa fa-user-circle fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Modify My User Preferences</li>
+<li value="4">
+										<i class="fa fa-arrow-circle-right fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Search Guide</li>
+<li value="5">
+									<i class="fa fa-exclamation-circle fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Disclaimer</li>	
+<li value="6">
+								<i class="fa fa-question-circle-o fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Need Help?</li>	
+<li value="7" target="_top">
+								<i class="fa fa-sign-out fa-fw fa-lg fa-welcome-icon" aria-hidden="true"></i>&nbsp;Log out</li>	
+</ul><style type="text/css" easyui="true">
+.datagrid-header-rownumber{width:29px}
+.datagrid-cell-rownumber{width:29px}
+.datagrid-cell-c1-text{width:293px}
+</style></div></div></div>
+					</div></div>
+
+						<div class="panel layout-panel layout-panel-east panel-htop easyui-fluid" style="width: 474px; left: 317px; top: 0px;"><div class="panel-header" style="width: 474px;"><div class="panel-title">Announcements</div><div class="panel-tool"><a href="javascript:;" class="layout-button-right" style="display: none;"></a></div></div><div data-options="region:'east', split:false, collapsible:false, minWidth:'20%', maxWidth:'60%'" title="" style="padding: 10px; width: 474px; height: 332px;" class="panel-body layout-body" id="">				
+							Welcome to the Limestone County Clerk’s Public Records Online Search!<br>With a credit card or charge account, customers can obtain copies of the instruments recorded in our office for $1/page. <br>Marriage License applications can be completed on our site and submitted to our office.<br>Marriage License application requirements and instructions are also listed on our website.<br><br>On the external website, images of the instruments will only be available as thumbnail sized. <br>Full-size images can be viewed on the public computers located in our office. <br>Certified copies of Land Documents and Vital Records can be requested by calling or visiting our office.<br><br>We are actively working to add the index information to all of our documents and some documents older than 1954 may show to be indexed. <br>Index and Images are available as described below:<br><b>Land Records</b><br>Index Data: 1954 through Verified Date<br>Images:  from Sovereign through Verified Date<br>                <br><b>Assumed Names</b><br>Index Data: 01/01/2005 through Verified Date<br>Images: 01/01/2005 through Verified Date<br><br><b>Cattle Brands</b><br>Index Data: 12/9/2019 through Verified Date<br>Images: 12/9/2019 through Verified Date<br><br><b>Marriage Records</b><br>Index Data: 1/1/2005 through Current Date<br>Images: Not available to view on the website.<br><br><b>Military Discharges</b> – Contact our office to obtain a copy.<br><br>Please contact our office should you have any questions regarding recording fees or obtaining certified copies. <br>For Technical Support, please send an email to gssupport@kofile.us or click on the ‘Need Help?’ button on the task bar. <br></div></div>
+					<div class="layout-split-proxy-h"></div><div class="layout-split-proxy-v"></div></div>
+				</div></div>
+
+				<div class="panel layout-panel layout-panel-east panel-htop easyui-fluid" style="width: 98px; left: 891px; top: 0px;"><div data-options="region:'east', split:false, collapsible:false, border:false" style="width: 98px; height: 362px;" title="" class="panel-body panel-body-noheader panel-body-noborder layout-body" id=""></div></div>
+<div class="layout-split-proxy-h"></div><div class="layout-split-proxy-v"></div></div>
+		</div>
+	</div>
+
+	<div class="positions" id="popupdiv">
+		<iframe name="popupframe" id="popupframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" style="border-style:outset; border-width:2" scrolling="no"></iframe>
+	</div>
+
+	</form>
+  
+
+  <script>
+  		window.focus ();
+  </script>
+</body></html>

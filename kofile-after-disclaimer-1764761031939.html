@@ -1,0 +1,573 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en"><head><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/modern/hoc.css?v=1" crossorigin="anonymous"><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/modern/button.css" crossorigin="anonymous"><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/fonts/opensans.css" crossorigin="anonymous"><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/modern/default.css?v=1" crossorigin="anonymous">
+    <base href="https://countyfusion10.kofiletech.us/countyweb/main.jsp"><title>Limestone County</title>
+
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/styles.css?ver=1">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/LimestoneTX/countystyles.css?ver=1">
+<style type="text/css">
+		<!--
+		a:hover { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; color:#ffff33; text-decoration:underline }
+		all.positions {}
+		#maindiv { width:1024;}
+		#logodiv { position:absolute; left:0; top:0; width:1024; height:108px; visibility:hidden }
+		#menudiv { position:absolute; left:0; top:108; width:1024; height:22px; visibility:hidden}
+		#footerdiv { position:absolute; left:5; top:800; width:1024; height:48px; visibility:hidden}
+		#corediv { position:absolute; left:5; top:100; width:1024; height:300; visibility:hidden; z-index:2}
+		#queuediv { position:absolute; left:5; top:100; width:1024; height:300; visibility:hidden}
+		#queuedldiv { position:absolute; left:5; top:10; width:5; height:5; visibility:hidden}
+		#disablediv {position:absolute; left:0; top:0; width:100%; height:100%; visibility:hidden; opacity:0.7; filter:alpha(opacity=70) progid:DXImageTransform.Microsoft.Fade(duration=0.5); background-color:#666666}
+		#progress {position:absolute; width:400; height:100; visibility:hidden;border-style:outset; border-width:3; background-color:white;}
+		#progressfrm {position:absolute; width:400; height:100;visibility:hidden;}
+		#dialog {position:absolute; width:400; height:325;visibility:hidden;display:none;border-style:outset; border-width:3; background-color:#cccccc; filter:progid:DXImageTransform.Microsoft.Fade(duration=0.5) }
+		#updatefrm {position:absolute; width:10; height:10;visibility:hidden;}
+		#versionfrm {position:absolute; width:10; height:10;visibility:hidden;}
+
+
+		-->
+	</style>
+
+	<script src="https://developer.livehelpnow.net/js/sdk/lhn-jssdk-current.min.js"></script><script src="/countyweb/scripts/utils.js?ver=9"></script>
+	<script src="/countyweb/scripts/validate.js?ver=2"></script>
+	<script src="/countyweb/scripts/dhtml.js?ver=2"></script>
+	<script src="/countyweb/scripts/popup.js?ver=5"></script>
+	<script src="/countyweb/scripts/mousemove.js?ver=2"></script>
+	<script src="/countyweb/scripts/dialog.js?ver=6"></script>
+	<script src="/countyweb/scripts/print.js?ver=2"></script>
+	<script src="/countyweb/scripts/jquery/jquery-3.6.3.min.js"></script>
+	
+	<script>
+	
+		var	browserSupportsEnhancedUI = true;
+		
+		function checkBroswerSupport() {
+			if (! supportsCanvas()) {
+				browserSupportsEnhancedUI = false;
+			}
+			try {
+				setBrowserSupportInSession(browserSupportsEnhancedUI);
+			} catch (err) {
+				window.frames["bodyframe"].location = "disclaimer.do";
+			}		
+		}	
+		
+   		function setBrowserSupportInSession(isOn) {
+		    $.ajax({
+			    url: "/countyweb/user/setEnhancedUI.do",
+			    type: "POST",
+			    dataType: "json",
+			    data: {enhancedUI: isOn}
+			}).always(function () {
+				window.frames["bodyframe"].location = "disclaimer.do";
+			});
+		}		
+
+		var			menuheight = 22;
+		var			footerheight = 48;
+		var			forceLogout = true;
+
+		function handleResize () {
+
+		    var     height, width;
+
+			if (isMozillaClient ()) {
+				height = window.innerHeight - 15;
+				width = window.innerWidth - 15;
+			}
+			else {
+		        height = window.document.body.clientHeight;
+		        width = window.document.body.clientWidth;
+		        
+		        if (isIE9() || isIE10Plus()) {
+		        	width = width - 5;
+		        	height = height - 10;
+				}
+		    }
+
+		    if (height < 225)
+		    	height = 400;	// too small for anything useful - I guess we'll scroll
+
+	    	// get height of header - image height
+	    	var		logoheight = document.getElementById ("logodiv").scrollHeight;
+
+			document.getElementById ("menudiv").style.top = logoheight;
+	        document.getElementById ("corediv").style.top = logoheight + menuheight;
+	        document.getElementById ("queuediv").style.top = logoheight + menuheight;
+	        document.getElementById ("corediv").style.height = height - (logoheight + menuheight + footerheight + (supportsCanvas() ? 0 : 10));
+	        document.getElementById ("queuediv").style.height = height - (logoheight + menuheight + footerheight + (supportsCanvas() ? 0 : 10));
+	        document.getElementById ("footerdiv").style.top = (logoheight + menuheight) + (height - (logoheight + menuheight + footerheight + (supportsCanvas() ? 0 : 10)));
+
+			if (width <= 1024)
+				width = 1024;
+
+			document.getElementById ("logodiv").style.width = width;
+			document.getElementById ("menudiv").style.width = width;
+			document.getElementById ("corediv").style.width = width - 10;
+			document.getElementById ("queuediv").style.width = width - 10;
+			document.getElementById ("footerdiv").style.width = width - 10;
+
+			document.getElementById ("disablediv").style.width = width;
+//			document.getElementById ("disablediv").style.height = height;
+
+
+
+		    document.getElementById ("progress").style.top = Math.max (0, (height / 2) - 110);
+		    document.getElementById ("progress").style.left = Math.max (0, (width / 2) - (400/2));
+
+		    document.getElementById ("progressfrm").style.top = Math.max (0, (height / 2) - 110);
+		    document.getElementById ("progressfrm").style.left = Math.max (0, (width / 2) - (400/2));
+
+            if (document.getElementById ("dialog").style.width != 0)
+                document.getElementById ("dialog").style.top = Math.max (0, (height / 2) - (parseInt(document.getElementById ("dialog").style.width)/2));
+             
+             if (document.getElementById ("dialog").style.height != 0)
+                document.getElementById ("dialog").style.left = Math.max (0, (width / 2) - (parseInt(document.getElementById ("dialog").style.height)/2));
+		}
+
+		function handleOnLoad () {
+			checkBroswerSupport();
+			setFooter ();
+			handleResize ();
+			showNotification ();
+
+			document.getElementById ("logodiv").style.visibility = "visible";
+			document.getElementById ("menudiv").style.visibility = "visible";
+			document.getElementById ("corediv").style.visibility = "visible";
+			document.getElementById ("footerdiv").style.visibility = "visible";
+
+
+
+			window.frames["bodyframe"].focus();
+		}
+
+		function showHelpWindow1 (target) {
+
+			showHelpWindow ("help/LimestoneTX/" + target, true);
+		}
+
+		function showHelpWindow (target) {
+
+			//src = "/countyweb/help/CountyFusionTutorials.pdf#" + target;
+			if (arguments.length > 1 && arguments[1] == true)
+				src = target;
+			else
+				src = "help/" + target;
+
+			getScreenCenter (900, 700);
+		    helpWnd = window.open ("/countyweb/blank.jsp", "helpwnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=900,height=700,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+		    helpWnd.location = src;
+		    helpWnd.focus ();
+		}
+
+		function showDisclaimer () {
+
+			src = "disclaimer.do?showaccept=false";
+
+			getScreenCenter (900, 700);
+		    disclaimerWnd = window.open ("/countyweb/blank.jsp", "helpwnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=900,height=700,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+		    disclaimerWnd.location = src;
+		    disclaimerWnd.focus ();
+		}
+
+		function openWindow (target) {
+
+			//src = "/countyweb/help/CountyFusionTutorials.pdf#" + target;
+			src = target;
+
+			getScreenCenter (900, 700);
+		    helpWnd = window.open ("/countyweb/blank.jsp", "helpwnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=900,height=700,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+		    helpWnd.location = src;
+		    helpWnd.focus ();
+		}
+
+		function showMailTo (src) {
+
+
+				window.location.href = "mailto:gssupport@govos.com";
+
+		}
+		
+		function showSupport () {
+
+			src = "/countyweb/support/supportForm.jsp";
+			
+			var mainImg = document.getElementById("mainImage"); 
+			var width = mainImg.clientWidth + 20;
+			
+
+				var logoImg = document.getElementById("logoImage"); 
+				width += logoImg.clientWidth;
+					
+			if (width < 600)
+				width = 600;					
+
+			getScreenCenter (width, 800);
+		    supportwnd = window.open (src, "supportwnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=" + width + ",height=800,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+		    supportwnd.focus ();
+		}
+		
+		function openPrintQueue () {
+
+			document.getElementById ("corediv").style.visibility = "hidden";
+			document.getElementById ("queuediv").style.visibility = "visible";
+		}
+
+		function hidePrintQueue () {
+
+			document.getElementById ("corediv").style.visibility = "visible";
+			document.getElementById ("queuediv").style.visibility = "hidden";
+			
+			if (top.frames["bodyframe"].updatePrintQueueState)
+				top.frames["bodyframe"].updatePrintQueueState();
+		}
+
+		function disableApp () {
+			
+			document.getElementById ("disablediv").style.visibility = "visible";
+		}
+
+		function enableApp () {
+			
+			document.getElementById ("disablediv").style.visibility = "hidden";
+		}
+
+		function showSystemStatus () {
+			
+			initDialog();
+
+			if (top.frames && top.frames["bodyframe"] && top.frames["bodyframe"].startPrint)
+				top.frames["bodyframe"].startPrint();
+			
+			showDialog(true, "notificationBase.jsp?type=systemstatus&width=650", "System Status", 650, 275);
+		}
+		
+		function showNotification () {
+		
+			
+		}
+		
+		function setFooter () {
+
+
+		}
+
+		function updateFooter () {
+			if (arguments.length > 0)
+				window.frames["footerframe"].location = "/countyweb/footer.do?cmd=" + arguments[0];
+			else
+				window.frames["footerframe"].location = "/countyweb/footer.do?cmd=EscrowCombo";
+		}
+		
+		function checkConcurrentDownload() {
+			var messageObj;
+			
+			$.ajax({
+			    url: "/countyweb/search/checkConcurrentDownload.do",
+			    type: "GET",
+			    dataType: "json",
+			    success: function(data) {
+			    	if (data.downloadActive) {
+						messageObj = confirm("A download is currently in progress and will be canceled if you log out. Would you like to continue logging out?");
+						
+						if (messageObj) {
+							checkPrintQueue();
+						} else {
+							return false;
+						}
+					} else {
+						checkPrintQueue();
+					}
+				},
+				error: function() {
+					checkPrintQueue();
+				}
+			});
+		}
+		
+		function checkPrintQueue() {
+			var messageObj;
+			
+		    $.ajax({
+			    url: "/countyweb/print/checkPrintQueue.do",
+			    type: "POST",
+			    dataType: "json",
+			    success: function(data) {
+					if (data.hasQueue) {
+						messageObj = confirm("The Print Queue contains documents waiting to be printed and will be lost if you log out. Would you like to continue logging out?");
+						
+						if (messageObj) {
+							forceLogout = false;
+							window.location.href = "/countyweb/logout.do";
+						} else {
+							return false;
+						}
+					} else {
+						forceLogout = false;
+						window.location.href = "/countyweb/logout.do";
+					}
+				},
+			    error: function() {
+					forceLogout = false;
+					window.location.href = "/countyweb/logout.do";
+			    }
+			});
+		}
+		
+		function handleOnUnLoad () {
+			if (forceLogout)
+				try {
+					window.location.href = "/countyweb/logout.do";
+				}
+				catch (err) {}			
+		}	
+
+		window.onresize=handleResize;
+
+	</script>
+
+		<script type="text/javascript">
+              window.lhnJsSdkInit = function () {
+                             lhnJsSdk.setup = {
+                                           application_id: "25cb2181-be71-4c5a-81d9-bdc274e3befd",
+                                           application_secret: "8loorouea+9aajgb5x/hxk0kjsjxmqbe58odpztpn6fkdzleom"
+                             };
+                             lhnJsSdk.controls = [{
+                                           type: "hoc",
+                                           id: "93a64aec-9eeb-478c-b05c-07b24b6a6581"
+                             }];
+              };
+
+              (function (d, s) {
+                             var newjs, lhnjs = d.getElementsByTagName(s)[0];
+                             newjs = d.createElement(s);
+                             newjs.src = "https://developer.livehelpnow.net/js/sdk/lhn-jssdk-current.min.js";
+                             lhnjs.parentNode.insertBefore(newjs, lhnjs);
+              }(document, "script"));
+	</script>
+<style id="multiselect_dropdown_styles">
+.multiselect-dropdown{
+  display: inline-block;
+  padding: 10px 12px 0px 12px;
+  position: relative;
+  width: 100% !important;
+}
+.multiselect-dropdown span.optext, .multiselect-dropdown span.placeholder{
+  margin-right:0.5em; 
+  margin-bottom:2px;
+  padding:1px 0; 
+  border-radius: 4px; 
+  display:inline-block;
+}
+.multiselect-dropdown span.optext{
+  background-color:lightgray;
+  padding:1px 0.75em; 
+}
+.multiselect-dropdown span.optext .optdel {
+  float: right;
+  margin: 0 -6px 1px 5px;
+  font-size: 0.7em;
+  margin-top: 2px;
+  cursor: pointer;
+  color: #666;
+}
+.multiselect-dropdown span.optext .optdel:hover { color: #c66;}
+.multiselect-dropdown span.placeholder{
+}
+.multiselect-dropdown-list-wrapper{
+  z-index: 100;
+  padding:2px;
+  border-radius: 10px;
+  border: solid 1px #ced4da;
+  display: none;
+  margin: -1px;
+  position: absolute;
+  top:0;
+  left: 0;
+  right: 0;
+  background: white;
+}
+.multiselect-dropdown-list-wrapper .multiselect-dropdown-search{
+  margin-bottom:5px;
+}
+.multiselect-dropdown-list{
+  padding:2px;
+  height: 15rem;
+  overflow-y:auto;
+  overflow-x: hidden;
+}
+.multiselect-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+.multiselect-dropdown-list::-webkit-scrollbar-thumb {
+  background-color: #bec4ca;
+  border-radius:3px;
+}
+
+.multiselect-dropdown-list div{
+  padding: 5px;
+}
+.multiselect-dropdown-list input{
+  height: 1.15em;
+  width: 1.15em;
+  margin-right: 0.35em;  
+}
+.multiselect-dropdown-list div.checked{
+}
+.multiselect-dropdown-list div:hover{
+  background-color: #ced4da;
+}
+.multiselect-dropdown span.maxselected {width:100%;}
+.multiselect-dropdown-all-selector {border-bottom:solid 1px #999;}
+</style><script type="text/javascript" src="https://developer.livehelpnow.net/js/socket.js"></script></head>
+
+  <body onload="handleOnLoad ()" onunload="handleOnUnLoad()">
+
+
+	    	<div class="positions" id="logodiv" style="width: 1024px; visibility: visible;">
+		   		<table class="base" width="100%" cellspacing="0" cellpadding="0">
+		  			<tbody><tr valign="top" class="basebackground" style="height:108px">
+<td background="/countyweb/images/headers/LimestoneTX/header_bg.png" align="left"><img id="mainImage" alt="" border="0" src="/countyweb/images/headers/LimestoneTX/mainheader.png"></td>
+
+<td background="/countyweb/images/headers/LimestoneTX/header_bg.png" align="left" valign="middle"><table width="100%"><tbody><tr><td width="50" valign="top" align="center"><img alt="" border="0" src="/LimestoneTX/headers/Limestone_NoSeal.png"></td><td valign="middle" align="center"><span style="font-family: Palatino Linotype, Imprint MT Shadow, Geneva, Arial, Helvetica, sans-serif; font-size: 32px; font-weight:normal; color:#005596">Limestone County Clerk ~ Honorable Kerrie Cobb</span></td></tr></tbody></table></td>
+<td background="/countyweb/images/headers/LimestoneTX/header_bg.png" align="right" valign="middle"><img id="logoImage" src="/countyweb/images/headers/LimestoneTX/logo.png"></td>
+</tr>
+		  		</tbody></table>
+	    	</div>
+
+			<div class="positions" id="menudiv" style="top: 108px; width: 1024px; visibility: visible;">
+				<table class="menuback" width="100%" cellspacing="0" cellpadding="0">
+					<tbody><tr>
+						<td valign="middle">
+					   		<table class="menuback" cellspacing="0" cellpadding="0">
+					  			<tbody><tr style="height:22px">
+
+									<td class="menu" align="center" width="0" valign="middle">&nbsp;</td>
+</tr>
+					  		</tbody></table>
+					  	</td>
+
+					  	<td>&nbsp;</td>
+
+					  	<td width="175">
+					   		<table width="100%" class="menuback" cellspacing="0" cellpadding="0">
+					  			<tbody><tr style="height:22px">
+					  				<td align="right" valign="middle">
+<a href="#" class="menu" onclick="checkConcurrentDownload();return false;">Log Out</a></td>
+					  				<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					  			</tr>
+					  		</tbody></table>
+					  	</td>
+		  			</tr>
+		  		</tbody></table>
+</div>
+
+			<div class="positions" id="corediv" style="top: 130px; height: 422px; width: 1014px; visibility: visible;">
+				<iframe name="bodyframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+			</div>
+
+			<div class="positions" id="queuediv" style="top: 130px; height: 422px; width: 1014px;">
+				<iframe name="queueframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+			</div>
+
+			<div class="positions" id="queuedldiv">
+				<iframe name="queuedownloadframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" scrolling="no"></iframe>
+			</div>
+
+			<div class="positions" id="footerdiv" style="top: 552px; width: 1014px; visibility: visible;">
+		   		<table class="base" width="100%" cellspacing="0" cellpadding="0">
+		  			<tbody><tr style="height:48px">
+			  			<td width="370" align="right" valign="top"><img src="/countyweb/images/poweredby_govos.png" border="0" alt="">&nbsp;&nbsp;</td>
+  						<td align="center">
+  							<iframe name="footerframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="27px" scrolling="no"></iframe>
+  						</td>
+		  				<td width="275" align="right">
+							<table border="0" class="base">
+								<tbody><tr>  							
+		  							<td style="padding-left:10px" align="right">
+
+    <base href="https://countyfusion10.kofiletech.us/countyweb/main.jsp"><title>buildVersion.jsp</title>
+    
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">    
+    
+ 	<style type="text/css">
+		<!--
+		all.positions {}
+		-->
+	</style>    
+
+  
+  
+  
+	<span class="msgsmall">Build: 1053 250630_1002_A25_R1</span>
+  
+</td>
+		  						</tr>
+								<tr>  				
+		  							<td style="padding-left:10px" align="right">©All rights reserved, Limestone County</td>
+								</tr>
+							</tbody></table>  		
+						</td>				
+		  			</tr>
+		  		</tbody></table>
+			</div>
+
+  	<div class="positions" id="disablediv" style="z-index: 20; width: 1024px;">
+	</div>
+
+	<div id="progress" style="z-index: 100; top: 190px; left: 312px;">
+		<table class="msg3" width="400" cellpadding="0" cellspacing="0">
+			<tbody><tr height="100" valign="middle">
+				<td width="400" align="center">
+					<span id="progressdata"></span><br><br><img src="/countyweb/images/progressBig.gif" border="0"></td>
+			</tr>
+		</tbody></table>
+	</div>
+
+	<div id="progressfrm" style="z-index: 100; top: 190px; left: 312px;">
+		<iframe name="msgframe" id="msgframe" src="/countyweb/blank.jsp" frameborder="0" width="100%" height="100%" style="border-style:outset; border-width:3" scrolling="no"></iframe>
+	</div>
+
+	<div id="dialog" style="z-index:100">
+		<div align="left" id="dialogheader">
+			<table align="center" class="dialoghdr" cellpadding="0" cellspacing="0" width="100%">
+				<tbody><tr height="20" valign="middle">
+					<td width="80%" class="dialoghdr">
+						&nbsp;<span id="dialogtitle">Print</span>
+					</td>
+					<td width="20%" class="dialoghdr" align="right">
+						<a href="#" onclick="hideDialog(false);return false;"><img alt="" border="0" src="/countyweb/images/icons/close.gif"></a>&nbsp;
+					</td>
+				</tr>
+			</tbody></table>
+		</div>
+		<iframe name="dialogframe" id="dialogframe" src="/countyweb/blankDlg.jsp" frameborder="0" width="400" height="325" scrolling="no"></iframe>
+	</div>
+
+	<div id="updatefrm">
+		<iframe name="updateframe" id="updateframe" src="/countyweb/blank.jsp" frameborder="0" width="10" height="10" scrolling="no"></iframe>
+	</div>
+
+  	
+
+<script type="text/javascript" src="https://developer.livehelpnow.net/js/multiselect-dropdown.js"></script><div id="lhnHelpOutCenter" class="lhnleft lhnWindow circleButton lhnWindow-modern lhnHide lhnHocWidth" style="display: none;"><div id="lhnHocHeader" class="lhnWindow-header">
+  <div class="lhnWindow-header-avatar lhnHide">
+    <div class="lhnWindow-header-avatar--img"></div>
+  </div>
+  <div class="lhnWindow-header-text">
+    <h3><span>Conversation</span></h3>
+    <h4><span class="lhnAgentStatus"></span> Connecting to agent</h4>
+  </div>
+  <div class="lhnWindow-header-controls">
+    <button id="lhnWindowCloser" class="lhnWindow-header-closer" title="Close Window">
+      <img src="https://developer.livehelpnow.net/images/button-closer.svg" class="lhnButton--closer" alt="Close Window" width="15px" height="15px">
+    </button>
+  </div>
+</div>
+<div id="hocContainer" class="lhnWindow-body no-menu"><div systemorder="1" systemtype="chat" id="hocSyschat" class="lhnHocSection"></div></div>
+<div id="lhnHocMenuContainer" class="lhnWindow-tabs lhnHide"><ul id="lhnHocMenu"><li systemorder="1" systemtype="chat" tabindex="0" class="lhnHocTab lhnHocMenuWidth100">Chat</li></ul></div>
+<div id="lhnWindowFooter" class="lhnWindow-footer"></div>
+</div><div id="lhnHocButton" class="lhnleft lhnslide" tabindex="0"><div class="lhnHocChatBtnCont" title="GET HELP" aria-label="live chat" role="button"><div class="lhnHocChatBtn" tabindex="0"><div class="lhnHocChatBubbleCont"><div class="lhnHocChatBubble lhnHocFrontBubble"><div id="lhnOpType" class="lhnHocCtCont lhnHide"><div class="lhnHocChatTalk lhnHocCt1"></div><div class="lhnHocChatTalk lhnHocCt2"></div><div class="lhnHocChatTalk lhnHocCt3"></div><div class="lhnHocButtonClear"></div></div></div><div class="lhnHocChatBubble lhnHocBackBubble"></div></div><div class="lhnHocChatTxtCont"><span>LIVE CHAT</span></div><div class="lhnHocButtonClear"></div></div></div></div></body></html>

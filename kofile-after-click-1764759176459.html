@@ -1,0 +1,620 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en"><head><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/modern/hoc.css?v=1" crossorigin="anonymous"><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/modern/button.css" crossorigin="anonymous"><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/fonts/opensans.css" crossorigin="anonymous"><link type="text/css" rel="stylesheet" href="https://developer.livehelpnow.net/css/modern/default.css?v=1" crossorigin="anonymous">
+    <base href="https://countyfusion10.kofiletech.us/countyweb/login.jsp"><title>LimestoneTX</title>
+    
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0"> 
+
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/styles.css?ver=1">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/LimestoneTX/countystyles.css?ver=1">
+<link rel="stylesheet" href="styles/jquery/easyui/easyui.css" type="text/css">
+ 	<style type="text/css">
+		<!--
+		a:hover { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; color:#990000; text-decoration:underline }
+		all.positions {}
+		#maindiv { width:900; border-style:solid; border-width:1; }
+		#disclaimer { width:900; }
+		#registerdiv { margin:10px; border-style:solid; border-width:1 }
+		#disablediv {position:absolute; left:0; top:0; width:100%; height:100%; visibility:hidden; opacity:0.7; filter:alpha(opacity=70) progid:DXImageTransform.Microsoft.Fade(duration=0.5); background-color:#666666}
+		#dialog {position:absolute; width:400; height:325;visibility:hidden;border-style:outset; border-width:3; background-color:#cccccc; filter:progid:DXImageTransform.Microsoft.Fade(duration=0.5) }
+		/* style for IE compatiblity dialog title */
+		.panel-title { font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; color:#FF0000; }
+		-->
+	</style>
+
+	<script src="https://developer.livehelpnow.net/js/sdk/lhn-jssdk-current.min.js"></script><script src="/countyweb/scripts/utils.js?ver=9"></script>
+	<script src="/countyweb/scripts/validate.js?ver=2"></script>
+	<script src="/countyweb/scripts/dhtml.js?ver=2"></script>
+	<script src="/countyweb/scripts/dialog.js?ver=6"></script>
+	<script src="/countyweb/scripts/jquery/jquery-3.6.3.min.js"></script>
+	<script src="/countyweb/scripts/jquery/easyui/jquery.easyui.min.js"></script>
+	
+	<script>
+	
+		var		executing = false;
+	
+		function createUser () {
+		
+			if (executing)
+				return;
+			executing = true;
+
+			document.UserForm.usertype.value = "CreateUser";
+			document.UserForm.submit ();
+		}
+		
+		function showNotification (title) {
+		
+				initDialog();
+				showDialog(true, "notificationBase.jsp?type=activesession&width=650", title, 650, 275);
+		}
+
+		function genNewPassword () {
+		
+			if (document.loginform.username.value == "Guest" || document.loginform.username.value == "guest") {
+				alert ("You cannot change the Guest user account password.");
+				return;
+			}
+		
+			if (executing)
+				return;
+			executing = true;
+
+			if (document.loginform.username.value == "") {
+				alert ("To have a new password generated for your user, please enter your username then click the \"Forgot your password?\"  link.");
+				executing = false;
+				return;
+			}
+			
+			if (! confirm ("A new password is about to be generated for username: " + document.loginform.username.value + ".  Do you wish to continue?")) {
+				executing = false;
+				return;
+			}
+				
+			document.loginform.cmd.value = "genpassword";
+			document.loginform.submit ();
+		}
+		
+		function doLogin () {
+
+			if (executing)
+				return;
+			executing = true;
+		
+
+//			var srchWnd = window.open("", "_self", "directories=no, height=700, width=900, location=no, menubar=no, toolbar=no, resizable=yes");
+//			if (srchWnd.document.location.href == "about:blank") {
+				document.loginform.submit ();
+//			} else {
+//				alert("You are already searching on this site");
+//			}
+		}
+		
+		function doGuestLogin () {
+		
+			if (executing)
+				return;
+
+			if (arguments.length > 0 && arguments[0] == true)
+				document.loginform.public.value = true;
+			else
+				document.loginform.guest.value = true;
+		
+			if (arguments.length > 1)
+				document.loginform.startPage.value = arguments[1];
+			else
+				document.loginform.startPage.value = "";
+
+			doLogin ();
+		}		
+		
+		function doFraudSleuth () {
+		
+			if (executing)
+				return;
+
+			document.loginform.fraudsleuth.value = true;
+			
+			doLogin ();
+		}		
+
+
+		function handleReturn () {
+		
+			doLogin ();
+			return false;
+		}
+		
+
+		function openCounty () {
+
+			var		county = document.selcounty.counties.value;
+
+			if (county != "")
+				window.location = "loginDisplay.action?countyname=" + county;		
+		}
+
+
+		function handleOnLoad () {
+		
+		if (false && window.name != "") {
+			top.location = "loginDisplay.action?errormsg=msg.forcedlogout&countyname=LimestoneTX";
+			return;
+		}
+		
+
+			// used to check if scripting support enabled on browser - if this fails, login will fail
+			document.loginform.scriptsupport.value = "yes";
+
+			
+		}
+		
+	   function showSupport () {
+	   
+	   		var width = 900;
+	   		var src = "/support/supportMainView.jsp?countyname=LimestoneTX";
+				
+			getScreenCenter (width, 800);
+		    var supportwnd = window.open (src, "supportwnd", "left=" + centerx + ",top=" + centery + ",screenX=" + centerx + ",screenY=" + centery + ",width=" + width + ",height=800,toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=1,resizable=1");
+		    supportwnd.focus ();
+	   }
+		
+		/* 
+		Function to check for IE version and see if compatibility mode is turned on
+		
+		Code for function acquired from https://github.com/Gavin-Paolucci-Kleinow/ie-truth
+		
+		Copyright (c) 2015 Gavin Paolucci-Kleinow
+		
+		Permission is hereby granted, free of charge, to any person obtaining a copy
+		of this software and associated documentation files (the "Software"), to deal
+		in the Software without restriction, including without limitation the rights
+		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		copies of the Software, and to permit persons to whom the Software is
+		furnished to do so, subject to the following conditions:
+		
+		The above copyright notice and this permission notice shall be included in all
+		copies or substantial portions of the Software.
+		
+		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+		SOFTWARE.
+		*/
+		function IeVersion() {
+			//Set defaults
+			var value = {
+				IsIE: false,
+				IsEdge: false,
+				EdgeHtmlVersion: 0,
+				TrueVersion: 0,
+				ActingVersion: 0,
+				CompatibilityMode: false
+			};
+
+			//Try to find the Trident version number
+			var trident = navigator.userAgent.match(/Trident\/(\d+)/);
+			if (trident) {
+				value.IsIE = true;
+				//Convert from the Trident version number to the IE version number
+				value.TrueVersion = parseInt(trident[1], 10) + 4;
+			}
+
+			//Try to find the MSIE number
+			var msie = navigator.userAgent.match(/MSIE (\d+)/);
+			if (msie) {
+				value.IsIE = true;
+				//Find the IE version number from the user agent string
+				value.ActingVersion = parseInt(msie[1]);
+			} else {
+				//Must be IE 11 in "edge" mode
+				value.ActingVersion = value.TrueVersion;
+			}
+
+			//If we have both a Trident and MSIE version number, see if they're different
+			if (value.IsIE && value.TrueVersion > 0 && value.ActingVersion > 0) {
+				//In compatibility mode if the trident number doesn't match up with the MSIE number
+				value.CompatibilityMode = value.TrueVersion != value.ActingVersion;
+			}
+
+			//Try to find Edge and the EdgeHTML vesion number
+			var edge = navigator.userAgent.match(/Edge\/(\d+\.\d+)$/);
+			if (edge) {
+				value.IsEdge = true;
+				value.EdgeHtmlVersion = edge[1];
+			}
+			return value;
+		}
+
+		var IE = IeVersion();
+		
+		function checkIEcompatibilityMode() {
+			if (IE.IsIE) {
+				if (IE.CompatibilityMode) {
+					//alert("COMPATIBILITY MODE");
+					$('#dialog_iecompat').dialog('open');
+				}
+			}
+		}
+	</script>
+	
+		<script type="text/javascript">
+              window.lhnJsSdkInit = function () {
+                             lhnJsSdk.setup = {
+                                           application_id: "25cb2181-be71-4c5a-81d9-bdc274e3befd",
+                                           application_secret: "8loorouea+9aajgb5x/hxk0kjsjxmqbe58odpztpn6fkdzleom"
+                             };
+                             lhnJsSdk.controls = [{
+                                           type: "hoc",
+                                           id: "93a64aec-9eeb-478c-b05c-07b24b6a6581"
+                             }];
+              };
+
+              (function (d, s) {
+                             var newjs, lhnjs = d.getElementsByTagName(s)[0];
+                             newjs = d.createElement(s);
+                             newjs.src = "https://developer.livehelpnow.net/js/sdk/lhn-jssdk-current.min.js";
+                             lhnjs.parentNode.insertBefore(newjs, lhnjs);
+              }(document, "script"));
+	</script>
+<style id="multiselect_dropdown_styles">
+.multiselect-dropdown{
+  display: inline-block;
+  padding: 10px 12px 0px 12px;
+  position: relative;
+  width: 100% !important;
+}
+.multiselect-dropdown span.optext, .multiselect-dropdown span.placeholder{
+  margin-right:0.5em; 
+  margin-bottom:2px;
+  padding:1px 0; 
+  border-radius: 4px; 
+  display:inline-block;
+}
+.multiselect-dropdown span.optext{
+  background-color:lightgray;
+  padding:1px 0.75em; 
+}
+.multiselect-dropdown span.optext .optdel {
+  float: right;
+  margin: 0 -6px 1px 5px;
+  font-size: 0.7em;
+  margin-top: 2px;
+  cursor: pointer;
+  color: #666;
+}
+.multiselect-dropdown span.optext .optdel:hover { color: #c66;}
+.multiselect-dropdown span.placeholder{
+}
+.multiselect-dropdown-list-wrapper{
+  z-index: 100;
+  padding:2px;
+  border-radius: 10px;
+  border: solid 1px #ced4da;
+  display: none;
+  margin: -1px;
+  position: absolute;
+  top:0;
+  left: 0;
+  right: 0;
+  background: white;
+}
+.multiselect-dropdown-list-wrapper .multiselect-dropdown-search{
+  margin-bottom:5px;
+}
+.multiselect-dropdown-list{
+  padding:2px;
+  height: 15rem;
+  overflow-y:auto;
+  overflow-x: hidden;
+}
+.multiselect-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+.multiselect-dropdown-list::-webkit-scrollbar-thumb {
+  background-color: #bec4ca;
+  border-radius:3px;
+}
+
+.multiselect-dropdown-list div{
+  padding: 5px;
+}
+.multiselect-dropdown-list input{
+  height: 1.15em;
+  width: 1.15em;
+  margin-right: 0.35em;  
+}
+.multiselect-dropdown-list div.checked{
+}
+.multiselect-dropdown-list div:hover{
+  background-color: #ced4da;
+}
+.multiselect-dropdown span.maxselected {width:100%;}
+.multiselect-dropdown-all-selector {border-bottom:solid 1px #999;}
+</style><script type="text/javascript" src="https://developer.livehelpnow.net/js/socket.js"></script></head>
+  
+  <body onload="handleOnLoad (); checkIEcompatibilityMode();">
+  
+	
+	<script type="text/javascript">
+	  $('#dialog_iecompat').dialog({
+	    title: 'IE Compatibility Mode Detected',
+	    width: 400,
+	    height: 275,
+	    closed: true,
+	    cache: false,
+	    modal: true
+	});
+	</script><div class="panel window panel-htop" style="display: none; width: 400px; left: 200px; top: 163px;"><div class="panel-header panel-header-noborder window-header" style="width: 388px;"><div class="panel-title">IE Compatibility Mode Detected</div><div class="panel-tool"><a href="javascript:;" class="panel-tool-close"></a></div></div><div id="dialog_iecompat" class="easyui-dialog panel-body panel-body-noborder window-body" style="padding: 5px; width: 388px; height: 202px;" buttons="#dlg-buttons" title="">
+		<span class="base">
+		This site will not function properly if IE Compatibility Mode is enabled.
+		<br><br>
+		Please disable Compatibility Mode and refresh the page.
+		<br><br>
+		If you do not know how to disable Compatibility Mode please <a href="#" class="linknounder" onclick="showSupport(); return false;"> submit a ticket</a> to our support team and they will be happy to assist you.
+		<br><br>
+		Technical Data:<br>
+		<script type="text/javascript">
+			document.write("Browser is IE? " + IE.IsIE + "<br />");
+			if (IE.IsIE) {
+				document.write("IE Version? " + IE.TrueVersion + "<br />");
+				document.write("Compatibility Mode On? " + IE.CompatibilityMode + "<br />");
+			}
+		</script>Browser is IE? false<br>
+		</span>
+	</div><div id="dlg-buttons" class="dialog-button" style="width: 388px;">
+		<a href="javascript:void(0);" class="easyui-linkbutton base l-btn l-btn-small" iconcls="" onclick="javascript:$('#dialog_iecompat').dialog('close')" group="" id=""><span class="l-btn-left"><span class="l-btn-text">OK</span></span></a>
+	</div></div><div class="window-shadow" style="display: none; left: 200px; top: 163px; width: 400px; height: 275px;"></div><div class="window-mask" style="display:none"></div>
+<div align="center">
+  
+  	<div id="dialog" style="z-index:100">
+		<div align="left" id="dialogheader">
+			<table align="center" class="dialoghdr" cellpadding="0" cellspacing="0" width="99%">
+				<tbody><tr height="20" valign="middle">
+					<td width="80%" class="dialoghdr">
+						&nbsp;<span id="dialogtitle">Print</span>
+					</td>
+					<td width="20%" class="dialoghdr" align="right">
+						<a href="#" onclick="hideDialog();return false;"><img alt="" border="0" src="/countyweb/images/icons/close.gif"></a>&nbsp;
+					</td>
+				</tr>
+			</tbody></table>
+		</div>
+		<iframe name="dialogframe" id="dialogframe" src="/countyweb/blankDlg.jsp" frameborder="0" width="400" height="325" scrolling="no"></iframe>
+	</div>
+	
+  	<div class="positions" id="maindiv">
+  
+  		<table class="base" width="900" cellspacing="0" cellpadding="0">
+  			<tbody><tr valign="top" class="basebackground" style="height:108">
+<td background="/countyweb/images/headers/LimestoneTX/header_bg.png" align="left"><img alt="" border="0" src="/countyweb/images/headers/LimestoneTX/mainheader.png"></td>
+  				
+<td background="/countyweb/images/headers/LimestoneTX/header_bg.png" align="left" valign="middle"><table width="100%"><tbody><tr><td width="50" valign="top" align="center"><img alt="" border="0" src="/LimestoneTX/headers/Limestone_NoSeal.png"></td><td valign="middle" align="center"><span style="font-family: Palatino Linotype, Imprint MT Shadow, Geneva, Arial, Helvetica, sans-serif; font-size: 32px; font-weight:normal; color:#005596">Limestone County Clerk<br>Honorable Kerrie Cobb</span></td></tr></tbody></table></td>
+<td background="/countyweb/images/headers/LimestoneTX/header_bg.png" align="right" valign="middle"><img src="/countyweb/images/headers/LimestoneTX/logo.png"></td>
+</tr>
+  		</tbody></table>
+  		
+  		<table class="base" border="0" width="900" cellspacing="0" cellpadding="0">
+
+<tbody><tr>
+					<td>
+						<br>
+						<div class="positions" id="registerdiv">
+						    <form name="UserForm" action="login.action" method="post">
+						    	<input type="hidden" name="cmd" value="newuser">
+						    	<input type="hidden" name="usertype" value="">
+						    	<input type="hidden" name="countyname" value="LimestoneTX">
+						    	<input type="hidden" name="apptype" value="">
+						    	<input type="hidden" name="struts.token.name" value="token">
+<input type="hidden" name="token" value="LDY584QGQQHGGAG2S8GSBNR23KQQABC4"><table class="base" width="100%" cellspacing="0" cellpadding="0">
+									<tbody><tr valign="top">
+										<td width="100%">
+											
+      
+<table class="base" width="100%" cellspacing="0" cellpadding="0">
+	<tbody><tr style="height:20">
+		<td colspan="4">&nbsp;</td>
+	</tr>
+
+	<tr>
+		<td width="1">&nbsp;</td>
+		<td class="subheader" width="2000">Limestone County Recorder Online Services</td>
+		<td width="1">&nbsp;</td>
+	</tr>
+
+	<tr style="height:15">
+		<td colspan="4">&nbsp;</td>
+	</tr>
+
+	<tr>
+		<td>&nbsp;</td>
+		<td colspan="3">
+			<b>Welcome!</b> Our New Online Services provide a convenient and centralized way to access documents recorded in our office. You have the ability to search records and view document images.
+			<br>
+			<br>
+			Additional information about the site is available once you login.<br>
+			<br>
+			<br>
+			Click <a href="http://www.co.limestone.tx.us/upload/page/5620/2015%20Birth%20App.pdf">HERE</a> to download the State of Texas "MAIL APPLICATION FOR BIRTH AND DEATH RECORD"<br>
+			<br>
+			o haga clic <a href="http://www.co.limestone.tx.us/upload/page/5620/2015%20Birth%20Death%20App%20Spanish.pdf">AQUÍ</a> para "APLICACIÓN DE CORREO ELECTRÓNICO PARA REGISTRO DE NACIMIENTO Y LA MUERTE" en español<br>
+			<br>
+			<br>
+			<center><b>Kerrie Cobb</b><br>
+			<center>Limestone County Clerk<br>
+			200 W State St., Ste. 102<br>
+			Groesbeck, TX 76642<br>
+			Phone   254.729.5504<br>
+			Fax 254.729.2951<br></center>
+                        </center></td>
+                  </tr>
+            </tbody></table>
+      
+</td>
+									</tr>
+								</tbody></table>
+</form>
+						</div>
+					</td>
+					
+	  				<td width="280" valign="top">
+	  					<br><br>
+
+					      <table border="0" class="base" width="100%">
+
+<tbody><tr valign="top">
+									<td width="100%">
+										<br><span class="msg1">Public users please log in here.<br><br></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="basebold1" onclick="doGuestLogin(true)" value="Login as Public" style="width:150"><br><br></td>
+								</tr>
+</tbody></table>
+							
+					    <form name="loginform" action="login.action" method="post" target="_self">
+					      <input type="hidden" name="cmd" value="login">
+    				      <input type="hidden" name="countyname" value="LimestoneTX">
+     			    	  <input type="hidden" name="scriptsupport" value="yes">
+					      <input type="hidden" name="apptype" value="">
+					      <input type="hidden" name="datasource" value="">
+					      <input type="hidden" name="userdatasource" value="">
+     				      <input type="hidden" name="fraudsleuth" value="false">
+     				      <input type="hidden" name="guest" value="false">
+     				      <input type="hidden" name="public" value="false">
+     				      <input type="hidden" name="startPage" value="">
+     				      <input type="hidden" name="CountyFusionForceNewSession" value="true">
+     				      <input type="hidden" name="struts.token.name" value="token">
+<input type="hidden" name="token" value="LDY584QGQQHGGAG2S8GSBNR23KQQABC4"><table border="0" class="base" width="100%">
+<tbody><tr>
+						      		<td colspan="2" class="msg1" align="center">Registered users please log in here.<br><br></td>
+						      	</tr>
+						        <tr>
+						          <td width="80" align="right">Username:&nbsp;&nbsp;</td>
+						          <td><input type="text" name="username" style="width:170" class="base"><br></td>
+						        </tr>
+						        <tr>
+						          <td width="80" align="right">Password:&nbsp;&nbsp;</td>
+						          <td><input type="password" name="password" style="width:170" class="base"></td>
+						        </tr>
+	
+						        <tr>
+						          	<td width="80" align="right">&nbsp;</td>
+						          	<td>
+						          		<a href="#" class="linksm" onclick="genNewPassword(); return false;">
+											Forgot Password?
+										</a>
+										<span style="text-align:center;width:16px;valign:middle;display:inline-block">|</span>										
+						          		<a href="#" class="linksm" onclick="showSupport(); return false;">
+											Need Help?
+										</a>
+									</td>
+						        </tr>
+		
+	<tr>
+						          <td>&nbsp;</td>
+						          <td><br><input type="button" value="Login" class="base" style="width:82px" onclick="doLogin ()"><span style="width:6px;display:inline-block"></span><input type="reset" value="Clear" style="width:82px" class="base"></td>
+						        </tr>
+</tbody></table>
+					        
+					      <table border="0" class="base" align="center">
+							<tbody><tr height="20" class="error" valign="top"><td colspan="2">&nbsp;</td></tr>
+							<tr height="20" class="error" valign="top">
+								<td align="center">
+									Login Failed: Active Session.<br>To process login you first must log out of all other county search sites.</td>
+							</tr>
+
+<tr valign="top">
+									<td align="center">
+										&nbsp;&nbsp;&nbsp;<a href="#" onclick="showNotification('Additional Information'); return false;">Additional Information</a><br><br>
+									</td>
+								</tr>
+
+<tr valign="top">
+									<td>
+										<center><a href="#" onclick="doFraudSleuth ();return false;"><img alt="" border="0" src="/countyweb/images/fraudsleuth.gif"></a><br><br><span class="msg4">Click the FraudSleuth icon to be directed to a simplified name search.</span></center></td>
+								</tr>
+</tbody></table>
+					    </form>
+	  				</td>
+	  			</tr>
+<tr style="height:48px">
+	  			</tr><tr style="height:48px">
+		  			<td align="left" valign="top"><img src="/countyweb/images/poweredby_govos.png" border="0" alt="">&nbsp;&nbsp;</td>
+	  				<td align="right">
+						<table border="0" class="base">
+							<tbody><tr>  							
+	  							<td style="padding-left:10px" align="right">
+
+    <base href="https://countyfusion10.kofiletech.us/countyweb/login.jsp"><title>buildVersion.jsp</title>
+    
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">    
+    
+ 	<style type="text/css">
+		<!--
+		all.positions {}
+		-->
+	</style>    
+
+  
+  
+  
+	<span class="msgsmall">Build: 1053 250630_1002_A25_R1</span>
+  
+</td>
+	  						</tr>
+							<tr>  				
+	  							<td style="padding-left:10px" align="right">©All rights reserved, Limestone County</td>
+							</tr>
+						</tbody></table>  		
+					</td>				
+	  			</tr>
+  			
+  		</tbody></table>
+
+    </div>
+    
+    <br>
+    
+    <div class="positions" id="disclaimer">
+  		<table class="msgsmall" width="900" cellspacing="0" cellpadding="0">
+  			<tbody><tr>
+  				<td>
+  					For best results, current web browser versions are always recommended. JavaScript must be enabled to utilize the site.  If you are having difficulty, please ensure that you have installed all available software and security updates.</td>
+  			</tr>
+  		</tbody></table>
+    </div>
+		    
+    </div>
+
+  	<div class="positions" id="disablediv" style="z-index:20">
+	</div>
+
+
+  
+  <script>
+  		window.focus ();
+
+  		
+  		document.loginform.username.focus ();
+</script>
+  
+<script type="text/javascript" src="https://developer.livehelpnow.net/js/multiselect-dropdown.js"></script><div id="lhnHelpOutCenter" class="lhnleft lhnWindow circleButton lhnWindow-modern lhnHocWidth" style=""><div id="lhnHocHeader" class="lhnWindow-header">
+  <div class="lhnWindow-header-avatar lhnHide">
+    <div class="lhnWindow-header-avatar--img"></div>
+  </div>
+  <div class="lhnWindow-header-text">
+    <h3><span>Conversation</span></h3>
+    <h4><span class="lhnAgentStatus"></span> Connecting to agent</h4>
+  </div>
+  <div class="lhnWindow-header-controls">
+    <button id="lhnWindowCloser" class="lhnWindow-header-closer" title="Close Window">
+      <img src="https://developer.livehelpnow.net/images/button-closer.svg" class="lhnButton--closer" alt="Close Window" width="15px" height="15px">
+    </button>
+  </div>
+</div>
+<div id="hocContainer" class="lhnWindow-body no-menu"><div systemorder="1" systemtype="chat" id="hocSyschat" class="lhnHocSection"></div></div>
+<div id="lhnHocMenuContainer" class="lhnWindow-tabs lhnHide"><ul id="lhnHocMenu"><li systemorder="1" systemtype="chat" tabindex="0" class="lhnHocTab lhnHocMenuWidth100">Chat</li></ul></div>
+<div id="lhnWindowFooter" class="lhnWindow-footer"></div>
+</div><div id="lhnHocButton" class="lhnleft lhnslide" tabindex="0"><div class="lhnHocChatBtnCont" title="GET HELP" aria-label="live chat" role="button"><div class="lhnHocChatBtn" tabindex="0"><div class="lhnHocChatBubbleCont"><div class="lhnHocChatBubble lhnHocFrontBubble"><div id="lhnOpType" class="lhnHocCtCont lhnHide"><div class="lhnHocChatTalk lhnHocCt1"></div><div class="lhnHocChatTalk lhnHocCt2"></div><div class="lhnHocChatTalk lhnHocCt3"></div><div class="lhnHocButtonClear"></div></div></div><div class="lhnHocChatBubble lhnHocBackBubble"></div></div><div class="lhnHocChatTxtCont"><span>LIVE CHAT</span></div><div class="lhnHocButtonClear"></div></div></div></div></body></html>

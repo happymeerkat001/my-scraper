@@ -7,22 +7,21 @@
 
 //  Configuration
 
+  // Only counties with verified working PublicSearch.us subdomains
+  // Removed: ANGELINA, EL PASO, GALVESTON, MAVERICK, MCLENNAN, ZAVALA (DNS fails or 0% success)
   const COUNTY_MAP = {
-    'ANDERSON COUNTY': 'anderson', 'ANGELINA COUNTY': 'angelina', 'BEE COUNTY': 'bee',
-    'CAMERON COUNTY': 'cameron', 'ECTOR COUNTY': 'ector', 'EL PASO COUNTY': 'elpaso',
-    'ERATH COUNTY': 'erath', 'FORT BEND COUNTY': 'fortbend', 'FRIO COUNTY': 'frio',
-    'GALVESTON COUNTY': 'galveston', 'GRAYSON COUNTY': 'grayson', 'HARRIS COUNTY': 'harris',
+    'ANDERSON COUNTY': 'anderson', 'BEE COUNTY': 'bee', 'CAMERON COUNTY': 'cameron',
+    'ECTOR COUNTY': 'ector', 'ERATH COUNTY': 'erath', 'FORT BEND COUNTY': 'fortbend',
+    'FRIO COUNTY': 'frio', 'GRAYSON COUNTY': 'grayson', 'HARRIS COUNTY': 'harris',
     'HIDALGO COUNTY': 'hidalgo', 'HUNT COUNTY': 'hunt', 'JEFFERSON COUNTY': 'jefferson',
-    'KERR COUNTY': 'kerr', 'LAMPASAS COUNTY': 'lampasas', 'MAVERICK COUNTY': 'maverick',
-    'MCLENNAN COUNTY': 'mclennan', 'MIDLAND COUNTY': 'midland', 'MONTGOMERY COUNTY':
-  'montgomery',
-    'NUECES COUNTY': 'nueces', 'POTTER COUNTY': 'potter', 'SAN PATRICIO COUNTY': 'sanpatricio',
-    'SMITH COUNTY': 'smith', 'TARRANT COUNTY': 'tarrant', 'TRAVIS COUNTY': 'travis',
-    'UPSHUR COUNTY': 'upshur', 'UVALDE COUNTY': 'uvalde', 'VICTORIA COUNTY': 'victoria',
-    'WALLER COUNTY': 'waller', 'WASHINGTON COUNTY': 'washington', 'WEBB COUNTY': 'webb',
-    'WHARTON COUNTY': 'wharton', 'WICHITA COUNTY': 'wichita', 'WILLIAMSON COUNTY': 'williamson',
-    'WISE COUNTY': 'wise', 'WOOD COUNTY': 'wood', 'YOUNG COUNTY': 'young',
-    'ZAVALA COUNTY': 'zavala', 'ZAPATA COUNTY': 'zapata'
+    'KERR COUNTY': 'kerr', 'LAMPASAS COUNTY': 'lampasas', 'MIDLAND COUNTY': 'midland',
+    'MONTGOMERY COUNTY': 'montgomery', 'NUECES COUNTY': 'nueces', 'POTTER COUNTY': 'potter',
+    'SAN PATRICIO COUNTY': 'sanpatricio', 'SMITH COUNTY': 'smith', 'TARRANT COUNTY': 'tarrant',
+    'TRAVIS COUNTY': 'travis', 'UPSHUR COUNTY': 'upshur', 'UVALDE COUNTY': 'uvalde',
+    'VICTORIA COUNTY': 'victoria', 'WALLER COUNTY': 'waller', 'WASHINGTON COUNTY': 'washington',
+    'WEBB COUNTY': 'webb', 'WHARTON COUNTY': 'wharton', 'WICHITA COUNTY': 'wichita',
+    'WILLIAMSON COUNTY': 'williamson', 'WISE COUNTY': 'wise', 'WOOD COUNTY': 'wood',
+    'YOUNG COUNTY': 'young', 'ZAPATA COUNTY': 'zapata'
   };
 
   const BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|LP|LLP|LTD|CO|COMPANY|TRUST|ESTATE|BANK|INVESTMENTS|PROPERTIES|ENTERPRISES|MINISTRIES)\b/i;
@@ -220,7 +219,10 @@
     if (!nameObj.variations.length) return { liens: [], error: 'parse_failed' };
 
     const subdomain = COUNTY_MAP[county];
-    if (!subdomain) return { liens: [], error: 'unknown_county' };
+    if (!subdomain) {
+      console.log(`⚠️  ${county} is not supported - no PublicSearch.us subdomain found`);
+      return { liens: [], error: 'unknown_county' };
+    }
 
     for (let i = 0; i < nameObj.variations.length; i++) {
       console.log(`\n🔍 Trying variation ${i + 1}/${nameObj.variations.length}: "${nameObj.variations[i]}"`);
@@ -292,15 +294,21 @@
 
     const results = [];
     let success = 0;
+    let unsupportedCount = 0;
+    const unsupportedCounties = new Set();
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       const nameObj = parseName(row.case_style);
 
-      const { liens } = await fetchLiens(row.county, nameObj);
+      const { liens, error } = await fetchLiens(row.county, nameObj);
       results.push(enrichRow(row, liens));
 
       if (liens.length > 0) success++;
+      if (error === 'unknown_county') {
+        unsupportedCount++;
+        unsupportedCounties.add(row.county);
+      }
 
       if ((i + 1) % 10 === 0 || i === rows.length - 1) {
         console.log(`[${i + 1}/${rows.length}] ${row.county} | ${nameObj.original} → ${liens.length} rows`);
@@ -312,6 +320,12 @@
     await writeCSV(results, outputFile);
     console.log(`\n✓ Wrote ${results.length} rows to ${outputFile}`);
     console.log(`✓ Success: ${success}/${results.length} (${((success/results.length)*100).toFixed(1)}%)`);
+
+    if (unsupportedCount > 0) {
+      console.log(`\n⚠️  UNSUPPORTED COUNTIES: ${unsupportedCount} properties skipped`);
+      console.log(`   Counties: ${Array.from(unsupportedCounties).sort().join(', ')}`);
+      console.log(`   These counties do not use PublicSearch.us - alternative sources needed`);
+    }
 
     // Cleanup browser
     if (browser) {

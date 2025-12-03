@@ -1,0 +1,177 @@
+ala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%20joe%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%20joe%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%20joe%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%20joe%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%20joe%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/2: "IVY"
+
+🔗 URL for "IVY": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22ivy%22&sort=desc&sortBy=recordedDate
+[840/847] ZAVALA COUNTY | JOE IVY → 0 rows
+
+📋 Name variations for "MIGUEL E SULAICA JR": [ 'SULAICA MIGUEL E', 'SULAICA MIGUEL', 'SULAICA' ]
+
+🔍 Trying variation 1/3: "SULAICA MIGUEL E"
+
+🔗 URL for "SULAICA MIGUEL E": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%20e%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%20e%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%20e%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%20e%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%20e%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/3: "SULAICA MIGUEL"
+
+🔗 URL for "SULAICA MIGUEL": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%20miguel%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 3/3: "SULAICA"
+
+🔗 URL for "SULAICA": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22sulaica%22&sort=desc&sortBy=recordedDate
+
+📋 Name variations for "ROSARIO HERNANDEZ": [ 'HERNANDEZ ROSARIO', 'HERNANDEZ' ]
+
+🔍 Trying variation 1/2: "HERNANDEZ ROSARIO"
+
+🔗 URL for "HERNANDEZ ROSARIO": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%20rosario%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%20rosario%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%20rosario%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%20rosario%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%20rosario%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/2: "HERNANDEZ"
+
+🔗 URL for "HERNANDEZ": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22hernandez%22&sort=desc&sortBy=recordedDate
+
+📋 Name variations for "MAXIMO R ROCHA": [ 'ROCHA MAXIMO R', 'ROCHA MAXIMO', 'ROCHA' ]
+
+🔍 Trying variation 1/3: "ROCHA MAXIMO R"
+
+🔗 URL for "ROCHA MAXIMO R": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%20r%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%20r%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%20r%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%20r%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%20r%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/3: "ROCHA MAXIMO"
+
+🔗 URL for "ROCHA MAXIMO": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%20maximo%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 3/3: "ROCHA"
+
+🔗 URL for "ROCHA": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22rocha%22&sort=desc&sortBy=recordedDate
+
+📋 Name variations for "JANETTE PEREZ": [ 'PEREZ JANETTE', 'PEREZ' ]
+
+🔍 Trying variation 1/2: "PEREZ JANETTE"
+
+🔗 URL for "PEREZ JANETTE": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%20janette%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%20janette%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%20janette%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%20janette%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%20janette%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/2: "PEREZ"
+
+🔗 URL for "PEREZ": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22perez%22&sort=desc&sortBy=recordedDate
+
+📋 Name variations for "OLGA M GONZALES": [ 'GONZALES OLGA M', 'GONZALES OLGA', 'GONZALES' ]
+
+🔍 Trying variation 1/3: "GONZALES OLGA M"
+
+🔗 URL for "GONZALES OLGA M": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%20m%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%20m%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%20m%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%20m%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%20m%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/3: "GONZALES OLGA"
+
+🔗 URL for "GONZALES OLGA": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%20olga%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 3/3: "GONZALES"
+
+🔗 URL for "GONZALES": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22gonzales%22&sort=desc&sortBy=recordedDate
+
+📋 Name variations for "MINERVA CONTRERAS LOPEZ": [ 'LOPEZ MINERVA CONTRERAS', 'LOPEZ MINERVA', 'LOPEZ' ]
+
+🔍 Trying variation 1/3: "LOPEZ MINERVA CONTRERAS"
+
+🔗 URL for "LOPEZ MINERVA CONTRERAS": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%20contreras%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%20contreras%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%20contreras%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%20contreras%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%20contreras%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/3: "LOPEZ MINERVA"
+
+🔗 URL for "LOPEZ MINERVA": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%20minerva%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 3/3: "LOPEZ"
+
+🔗 URL for "LOPEZ": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22lopez%22&sort=desc&sortBy=recordedDate
+
+📋 Name variations for "PRENDON BROWN": [ 'BROWN PRENDON', 'BROWN' ]
+
+🔍 Trying variation 1/2: "BROWN PRENDON"
+
+🔗 URL for "BROWN PRENDON": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%20prendon%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%20prendon%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%20prendon%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%20prendon%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%20prendon%22&sort=desc&sortBy=recordedDate
+
+🔍 Trying variation 2/2: "BROWN"
+
+🔗 URL for "BROWN": https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 1/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 2/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%22&sort=desc&sortBy=recordedDate
+⚠️  Fetch attempt 3/3 failed: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%22&sort=desc&sortBy=recordedDate
+❌ Error: net::ERR_NAME_NOT_RESOLVED at https://zavala.tx.publicsearch.us/results?department=RP&keywordSearch=false&limit=50&offset=0&recordedDateRange=18000101%2C20251118&searchOcrText=false&searchType=quickSearch&searchValue=%22brown%22&sort=desc&sortBy=recordedDate
+[847/847] ZAVALA COUNTY | PRENDON BROWN → 0 rows
+
+✓ Wrote 847 rows to texas-sales-liens.csv
+✓ Success: 130/847 (15.3%)
+leon@MacBook-Pro-3 my-scraper % 
