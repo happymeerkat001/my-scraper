@@ -215,11 +215,29 @@ export class KofileDriver extends BaseDriver {
         searchFrame = page.frames().find(f => f.name() === 'searchFrame');
       }
 
+      let formFrame = null;  // Frame containing the form fields
+      let submitFrame = null; // Frame containing the submit button
+
       if (searchFrame) {
         console.log(`   ✓ Found nested search frame: ${searchFrame.name()}`);
-        bodyFrame = searchFrame; // Use the nested iframe for the rest of the operations
+        submitFrame = searchFrame; // Submit button is in dynSearchFrame
+
+        // Now look for criteriaframe inside dynSearchFrame
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const criteriaFrame = page.frames().find(f => f.name() === 'criteriaframe');
+        if (criteriaFrame) {
+          console.log(`   ✓ Found criteriaframe (nested inside search frame)`);
+          formFrame = criteriaFrame; // Form fields are in criteriaframe
+          bodyFrame = criteriaFrame; // Use criteriaframe for form operations
+        } else {
+          console.log(`   ℹ️  No criteriaframe found, using ${searchFrame.name()} for both form and submit`);
+          formFrame = searchFrame;
+          bodyFrame = searchFrame;
+        }
       } else {
         console.log(`   ⚠️  No nested search iframe found - trying bodyframe directly`);
+        formFrame = bodyFrame;
+        submitFrame = bodyFrame;
       }
 
       // Wait for search form to load
@@ -325,20 +343,60 @@ export class KofileDriver extends BaseDriver {
       });
       console.log(`   Date set: ${dateSet}`);
 
-      // Step 3: Find and fill the name input with updated selectors
+      // Step 3: Find and fill the name input with EasyUI textbox handling
       console.log(`✏️  Looking for name input field...`);
 
-      // Try multiple possible selectors (prioritizing textbox-text from screenshots)
+      // For EasyUI textboxes, we need to use their API or find the actual hidden input
       const nameInputFilled = await bodyFrame.evaluate((searchName) => {
-        // Try different possible selectors - textbox-text first per user screenshots
+        // First, try to find the EasyUI textbox by looking for the wrapper span
+        // and finding the associated input
+
+        // Look for textbox-text input (visible but readonly)
+        const visibleInput = document.querySelector('input.textbox-text:not([readonly])') ||
+                             document.querySelector('input.textbox-text');
+
+        if (visibleInput) {
+          // Try to use EasyUI API if available
+          const inputId = visibleInput.id;
+          if (inputId && typeof $ !== 'undefined' && $.fn && $.fn.textbox) {
+            try {
+              $(`#${inputId}`).textbox('setValue', searchName);
+              return { success: true, method: 'easyui-api', selector: `#${inputId}` };
+            } catch(e) {
+              console.log('EasyUI API failed:', e.message);
+            }
+          }
+
+          // Find the parent span and look for hidden input with actual name attribute
+          let parent = visibleInput.parentElement;
+          while (parent && !parent.classList.contains('textbox')) {
+            parent = parent.parentElement;
+          }
+
+          if (parent) {
+            const hiddenInput = parent.querySelector('input[type="hidden"].textbox-value');
+            if (hiddenInput) {
+              hiddenInput.value = searchName;
+              // Also set visible input for display
+              visibleInput.value = searchName;
+              visibleInput.dispatchEvent(new Event('change', { bubbles: true }));
+              return { success: true, method: 'hidden-input', name: hiddenInput.name };
+            }
+          }
+
+          // Last resort: remove readonly and set value directly
+          visibleInput.removeAttribute('readonly');
+          visibleInput.value = searchName;
+          visibleInput.dispatchEvent(new Event('input', { bubbles: true }));
+          visibleInput.dispatchEvent(new Event('change', { bubbles: true }));
+          return { success: true, method: 'direct-readonly-removed', selector: visibleInput.className };
+        }
+
+        // Fallback: try other selectors
         const selectors = [
-          'input.textbox-text',                            // From screenshot - try first!
-          'input.validatebox-text',                        // Also visible in screenshot
-          'input.textbox-prompt',                          // Third class from screenshot
-          'input[textboxname="ALLNAMES"]',                 // Original attempt
-          'input.easyui-textbox-input1[textboxname="ALLNAMES"]',
+          'input[textboxname="ALLNAMES"]',
           'input[name="ALLNAMES"]',
-          'input[name="Name"]',                            // Alternative name
+          'input[name="Name"]',
           '#allNamesID'
         ];
 
@@ -347,11 +405,12 @@ export class KofileDriver extends BaseDriver {
           if (input) {
             input.value = searchName;
             input.dispatchEvent(new Event('input', { bubbles: true }));
-            return { success: true, selector, visible: input.offsetParent !== null };
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            return { success: true, method: 'fallback', selector };
           }
         }
 
-        return { success: false, selector: null };
+        return { success: false, method: 'none' };
       }, name);
 
       console.log(`   Name input filled: ${JSON.stringify(nameInputFilled)}`);
@@ -360,10 +419,11 @@ export class KofileDriver extends BaseDriver {
         throw new Error('Could not find name input field with any known selector');
       }
 
-      // Step 8: Submit search
+      // Step 8: Submit search (using submitFrame, not formFrame)
       console.log(`🔍 Submitting search...`);
 
-      const submitClicked = await bodyFrame.evaluate(() => {
+      const targetFrame = submitFrame || bodyFrame;
+      const submitClicked = await targetFrame.evaluate(() => {
         // Try multiple submit button selectors
         const selectors = [
           'input[type="submit"]',
@@ -396,24 +456,90 @@ export class KofileDriver extends BaseDriver {
 
       console.log(`   ✓ Submit clicked (${submitClicked.type})`);
 
-      // Wait for results to load in the iframe
+      // Wait for results to load - look for resultFrame
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      // Results may be in a different frame - try to find results frame
-      let resultsFrame = page.frames().find(f => f.name() === 'searchResults' || f.name() === 'resultsFrame');
-      if (!resultsFrame) {
-        resultsFrame = bodyFrame; // Fall back to search frame
+      let resultFrame = page.frames().find(f => f.name() === 'resultFrame');
+      if (!resultFrame) {
+        console.log(`   ⚠️  No resultFrame found, trying fallback frames...`);
+        // Try fallback frames
+        resultFrame = page.frames().find(f =>
+          f.name() === 'searchResults' ||
+          f.name() === 'resultsFrame'
+        );
+        if (!resultFrame) {
+          resultFrame = bodyFrame; // Last resort: fall back to search frame
+        }
+      } else {
+        console.log(`   ✓ Found resultFrame`);
       }
 
-      // Get HTML from the results iframe
-      const html = await resultsFrame.content();
+      // Look for nested resultListFrame
+      if (resultFrame) {
+        console.log(`   🔍 Looking for nested resultListFrame...`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Debug: Save results HTML for analysis
+        const resultListFrame = page.frames().find(f => f.name() === 'resultListFrame');
+        if (resultListFrame) {
+          console.log(`   ✓ Found resultListFrame (nested)`);
+          resultFrame = resultListFrame; // Use the nested frame for parsing
+        } else {
+          console.log(`   ℹ️  No resultListFrame found, using resultFrame directly`);
+        }
+      }
+
+      // Wait for and detect datagrid rows
+      console.log(`   🔍 Checking for datagrid rows...`);
+      const hasDatagrid = await resultFrame.evaluate(() => {
+        const rows = document.querySelectorAll('[id^="datagrid-row"]');
+        return rows.length > 0 ? rows.length : 0;
+      }).catch(() => 0);
+
+      console.log(`   ${hasDatagrid > 0 ? '✓' : '⚠️'} Datagrid rows found: ${hasDatagrid}`);
+
+      // Get HTML from the results iframe
+      const html = await resultFrame.content();
+
+      // Debug: Save results HTML, criteria, screenshot, and row samples
       if (process.env.DEBUG) {
         const fs = await import('fs');
-        const debugFile = `kofile-results-${timestamp}.html`;
-        fs.default.writeFileSync(debugFile, html);
-        console.log(`   💾 Saved results to ${debugFile}`);
+        const timestamp = Date.now();
+
+        // Save criteria (search form HTML from bodyFrame)
+        const criteriaHtml = await bodyFrame.content();
+        const criteriaFile = `debug_responses/kofile-criteria-${timestamp}.html`;
+        fs.default.writeFileSync(criteriaFile, criteriaHtml);
+
+        // Save result frame HTML
+        const resultFile = `debug_responses/kofile-results-${timestamp}.html`;
+        fs.default.writeFileSync(resultFile, html);
+
+        // Take screenshot
+        const screenshotFile = `debug_responses/kofile-results-${timestamp}.png`;
+        await page.screenshot({
+          path: screenshotFile,
+          fullPage: true
+        });
+
+        // Log first few datagrid rows if found
+        const rowSamples = await resultFrame.evaluate(() => {
+          const rows = Array.from(document.querySelectorAll('[id^="datagrid-row"]'));
+          return rows.slice(0, 3).map(row => ({
+            id: row.id,
+            html: row.outerHTML.substring(0, 500)
+          }));
+        }).catch(() => []);
+
+        if (rowSamples.length > 0) {
+          console.log(`   📋 Sample datagrid rows:`, JSON.stringify(rowSamples, null, 2));
+        } else {
+          console.log(`   ⚠️  No datagrid rows found for sampling`);
+        }
+
+        console.log(`   💾 Saved DEBUG artifacts:`);
+        console.log(`      - Criteria: ${criteriaFile}`);
+        console.log(`      - Results: ${resultFile}`);
+        console.log(`      - Screenshot: ${screenshotFile}`);
       }
 
       return await this.parseRecords(html);
@@ -441,10 +567,28 @@ export class KofileDriver extends BaseDriver {
 
     const liens = [];
 
-    // Look for results table rows
+    // Try datagrid rows first (Kofile EasyUI structure)
+    const datagridRows = document.querySelectorAll('[id^="datagrid-row"]');
+
+    if (datagridRows.length > 0) {
+      console.log(`   Found ${datagridRows.length} datagrid rows`);
+
+      for (let i = 0; i < Math.min(datagridRows.length, 3); i++) {
+        const row = datagridRows[i];
+        const cells = row.querySelectorAll('td');
+
+        const record = this.parseDatagridRow(cells);
+        if (record) liens.push(record);
+      }
+
+      console.log(`   Extracted ${liens.length} records from datagrid`);
+      return liens;
+    }
+
+    // Fallback: Look for results table rows
     const rows = document.querySelectorAll('table tbody tr');
 
-    console.log(`   Found ${rows.length} result rows`);
+    console.log(`   Found ${rows.length} table result rows (fallback)`);
 
     for (let i = 0; i < Math.min(rows.length, 3); i++) {
       const row = rows[i];
@@ -479,5 +623,32 @@ export class KofileDriver extends BaseDriver {
 
     console.log(`   Extracted ${liens.length} records from results table`);
     return liens;
+  }
+
+  parseDatagridRow(cells) {
+    if (cells.length < 5) {
+      console.log(`   ⚠️  Skipping row with only ${cells.length} cells`);
+      return null;
+    }
+
+    // Expected columns (from Kofile systems):
+    // Instrument # | Book/Page | Document Type | Name | Other Name | Recorded Date
+    const docNumber = cells[0]?.textContent?.trim() || '';
+    const bookVolumePage = cells[1]?.textContent?.trim() || '';
+    const docType = cells[2]?.textContent?.trim() || '';
+    const grantor = cells[3]?.textContent?.trim() || '';
+    const grantee = cells[4]?.textContent?.trim() || '';
+    const recordedDate = cells[5]?.textContent?.trim() || '';
+
+    return {
+      grantor,
+      grantee,
+      docType,
+      recordedDate,
+      docNumber,
+      bookVolumePage,
+      legalDescription: '',
+      references: ''
+    };
   }
 }
