@@ -20,11 +20,21 @@ export class TylerDriver extends BaseDriver {
   }
 
   canHandle(county) {
-    return !!this.COUNTY_MAP[county];
+    // Normalize county name to handle case variations
+    const normalizedCounty = county.toUpperCase();
+    const countyKey = Object.keys(this.COUNTY_MAP).find(
+      key => key.toUpperCase() === normalizedCounty
+    );
+    return !!countyKey;
   }
 
   buildURL(county) {
-    const config = this.COUNTY_MAP[county];
+    // Normalize county name to handle case variations
+    const normalizedCounty = county.toUpperCase();
+    const countyKey = Object.keys(this.COUNTY_MAP).find(
+      key => key.toUpperCase() === normalizedCounty
+    );
+    const config = countyKey ? this.COUNTY_MAP[countyKey] : null;
     if (!config) return null;
     return `https://${config.subdomain}tx-web.tylerhost.net/web/search/${config.searchCode}`;
   }
@@ -45,21 +55,36 @@ export class TylerDriver extends BaseDriver {
       page = await this.browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
 
-      // Navigate to search page
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
+      // Navigate to search page (increased timeout for slow TylerTech sites)
+      await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
       // Check for disclaimer page and accept if present
       const disclaimerButton = await page.$('#submitDisclaimerAccept').catch(() => null);
       if (disclaimerButton) {
         console.log(`📋 Accepting disclaimer...`);
+
         // Wait for button to be enabled (it starts disabled)
+        console.log(`   ⏳ Waiting for disclaimer button to be enabled...`);
         await page.waitForFunction(
           () => !document.querySelector('#submitDisclaimerAccept').disabled,
           { timeout: 10000 }
         );
+        console.log(`   ✓ Button enabled`);
+
+        // Click the button
+        console.log(`   🖱️  Clicking disclaimer button...`);
         await disclaimerButton.click();
-        // Wait for navigation after clicking
-        await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 }).catch(() => {});
+        console.log(`   ✓ Button clicked`);
+
+        // Wait for search form to appear (disclaimer uses AJAX, not page navigation)
+        console.log(`   ⏳ Waiting for search form to appear...`);
+        try {
+          await page.waitForSelector('#field_BothNamesID', { timeout: 15000 });
+          console.log(`   ✓ Search form ready`);
+        } catch (formError) {
+          console.log(`   ⚠️  Search form not found: ${formError.message}`);
+          // Continue anyway - might already have results
+        }
       }
 
       // Wait for either search form OR results (flexible wait)
@@ -90,13 +115,19 @@ export class TylerDriver extends BaseDriver {
       // Click search button
       await page.click('#searchButton');
 
-      // Wait for results page to load
-      await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 });
+      // Wait for results to load (Tyler uses AJAX, not page navigation)
+      console.log(`   ⏳ Waiting for search results...`);
+      await page.waitForSelector('.selfServiceSearchRowRight', { timeout: 30000 });
 
-      // Wait for results to populate
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Brief pause for all results to render
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const html = await page.content();
+
+      // DEBUG: Save results HTML
+      const fs = await import('fs');
+      fs.default.writeFileSync('tyler-results-debug.html', html);
+      console.log(`   📄 Saved results HTML to tyler-results-debug.html`);
 
       return await this.parseRecords(html);
 
@@ -122,24 +153,31 @@ export class TylerDriver extends BaseDriver {
     for (let i = 0; i < Math.min(rows.length, 3); i++) {
       const row = rows[i];
 
-      // Extract document number and type from first line
-      const docLine = row.querySelector('.searchResultDocument');
-      const docText = docLine ? docLine.textContent.trim() : '';
+      // Extract document number and type from h1 header
+      // Format: "2025034159 • AFFIDAVIT OF HEIRSHIP"
+      const h1 = row.querySelector('h1');
+      const h1Text = h1 ? h1.textContent.replace(/\s+/g, ' ').trim() : '';
 
-      // Parse: "2022-0031608 • B: OPR V: 7769 P: 65 • RELEASE OF LIEN"
-      const docMatch = docText.match(/^([^\u2022]+)\s*\u2022\s*(.+?)\s*\u2022\s*(.+)$/);
-      const docNumber = docMatch ? docMatch[1].trim() : '';
-      const bookVolumePage = docMatch ? docMatch[2].trim() : '';
-      const docType = docMatch ? docMatch[3].trim() : '';
+      // Parse h1: "2025034159 • AFFIDAVIT OF HEIRSHIP" or "P18494 • PROBATE COPY"
+      const h1Match = h1Text.match(/^([A-Z0-9-]+)\s*[•·]\s*(.+)$/i);
+      const docNumber = h1Match ? h1Match[1].trim() : '';
+      const docType = h1Match ? h1Match[2].trim() : '';
 
-      // Extract other fields
+      // Extract fields from li structure
+      // Structure: <li>Label</li> followed by <li class="selfServiceSearchResultCollapsed"><b>value</b></li>
       const getText = (label) => {
-        const li = Array.from(row.querySelectorAll('li')).find(el =>
-          el.textContent.includes(label)
-        );
-        if (!li) return '';
-        const b = li.querySelector('b');
-        return b ? b.textContent.trim() : '';
+        const lis = Array.from(row.querySelectorAll('li'));
+        for (let j = 0; j < lis.length; j++) {
+          if (lis[j].textContent.trim().startsWith(label)) {
+            // Next li with <b> contains the value
+            const nextLi = lis[j + 1];
+            if (nextLi) {
+              const b = nextLi.querySelector('b');
+              return b ? b.textContent.trim() : '';
+            }
+          }
+        }
+        return '';
       };
 
       const record = {
@@ -148,10 +186,12 @@ export class TylerDriver extends BaseDriver {
         docType,
         recordedDate: getText('Recording Date'),
         docNumber,
-        bookVolumePage,
-        legalDescription: getText('Legal Description'),
+        bookVolumePage: '',
+        legalDescription: getText('Legal'),
         references: ''
       };
+
+      console.log(`   Row ${i + 1}: ${record.docNumber} | ${record.docType} | ${record.grantor}`);
 
       liens.push(record);
     }

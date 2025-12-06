@@ -118,12 +118,13 @@ function parseName(caseStyle, driverType = 'default') {
   const variations = [];
 
   // TylerTech needs "LAST FIRST" format
+  // Case style already has names in "LAST FIRST" format, so use as-is
   if (driverType === 'tyler') {
-    variations.push([last, ...given].join(' '));  // "PRICE CHARLIE"
-    if (given.length > 0) {
-      variations.push(`${last} ${given[0]}`);  // "PRICE C"
+    variations.push(defendant);  // "JOHNSON MARY" - use as-is
+    if (words.length > 1) {
+      variations.push(`${words[0]} ${words[1]}`);  // "JOHNSON M" - last + first initial
     }
-    variations.push(last);  // "PRICE"
+    variations.push(words[0]);  // "JOHNSON" - last name only
   } else if (driverType === 'publicsearch') {
     // PublicSearch prefers "LAST, FIRST" format with comma
     if (given.length > 0) {

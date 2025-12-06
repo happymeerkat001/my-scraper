@@ -84,7 +84,7 @@ export class BaseDriver {
     if (!this.browser) {
       const puppeteer = await import('puppeteer');
       this.browser = await puppeteer.default.launch({
-        headless: true,
+        headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       });
       this.browserStartTime = Date.now();
