@@ -13,7 +13,19 @@
       "Bash(INPUT_FILE=test-kaufman-5.csv OUTPUT_FILE=test-kaufman-5-output.csv node:*)",
       "Bash(INPUT_FILE=test-lamar.csv OUTPUT_FILE=test-lamar-output.csv node:*)",
       "Bash(INPUT_FILE=test-limestone.csv OUTPUT_FILE=test-limestone-output.csv node:*)",
-      "Bash(INPUT_FILE=test-limestone-1.csv OUTPUT_FILE=test-limestone-1-output.csv node:*)"
+      "Bash(INPUT_FILE=test-limestone-1.csv OUTPUT_FILE=test-limestone-1-output.csv node:*)",
+      "Bash(ls:*)",
+      "Bash(DEBUG=1 INPUT_FILE=test-limestone.csv OUTPUT_FILE=test-limestone-output.csv node:*)",
+      "Bash(npx puppeteer browsers install chrome)",
+      "Bash(DEBUG=1 INPUT_FILE=test-limestone-1.csv OUTPUT_FILE=test-limestone-1-output.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-limestone-hearon.csv OUTPUT_FILE=test-limestone-hearon-output.csv node:*)",
+      "WebSearch",
+      "WebFetch(domain:www.co.limestone.tx.us)",
+      "mcp__ide__getDiagnostics",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(touch:*)",
+      "Bash(TEST_LIMIT=2 INPUT_FILE=test-limestone-2.csv OUTPUT_FILE=test-limestone-2-output.csv node:*)"
     ],
     "deny": [],
     "ask": []

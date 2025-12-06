@@ -303,27 +303,63 @@ export class KofileDriver extends BaseDriver {
         console.log(`   ✓ Opened dialog: "${dialogOpened.text}"`);
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Select "Both" in the dialog
-        const bothSelected = await bodyFrame.evaluate(() => {
-          const bothRadio = document.querySelector('input[value="both"]') ||
-                           document.querySelector('input#partyBoth');
-          if (bothRadio) {
-            bothRadio.checked = true;
-            bothRadio.click();
+        // First, just close the dialog by clicking Done (don't select "Both" yet)
+        console.log(`   🔘 Closing dialog first...`);
 
-            // Click Done button
-            const doneBtn = Array.from(document.querySelectorAll('button, input[type="button"]'))
-              .find(b => b.textContent?.toLowerCase().includes('done') ||
-                         b.value?.toLowerCase().includes('done'));
+        // Find and click Done button across all frames
+        const allFrames = page.frames();
+        let doneClicked = false;
+
+        for (const frame of allFrames) {
+          const clicked = await frame.evaluate(() => {
+            const doneBtn = document.querySelector('.dialog-button a') ||
+                           document.querySelector('.dialog-button .l-btn') ||
+                           Array.from(document.querySelectorAll('a, button')).find(b =>
+                             b.textContent?.trim() === 'Done'
+                           );
             if (doneBtn) {
               doneBtn.click();
               return true;
             }
-          }
-          return false;
-        }).catch(() => false);
+            return false;
+          }).catch(() => false);
 
-        console.log(`   ${bothSelected ? '✓' : '⚠️'} Selected "Both" and closed dialog`);
+          if (clicked) {
+            console.log(`   ✓ Clicked Done button in frame: ${frame.name() || 'main'}`);
+            doneClicked = true;
+            break;
+          }
+        }
+
+        if (!doneClicked) {
+          console.log(`   ⚠️  Done button not found, trying Escape...`);
+          await bodyFrame.evaluate(() => {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27 }));
+          });
+        }
+
+        // Wait for dialog to close
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // NOW select "Both" after dialog is closed
+        console.log(`   🔘 Selecting "Both" party type...`);
+        const bothSelected = await bodyFrame.evaluate(() => {
+          const bothRadio = document.querySelector('#partyBoth');
+          if (bothRadio) {
+            bothRadio.checked = true;
+            bothRadio.click();
+
+            // Manually trigger the onclick function
+            if (typeof changeOptions === 'function') {
+              changeOptions();
+            }
+
+            return { success: true, checked: bothRadio.checked };
+          }
+          return { success: false };
+        }).catch(e => ({ success: false, error: e.message }));
+
+        console.log(`   ${bothSelected.success ? '✓' : '⚠️'} Set party type to Both:`, JSON.stringify(bothSelected));
         await new Promise(resolve => setTimeout(resolve, 1000));
       } else {
         console.log(`   ℹ️  No "All Names" link found - may already be selected`);
@@ -332,16 +368,40 @@ export class KofileDriver extends BaseDriver {
       // Step 6: Set the date filter to 11/23/1980
       console.log(`📅 Setting date filter to 11/23/1980...`);
       const dateSet = await bodyFrame.evaluate(() => {
-        const dateInput = document.querySelector('input[name="recDateIDFrom"]');
-        if (dateInput) {
-          dateInput.value = '11/23/1980';
-          // Trigger change event
-          dateInput.dispatchEvent(new Event('change', { bubbles: true }));
-          return true;
+        // Try multiple possible selectors for the "from" date field
+        const selectors = [
+          'input[name="recDateIDFrom"]',
+          'input[name="fromDate"]',
+          'input[id*="DateFrom"]',
+          'input[placeholder*="From"]',
+          'input.easyui-datebox',
+          'input.datebox-f'
+        ];
+
+        for (const selector of selectors) {
+          const dateInput = document.querySelector(selector);
+          if (dateInput) {
+            // Try EasyUI datebox API first if available
+            const inputId = dateInput.id;
+            if (inputId && typeof $ !== 'undefined' && $.fn && $.fn.datebox) {
+              try {
+                $(`#${inputId}`).datebox('setValue', '11/23/1980');
+                return { success: true, method: 'easyui-datebox', selector };
+              } catch(e) {
+                // Fall through to manual setting
+              }
+            }
+
+            // Manual setting
+            dateInput.value = '11/23/1980';
+            dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+            dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+            return { success: true, method: 'direct', selector };
+          }
         }
-        return false;
+        return { success: false, selectorsChecked: selectors.length };
       });
-      console.log(`   Date set: ${dateSet}`);
+      console.log(`   Date set:`, JSON.stringify(dateSet));
 
       // Step 3: Find and fill the name input with EasyUI textbox handling
       console.log(`✏️  Looking for name input field...`);
@@ -418,6 +478,58 @@ export class KofileDriver extends BaseDriver {
       if (!nameInputFilled.success) {
         throw new Error('Could not find name input field with any known selector');
       }
+
+      // Step 7: Select "All Document Types" using EasyUI tree checkbox
+      console.log(`📄 Selecting "All Document Types"...`);
+
+      // Search all frames for the tree checkbox
+      let docTypesSet = { success: false };
+      for (const frame of page.frames()) {
+        docTypesSet = await frame.evaluate(() => {
+          // The Document Types is an EasyUI tree component with custom checkboxes
+          const treeCheckboxes = Array.from(document.querySelectorAll('.tree-checkbox'));
+          const allDocsTreeCheckbox = treeCheckboxes.find(cb => {
+            const parentNode = cb.closest('.tree-node');
+            const titleSpan = parentNode?.querySelector('.tree-title');
+            return titleSpan?.textContent?.trim() === 'All Document Types';
+          });
+
+          if (allDocsTreeCheckbox) {
+            allDocsTreeCheckbox.click();
+            return { success: true, method: 'tree-checkbox', checkboxes: treeCheckboxes.length };
+          }
+
+          // Try EasyUI tree API
+          if (typeof $ !== 'undefined' && $.fn && $.fn.tree) {
+            const treeEl = document.querySelector('#instTree, .easyui-tree, [id*="Tree"]');
+            if (treeEl && treeEl.id) {
+              try {
+                const tree = $(`#${treeEl.id}`);
+                const root = tree.tree('getRoot');
+                if (root) {
+                  tree.tree('check', root.target);
+                  return { success: true, method: 'easyui-api', treeId: treeEl.id };
+                }
+              } catch(e) {}
+            }
+          }
+
+          return {
+            success: false,
+            treeCheckboxes: treeCheckboxes.length,
+            titles: treeCheckboxes.slice(0, 2).map(cb =>
+              cb.closest('.tree-node')?.querySelector('.tree-title')?.textContent?.trim()
+            )
+          };
+        }).catch(() => ({ success: false }));
+
+        if (docTypesSet.success) {
+          console.log(`   ✓ Found Document Types tree in frame: ${frame.name() || 'main'}`);
+          break;
+        }
+      }
+
+      console.log(`   Document types:`, JSON.stringify(docTypesSet));
 
       // Step 8: Submit search (using submitFrame, not formFrame)
       console.log(`🔍 Submitting search...`);
