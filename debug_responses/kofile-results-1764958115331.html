@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html lang="en"><head>
+  	<base href="https://countyfusion10.kofiletech.us/countyweb/search/SearchResultsView.jsp"><title>Search Results View</title>
+
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+
+    <!------------------- START STYLE SHEETS -------------------->
+
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/styles.css?ver=1">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/LimestoneTX/countystyles.css?ver=1">
+	<link rel="stylesheet" type="text/css" href="/countyweb/styles/searchresstyles.css?ver=1">
+<style type="text/css">
+
+		#goToInput {
+			position:absolute; top:0px; left:72%; height:28px; vertical-align:top;
+		}
+	</style>
+
+    <!-------------------- END STYLE SHEETS --------------------->
+
+    <!-------------------- START JAVASCRIPT --------------------->
+
+    <script src="/countyweb/scripts/utils.js?ver=9"></script>
+	<script src="/countyweb/scripts/validate.js?ver=2"></script>
+	<script src="/countyweb/scripts/dhtml.js?ver=2"></script>
+	<script src="/countyweb/scripts/search.js?ver=2"></script>
+    <script src="/countyweb/scripts/searchResultsView.js?ver=5"></script>
+    <script src="/countyweb/scripts/jquery/jquery-3.6.3.min.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+     <!--
+    	// Required! see searchResultsView.js
+    	searchResultObj = new SearchResult();
+    	searchResultObj.searchModule = "docs";
+    	searchResultObj.sessionId = "searchJobMain";
+    	searchResultObj.rootPath = "/countyweb";
+    	searchResultObj.noResults = true;
+    	searchResultObj.numRecordPages = 0;
+    	searchResultObj.resultListSize = 0;
+    	searchResultObj.resultsCount = 0;
+
+		searchResultObj.isTaskEnabled = true;
+
+    	//===============================================
+	    //===============================================
+	    // ignore double click event; if IE, toggle checkbox state (a double click in IE fires 3 events: click, click, dblclick)
+		$(document).ready(function(){	
+	   		resultFormElem = document.resultForm;
+			$("#resultListFrame").ready(function(){
+				try {
+					handleResize();
+					// set results msg in criteria page if no results.
+					
+							initPage();
+					    	if (parent.getSearchFrame) {
+								if(parent.window.frames[parent.getSearchFrame()]) {
+									parent.window.frames[parent.getSearchFrame()].setDisplayMsg("No documents were found that match the specified criteria.");
+				    			}
+					    	}
+				    
+				}
+				catch(e) {}
+			});		
+	    
+		});		    
+	    
+    	//===============================================
+	    //===============================================
+		function handleOnLoad () {
+    		// moved to ready
+		}
+		
+    -->
+
+    </script>
+
+	<!--------------------- END JAVASCRIPT ---------------------->
+
+  </head>
+
+  <body class="base" onload="handleOnLoad();">
+  <form name="resultForm" action="searchResults.do">
+  		<input type="hidden" name="searchSessionId" value="searchJobMain">
+  		<input type="hidden" name="resultPageAction">
+  		<input type="hidden" name="sortColumn" value="null">
+  		<input type="hidden" name="sortDirection" value="null">
+  		<input type="hidden" name="navDirection">
+		<input type="hidden" name="startCursor" value="null">
+
+  	<div id="criteriaInfo">
+		<table cellpadding="0" cellspacing="0" width="100%" class="base" border="0">
+			<tbody><tr>
+				<td width="100%">
+					<b>Search Criteria:</b>&nbsp;&nbsp;Search Type: All Names; Name: The public&nbsp;...&nbsp;&nbsp;
+					<a class="linksm" href="#" onclick="parent.showCriteriaPopup ('searchJobMain', 'Search Criteria', event); return false;">
+					All Criteria
+					</a>			
+				</td>
+			</tr>
+		</tbody></table>
+	</div>
+<div id="resultsContent">
+
+	<!------------------------ START TITLE/NAV ---------------------->
+  	<div id="headerInfo">
+
+  		<div class="positions" id="navLabelDisplay" style="width:90%">
+  			<table cellspacing="0" cellpadding="0" style="height:28px;" width="100%">
+  				<tbody><tr>
+  					<td class="msg1" id="navDisplay" nowrap="nowrap">
+  					</td>
+  					<td class="msg1" id="extraMsg" nowrap="nowrap" style="vertical-align:middle">
+
+  					</td>
+					<td align="right">
+						</td>
+  				</tr>
+  			</tbody></table>
+		</div>
+
+		<div class="positions" id="navButtons">
+			<iframe name="subnav" src="/countyweb/navbar.do?page=null&amp;subnav=1&amp;positionTop=0" width="70px" height="25px" scolling="yes" frameborder="0" align="top">
+			</iframe>
+		</div>
+
+	</div>
+	<!------------------------ END TITLE/NAV ---------------------->
+<div class="positions" id="instrumentList">
+		</div>
+
+	</div>
+	</form>
+	<iframe id="hiddenFrame" name="hiddenFrame" src="" frameborder="0" style="display:none" width="0%" height="0%" scrolling="auto" marginheight="0" marginwidth="0">
+	</iframe>
+  
+</body></html>
