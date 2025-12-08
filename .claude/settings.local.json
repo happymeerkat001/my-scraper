@@ -25,7 +25,11 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(touch:*)",
-      "Bash(TEST_LIMIT=2 INPUT_FILE=test-limestone-2.csv OUTPUT_FILE=test-limestone-2-output.csv node:*)"
+      "Bash(TEST_LIMIT=2 INPUT_FILE=test-limestone-2.csv OUTPUT_FILE=test-limestone-2-output.csv node:*)",
+      "WebFetch(domain:www.mclennan.gov)",
+      "Bash(TEST_LIMIT=2 INPUT_FILE=test-mclennan-2.csv OUTPUT_FILE=test-mclennan-2-output.csv node:*)",
+      "WebFetch(domain:mclennancountytx-web.tylerhost.net)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-mclennan-1.csv OUTPUT_FILE=test-mclennan-1-output.csv node:*)"
     ],
     "deny": [],
     "ask": []
