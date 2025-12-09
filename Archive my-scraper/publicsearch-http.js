@@ -1,11 +1,12 @@
-// PublicSearch.us Driver
-// Handles counties using tx.publicsearch.us system
+// PublicSearch.us HTTP Driver
+// HTTP-only version using axios + jsdom (no Puppeteer)
 
-import { BaseDriver, TIMEOUTS } from './baseDriver.js';
+import axios from 'axios';
+import { JSDOM } from 'jsdom';
 
-export class PublicSearchDriver extends BaseDriver {
+export class PublicSearchHttpDriver {
   constructor(config = {}) {
-    super(config);
+    this.config = config;
 
     this.COUNTY_MAP = {
       'ANDERSON COUNTY': 'anderson', 'BEE COUNTY': 'bee', 'CAMERON COUNTY': 'cameron',
@@ -24,7 +25,7 @@ export class PublicSearchDriver extends BaseDriver {
   }
 
   getName() {
-    return 'publicsearch';
+    return 'publicsearch-http';
   }
 
   canHandle(county) {
@@ -48,67 +49,25 @@ export class PublicSearchDriver extends BaseDriver {
       return [];
     }
 
-    console.log(`🔗 URL: ${url}`);
+    console.log(`🔗 [publicsearch-http] ${url}`);
 
-    let page;
     try {
-      page = await this.safePageCreate();
-      await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+        },
+        timeout: 15000
+      });
 
-      // Use domcontentloaded (faster) instead of networkidle2 (waits for all resources)
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
-
-      // Robust wait loop: poll for table rows until they exist
-      console.log('⏳ Waiting for results table to render...');
-
-      const maxAttempts = 30; // 30 attempts × 500ms = 15s max wait
-      const checkIntervalMs = 500;
-      let rowCount = 0;
-
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        const rows = await page.$$('.a11y-table table tbody tr');
-        rowCount = rows.length;
-
-        if (rowCount > 0) {
-          console.log(`✓ Table ready with ${rowCount} rows`);
-          break;
-        }
-
-        // Wait before next check (unless this is the last attempt)
-        if (attempt < maxAttempts) {
-          await new Promise(resolve => setTimeout(resolve, checkIntervalMs));
-        }
-      }
-
-      // If no rows found after max wait, return empty results
-      if (rowCount === 0) {
-        return [];
-      }
-
-      const html = await page.content();
-
-      // Reset failure counter on success
-      this.consecutiveFailures = 0;
-
-      return await this.parseRecords(html);
+      return this.parseRecords(response.data);
 
     } catch (e) {
       console.log(`❌ Error:`, e.message);
-
-      // Track connection failures for browser health
-      if (e.message.includes('Connection closed') || e.message.includes('Target closed')) {
-        this.consecutiveFailures++;
-      }
-
       throw e;
-    } finally {
-      if (page) await page.close();
     }
   }
 
-  async parseRecords(html) {
-    const jsdom = await import('jsdom');
-    const { JSDOM } = jsdom;
+  parseRecords(html) {
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
@@ -144,5 +103,9 @@ export class PublicSearchDriver extends BaseDriver {
     }
 
     return liens;
+  }
+
+  async cleanup() {
+    // No browser to cleanup in HTTP driver
   }
 }

@@ -1,6 +1,9 @@
 // Base Driver Interface
 // All county record system drivers must implement this interface
 
+// Debug flag: set to true to see browser window during scraping
+const DEBUG_VISIBLE = process.env.DEBUG === '1' || false;
+
 // Standardized timeout constants (all drivers should use these)
 export const TIMEOUTS = {
   NAVIGATION: 30000,      // page.goto()
@@ -97,7 +100,7 @@ export class BaseDriver {
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
           this.browser = await puppeteer.default.launch({
-            headless: 'new',
+            headless: DEBUG_VISIBLE ? false : 'new',
             args: [
               '--no-sandbox',
               '--disable-setuid-sandbox',
