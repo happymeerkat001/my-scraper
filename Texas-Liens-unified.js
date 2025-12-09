@@ -20,14 +20,6 @@ const drivers = {
 };
 
 // Configuration
-const BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|LP|LLP|LTD|CO|COMPANY|TRUST|ESTATE|BANK|INVESTMENTS|PROPERTIES|ENTERPRISES|MINISTRIES)\b/i;
-
-const NOISE_PATTERNS = [
-  /\b(DECEASED|ESTATE OF|TRUSTEE|AS TRUSTEE|EXECUTOR OF|EXECUTRIX|HEIR|HEIRS OF)\b/gi,
-  /\b(INDEPENDENT SCHOOL DISTRICT|SCHOOL DISTRICT|ISD|COUNTY SHERIFF|SHERIFF'?S DEED)\b/gi,
-  /,?\s*(AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i
-];
-
 const RATE_LIMIT_MS = 2000;
 
 // STEP 1: Read CSV file
@@ -66,6 +58,8 @@ async function writeCSV(data, path) {
       { id: 'scrape_status', title: 'scrape_status' },
       { id: 'scrape_error', title: 'scrape_error' },
       { id: 'driver_used', title: 'driver_used' },
+      { id: 'matched_variation', title: 'matched_variation' },
+      { id: 'parsed_name', title: 'parsed_name' },
       ...Array.from({ length: 3 }, (_, i) => [
         { id: `row${i + 1}_grantor`, title: `row${i + 1}_grantor` },
         { id: `row${i + 1}_grantee`, title: `row${i + 1}_grantee` },
@@ -85,21 +79,22 @@ async function writeCSV(data, path) {
 function parseName(caseStyle, driverType = 'default') {
   if (!caseStyle) return { original: '', variations: [] };
 
-  // Split on VS first before cleaning
+  // Split on VS to extract defendant
   const text = caseStyle.trim();
   const parts = text.split(/\s+(?:VS|V\.?)\s+/i);
   if (parts.length < 2) return { original: '', variations: [] };
 
-  // Now clean noise from defendant side only
   let defendant = parts[1].trim();
 
   // Remove ET AL and everything after it
   defendant = defendant.replace(/,?\s*ET AL.*$/i, '');
 
-  // Apply other noise patterns
-  NOISE_PATTERNS.forEach(pattern => { defendant = defendant.replace(pattern, ''); });
-
+  // Remove noise patterns (but keep the name core)
   defendant = defendant
+    .replace(/\b(DECEASED|ESTATE OF|EXECUTOR OF|EXECUTRIX|HEIR|HEIRS OF)\b/gi, '')
+    .replace(/\b(INDEPENDENT SCHOOL DISTRICT|SCHOOL DISTRICT|ISD|COUNTY SHERIFF|SHERIFF'?S DEED)\b/gi, '')
+    .replace(/,?\s*(AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i, '')
+    .replace(/,?\s*AS TRUSTEE.*$/i, '')
     .replace(/\./g, '')
     .replace(/,/g, '')
     .replace(/\s+/g, ' ')
@@ -107,38 +102,35 @@ function parseName(caseStyle, driverType = 'default') {
 
   if (!defendant) return { original: '', variations: [] };
 
-  const isBusiness = BUSINESS_KEYWORDS.test(defendant);
-  if (isBusiness) return { original: defendant, variations: [defendant] };
+  // Check for business entities (refined: exclude personal trusts)
+  const BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|CORPORATION|LP|LLP|LTD|CO|COMPANY|BANK|INVESTMENTS|PROPERTIES|ENTERPRISES|MINISTRIES)\b/i;
+  if (BUSINESS_KEYWORDS.test(defendant)) {
+    return { original: defendant, variations: [defendant] };
+  }
 
   // Individual name parsing
-  const words = defendant.split(/\s+/).filter(w => w && !/^(JR|SR|III|II|IV)$/i.test(w));
-  const last = words[words.length - 1];
-  const given = words.slice(0, -1);
+  // Remove suffixes from word list for parsing
+  const words = defendant.split(/\s+/).filter(w => w && !/^(JR|SR|III|II|IV|V)$/i.test(w));
+
+  if (words.length === 0) return { original: defendant, variations: [] };
+  if (words.length === 1) return { original: defendant, variations: [words[0]] };
+
+  // Assume case style format: "LAST FIRST [MIDDLE]" (most common in TX court records)
+  const lastName = words[0];
+  const fullName = words.join(' ');
 
   const variations = [];
 
-  // TylerTech needs "LAST FIRST" format
-  // Case style already has names in "LAST FIRST" format, so use as-is
-  if (driverType === 'tyler') {
-    variations.push(defendant);  // "JOHNSON MARY" - use as-is
-    if (words.length > 1) {
-      variations.push(`${words[0]} ${words[1]}`);  // "JOHNSON M" - last + first initial
-    }
-    variations.push(words[0]);  // "JOHNSON" - last name only
-  } else if (driverType === 'publicsearch') {
-    // PublicSearch prefers "LAST, FIRST" format with comma
-    if (given.length > 0) {
-      variations.push(`${last}, ${given.join(' ')}`);  // "SMITH, JOHN ROBERT"
-      variations.push(`${last}, ${given[0]}`);         // "SMITH, J"
-    }
-    variations.push(last);                              // "SMITH"
-  } else {
-    // Other drivers: "LAST FIRST MIDDLE"
-    variations.push([last, ...given].join(' '));
-    if (given.length > 0) {
-      variations.push([last, given[0]].join(' '));
-    }
-    variations.push(last);
+  switch (driverType) {
+    case 'publicsearch':
+    case 'tyler':
+    case 'kofile':
+    case 'odyssey':
+    default:
+      // All drivers: full name first, then last name as fallback
+      variations.push(fullName);
+      variations.push(lastName);
+      break;
   }
 
   return { original: defendant, variations };
@@ -162,6 +154,8 @@ function enrichRow(row, records, metadata = {}) {
   out.scrape_status = metadata.status || 'unknown';
   out.scrape_error = metadata.error || '';
   out.driver_used = metadata.driver || 'none';
+  out.matched_variation = metadata.matchedVariation || '';
+  out.parsed_name = metadata.parsedName || '';
 
   for (let i = 0; i < 3; i++) {
     const rec = records[i] || {};
@@ -195,83 +189,133 @@ async function main() {
   console.log(`Processing ${rows.length} rows\n`);
 
   const results = [];
-  let success = 0;
-  let unsupportedCount = 0;
+  const stats = {
+    total: 0,
+    success: 0,
+    noRecords: 0,
+    failed: 0,
+    parseFailed: 0,
+    unsupported: 0,
+    error: 0
+  };
   const unsupportedCounties = new Set();
   const driverStats = {};
+  const failedRows = [];
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-    const county = row.county;
+    stats.total++;
 
-    // Find appropriate driver
-    const driverInfo = findDriver(county);
+    try {
+      const county = row.county;
 
-    if (!driverInfo) {
-      console.log(`\n[${i + 1}/${rows.length}] ⚠️  ${county} - No driver available`);
-      unsupportedCount++;
-      unsupportedCounties.add(county);
-      results.push(enrichRow(row, [], { status: 'unsupported', error: 'No driver for county', driver: 'none' }));
-      continue;
-    }
+      // Find appropriate driver
+      const driverInfo = findDriver(county);
 
-    const { name: driverName, driver } = driverInfo;
-
-    // Track driver usage
-    driverStats[driverName] = (driverStats[driverName] || 0) + 1;
-
-    console.log(`\n[${i + 1}/${rows.length}] 🏛️  ${county} (using ${driverName} driver)`);
-
-    const nameObj = parseName(row.case_style, driverName);
-
-    if (!nameObj.variations.length) {
-      console.log(`⚠️  Could not parse name from: "${row.case_style}"`);
-      results.push(enrichRow(row, [], { status: 'parse_failed', error: 'Could not parse defendant name', driver: driverName }));
-      continue;
-    }
-
-    console.log(`👤 Name: ${nameObj.original}`);
-    console.log(`📋 Variations: ${nameObj.variations.join(', ')}`);
-
-    // Try each name variation with retry logic
-    let records = [];
-    let searchError = null;
-
-    for (let v = 0; v < nameObj.variations.length && records.length === 0; v++) {
-      console.log(`\n🔍 Trying variation ${v + 1}/${nameObj.variations.length}: "${nameObj.variations[v]}"`);
-
-      // Retry up to 3 times with exponential backoff
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          records = await driver.search(county, nameObj.variations[v]);
-
-          if (records.length > 0) {
-            console.log(`✓ Found ${records.length} records`);
-            break;
-          }
-          // No records found, move to next variation
-          break;
-        } catch (e) {
-          searchError = e.message;
-          if (attempt < 3) {
-            const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
-            console.log(`⚠️  Attempt ${attempt}/3 failed: ${searchError}`);
-            console.log(`   Retrying in ${delay / 1000}s...`);
-            await setTimeout(delay);
-          } else {
-            console.log(`❌ All retry attempts failed: ${searchError}`);
-          }
-        }
+      if (!driverInfo) {
+        console.log(`\n[${i + 1}/${rows.length}] ⚠️  ${county} - No driver available`);
+        stats.unsupported++;
+        unsupportedCounties.add(county);
+        const enriched = enrichRow(row, [], { status: 'unsupported', error: 'No driver for county', driver: 'none' });
+        results.push(enriched);
+        failedRows.push(enriched);
+        continue;
       }
 
-      if (records.length > 0) break;
+      const { name: driverName, driver } = driverInfo;
+
+      // Track driver usage
+      driverStats[driverName] = (driverStats[driverName] || 0) + 1;
+
+      console.log(`\n[${i + 1}/${rows.length}] 🏛️  ${county} (using ${driverName} driver)`);
+
+      const nameObj = parseName(row.case_style, driverName);
+
+      if (!nameObj.variations.length) {
+        console.log(`⚠️  Could not parse name from: "${row.case_style}"`);
+        stats.parseFailed++;
+        const enriched = enrichRow(row, [], { status: 'parse_failed', error: 'Could not parse defendant name', driver: driverName });
+        results.push(enriched);
+        failedRows.push(enriched);
+        continue;
+      }
+
+      console.log(`👤 Name: ${nameObj.original}`);
+      console.log(`📋 Variations: ${nameObj.variations.join(', ')}`);
+
+      // Try each name variation with retry logic
+      let records = [];
+      let searchError = null;
+      let matchedVariation = '';
+
+      for (let v = 0; v < nameObj.variations.length && records.length === 0; v++) {
+        console.log(`\n🔍 Trying variation ${v + 1}/${nameObj.variations.length}: "${nameObj.variations[v]}"`);
+
+        // Retry up to 3 times with exponential backoff
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            records = await driver.search(county, nameObj.variations[v]);
+
+            if (records.length > 0) {
+              console.log(`✓ Found ${records.length} records`);
+              matchedVariation = nameObj.variations[v];
+              break;
+            }
+            // No records found, move to next variation
+            break;
+          } catch (e) {
+            searchError = e.message;
+            if (attempt < 3) {
+              const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+              console.log(`⚠️  Attempt ${attempt}/3 failed: ${searchError}`);
+              console.log(`   Retrying in ${delay / 1000}s...`);
+              await setTimeout(delay);
+            } else {
+              console.log(`❌ All retry attempts failed: ${searchError}`);
+            }
+          }
+        }
+
+        if (records.length > 0) break;
+      }
+
+      // Determine status
+      let status;
+      if (records.length > 0) {
+        status = 'success';
+        stats.success++;
+      } else if (searchError) {
+        status = 'failed';
+        stats.failed++;
+      } else {
+        status = 'no_records';
+        stats.noRecords++;
+      }
+
+      const enriched = enrichRow(row, records, {
+        status,
+        error: searchError || '',
+        driver: driverName,
+        matchedVariation,
+        parsedName: nameObj.original
+      });
+      results.push(enriched);
+
+      if (status !== 'success') {
+        failedRows.push(enriched);
+      }
+
+    } catch (e) {
+      console.log(`❌ Unhandled error for row ${i + 1}: ${e.message}`);
+      stats.error++;
+      const enriched = enrichRow(row, [], {
+        status: 'error',
+        error: `Unhandled: ${e.message}`,
+        driver: 'unknown'
+      });
+      results.push(enriched);
+      failedRows.push(enriched);
     }
-
-    // Determine status
-    const status = records.length > 0 ? 'success' : (searchError ? 'failed' : 'no_records');
-    results.push(enrichRow(row, records, { status, error: searchError || '', driver: driverName }));
-
-    if (records.length > 0) success++;
 
     await setTimeout(RATE_LIMIT_MS);
   }
@@ -283,20 +327,39 @@ async function main() {
 
   await writeCSV(results, outputFile);
 
+  // Write failed records CSV if there are any
+  const failedFile = outputFile.replace(/\.csv$/, '-failed.csv');
+  if (failedRows.length > 0) {
+    await writeCSV(failedRows, failedFile);
+  }
+
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`✓ Wrote ${results.length} rows to ${outputFile}`);
-  console.log(`✓ Success: ${success}/${results.length} (${((success / results.length) * 100).toFixed(1)}%)`);
+  console.log(`📊 RESULTS SUMMARY`);
+  console.log(`${'='.repeat(60)}`);
+  console.log(`\n📁 Output Files:`);
+  console.log(`   Main:   ${outputFile} (${results.length} rows)`);
+  if (failedRows.length > 0) {
+    console.log(`   Failed: ${failedFile} (${failedRows.length} rows)`);
+  }
 
-  if (unsupportedCount > 0) {
-    console.log(`\n⚠️  UNSUPPORTED COUNTIES: ${unsupportedCount} properties skipped`);
+  console.log(`\n📈 Status Breakdown:`);
+  console.log(`   ✓ Success:      ${stats.success.toString().padStart(4)} (${((stats.success / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ○ No Records:   ${stats.noRecords.toString().padStart(4)} (${((stats.noRecords / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ✗ Failed:       ${stats.failed.toString().padStart(4)} (${((stats.failed / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ⚠ Parse Failed: ${stats.parseFailed.toString().padStart(4)} (${((stats.parseFailed / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ⊘ Unsupported:  ${stats.unsupported.toString().padStart(4)} (${((stats.unsupported / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ✗ Error:        ${stats.error.toString().padStart(4)} (${((stats.error / stats.total) * 100).toFixed(1)}%)`);
+
+  if (stats.unsupported > 0) {
+    console.log(`\n⚠️  Unsupported Counties:`);
     console.log(`   Counties: ${Array.from(unsupportedCounties).sort().join(', ')}`);
-    console.log(`   These counties need driver implementation`);
   }
 
-  console.log(`\n📊 Driver Usage:`);
+  console.log(`\n🔧 Driver Usage:`);
   for (const [driver, count] of Object.entries(driverStats)) {
-    console.log(`   ${driver}: ${count} properties`);
+    console.log(`   ${driver.padEnd(12)}: ${count} properties`);
   }
+
   console.log(`${'='.repeat(60)}\n`);
 }
 

@@ -35,8 +35,7 @@ export class KofileDriver extends BaseDriver {
 
     let page;
     try {
-      await this.initBrowser();
-      page = await this.browser.newPage();
+      page = await this.safePageCreate();
       await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
 
       // Step 1: Navigate to login page
@@ -48,7 +47,6 @@ export class KofileDriver extends BaseDriver {
       // Step 2: Click "Login as Public" button
       const loginButton = await page.$('input.basebold1[value="Login as Public"]').catch(() => null);
       if (loginButton) {
-        console.log(`📋 Logging in as public...`);
         await loginButton.click();
         await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 });
       }
@@ -56,33 +54,27 @@ export class KofileDriver extends BaseDriver {
       // Step 3: Accept disclaimer
       const acceptButton = await page.$('input[value="Accept"]').catch(() => null);
       if (acceptButton) {
-        console.log(`📋 Accepting disclaimer...`);
         await acceptButton.click();
         await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 15000 });
       }
 
       // Step 4: Wait for main page to load
-      console.log(`🔍 Waiting for main page to load...`);
       await new Promise(resolve => setTimeout(resolve, 3000));
 
       // Check current URL - if we're back at login, there's a session issue
       const currentUrl = await page.url();
-      console.log(`   Current URL: ${currentUrl}`);
 
       if (currentUrl.includes('login.')) {
         throw new Error('Active session error - browser will be restarted on next search');
       }
 
       // Look for "bodyframe" iframe which contains the search form at disclaimer.do
-      console.log(`🔍 Looking for bodyframe iframe...`);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       let bodyFrame = page.frames().find(f => f.name() === 'bodyframe');
       if (!bodyFrame) {
         throw new Error('Could not find bodyframe iframe');
       }
-
-      console.log(`   ✓ Found bodyframe`);
 
       // The bodyframe may show a disclaimer that needs to be accepted
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -102,10 +94,8 @@ export class KofileDriver extends BaseDriver {
       }).catch(() => false);
 
       if (disclaimerAccepted) {
-        console.log(`   📋 Accepted disclaimer in bodyframe, waiting for search form...`);
-
         // Wait for the search form to appear in the bodyframe (up to 10 seconds)
-        const searchFormLoaded = await page.waitForFunction(
+        await page.waitForFunction(
           () => {
             const frame = window.frames['bodyframe'];
             if (!frame || !frame.document) return false;
@@ -115,31 +105,15 @@ export class KofileDriver extends BaseDriver {
           { timeout: 10000 }
         ).then(() => true).catch(() => false);
 
-        if (!searchFormLoaded) {
-          console.log(`   ⚠️  Search form didn't load after accepting disclaimer`);
-        } else {
-          console.log(`   ✓ Search form loaded`);
-        }
-
         // Re-acquire the bodyframe reference after navigation
         await new Promise(resolve => setTimeout(resolve, 2000));
         const newBodyFrame = page.frames().find(f => f.name() === 'bodyframe');
         if (newBodyFrame) {
           bodyFrame = newBodyFrame;
-          console.log(`   ✓ Re-acquired bodyframe reference`);
         }
-      } else {
-        console.log(`   No disclaimer found in bodyframe`);
       }
 
-      // Step 0: Take screenshot for debugging
       const timestamp = Date.now();
-      const screenshotFile = `kofile-after-disclaimer-${timestamp}.png`;
-      await page.screenshot({ path: screenshotFile, fullPage: true });
-      console.log(`   📸 Screenshot saved to ${screenshotFile}`);
-
-      // Step 2: Check for navigation menu to reach search form
-      console.log(`🔍 Looking for search navigation...`);
 
       const searchNavClicked = await bodyFrame.evaluate(() => {
         // Look for "Search Public Records" in datagrid rows
@@ -156,7 +130,6 @@ export class KofileDriver extends BaseDriver {
           const text = row.textContent?.trim();
           for (const pattern of patterns) {
             if (text && text.includes(pattern)) {
-              console.log(`Found datagrid row: "${text}" -> clicking`);
               row.click();
               return { clicked: true, text: text };
             }
@@ -170,7 +143,6 @@ export class KofileDriver extends BaseDriver {
             a.textContent?.toLowerCase().includes(pattern.toLowerCase())
           );
           if (link && link.offsetParent !== null) { // visible
-            console.log(`Found nav link: "${link.textContent?.trim()}" -> clicking`);
             link.click();
             return { clicked: true, text: link.textContent?.trim() };
           }
@@ -184,7 +156,6 @@ export class KofileDriver extends BaseDriver {
              b.value?.toLowerCase().includes(pattern.toLowerCase()))
           );
           if (btn && btn.offsetParent !== null) { // visible
-            console.log(`Found nav button: "${btn.textContent?.trim() || btn.value}" -> clicking`);
             btn.click();
             return { clicked: true, text: btn.textContent?.trim() || btn.value };
           }
@@ -194,18 +165,12 @@ export class KofileDriver extends BaseDriver {
       }).catch(() => ({ clicked: false }));
 
       if (searchNavClicked.clicked) {
-        console.log(`   ✓ Clicked navigation: "${searchNavClicked.text}"`);
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         // Re-acquire frame reference after navigation
         const newFrame = page.frames().find(f => f.name() === 'bodyframe');
         if (newFrame) bodyFrame = newFrame;
-      } else {
-        console.log(`   ℹ️  No navigation link needed - search form should be visible`);
       }
-
-      // Step 1: Look for nested search form iframe (dynSearchFrame or searchFrame)
-      console.log(`🔍 Looking for nested search iframe...`);
 
       // The search form is in a nested iframe within bodyframe
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -219,23 +184,19 @@ export class KofileDriver extends BaseDriver {
       let submitFrame = null; // Frame containing the submit button
 
       if (searchFrame) {
-        console.log(`   ✓ Found nested search frame: ${searchFrame.name()}`);
         submitFrame = searchFrame; // Submit button is in dynSearchFrame
 
         // Now look for criteriaframe inside dynSearchFrame
         await new Promise(resolve => setTimeout(resolve, 2000));
         const criteriaFrame = page.frames().find(f => f.name() === 'criteriaframe');
         if (criteriaFrame) {
-          console.log(`   ✓ Found criteriaframe (nested inside search frame)`);
           formFrame = criteriaFrame; // Form fields are in criteriaframe
           bodyFrame = criteriaFrame; // Use criteriaframe for form operations
         } else {
-          console.log(`   ℹ️  No criteriaframe found, using ${searchFrame.name()} for both form and submit`);
           formFrame = searchFrame;
           bodyFrame = searchFrame;
         }
       } else {
-        console.log(`   ⚠️  No nested search iframe found - trying bodyframe directly`);
         formFrame = bodyFrame;
         submitFrame = bodyFrame;
       }
@@ -245,43 +206,15 @@ export class KofileDriver extends BaseDriver {
 
       // Check if we have the search form
       const hasSearchForm = await bodyFrame.evaluate(() => {
-        // Check for multiple possible indicators of search form
         return {
           hasAllNamesInput: !!document.querySelector('input[textboxname="ALLNAMES"]'),
-          hasTextboxText: !!document.querySelector('input.textbox-text'),
-          hasNameInput: !!document.querySelector('input[name="Name"]'),
-          hasSearchTypes: !!document.querySelector('[id*="SearchTypes"]'),
-          hasRecDateInput: !!document.querySelector('input[name="recDateIDFrom"]'),
-          allInputs: Array.from(document.querySelectorAll('input')).slice(0, 10).map(inp => ({
-            type: inp.type,
-            name: inp.name,
-            id: inp.id,
-            className: inp.className,
-            placeholder: inp.placeholder
-          })),
-          allLinks: Array.from(document.querySelectorAll('a')).slice(0, 5).map(a => ({
-            text: a.textContent?.trim().substring(0, 50),
-            href: a.href
-          }))
+          hasTextboxText: !!document.querySelector('input.textbox-text')
         };
       });
 
-      console.log(`   Search form check:`, JSON.stringify(hasSearchForm, null, 2));
-
-      // Save HTML if search form not found
       if (!hasSearchForm.hasAllNamesInput && !hasSearchForm.hasTextboxText) {
-        console.log(`   ⚠️  Search form not detected - saving HTML for analysis`);
-        const fs = await import('fs');
-        const debugHtml = await bodyFrame.content();
-        const htmlFile = `kofile-iframe-nosearch-${timestamp}.html`;
-        fs.default.writeFileSync(htmlFile, debugHtml);
-        console.log(`   💾 Saved to ${htmlFile}`);
-
-        throw new Error('Search form not loaded in bodyframe - see HTML dump for details');
+        throw new Error('Search form not loaded in bodyframe');
       }
-
-      // Step 4: Click "All Names" or "All Parties" link to open options dialog
-      console.log(`📋 Selecting "All Names" search type...`);
 
       const dialogOpened = await bodyFrame.evaluate(() => {
         // Look for "All Names", "All Parties", or "Alpha-Numeric Only" link
@@ -300,15 +233,10 @@ export class KofileDriver extends BaseDriver {
       }).catch(() => ({ opened: false }));
 
       if (dialogOpened.opened) {
-        console.log(`   ✓ Opened dialog: "${dialogOpened.text}"`);
         await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // First, just close the dialog by clicking Done (don't select "Both" yet)
-        console.log(`   🔘 Closing dialog first...`);
 
         // Find and click Done button across all frames
         const allFrames = page.frames();
-        let doneClicked = false;
 
         for (const frame of allFrames) {
           const clicked = await frame.evaluate(() => {
@@ -324,26 +252,14 @@ export class KofileDriver extends BaseDriver {
             return false;
           }).catch(() => false);
 
-          if (clicked) {
-            console.log(`   ✓ Clicked Done button in frame: ${frame.name() || 'main'}`);
-            doneClicked = true;
-            break;
-          }
-        }
-
-        if (!doneClicked) {
-          console.log(`   ⚠️  Done button not found, trying Escape...`);
-          await bodyFrame.evaluate(() => {
-            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27 }));
-          });
+          if (clicked) break;
         }
 
         // Wait for dialog to close
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         // NOW select "Both" after dialog is closed
-        console.log(`   🔘 Selecting "Both" party type...`);
-        const bothSelected = await bodyFrame.evaluate(() => {
+        await bodyFrame.evaluate(() => {
           const bothRadio = document.querySelector('#partyBoth');
           if (bothRadio) {
             bothRadio.checked = true;
@@ -353,22 +269,13 @@ export class KofileDriver extends BaseDriver {
             if (typeof changeOptions === 'function') {
               changeOptions();
             }
-
-            return { success: true, checked: bothRadio.checked };
           }
-          return { success: false };
-        }).catch(e => ({ success: false, error: e.message }));
-
-        console.log(`   ${bothSelected.success ? '✓' : '⚠️'} Set party type to Both:`, JSON.stringify(bothSelected));
+        }).catch(() => {});
         await new Promise(resolve => setTimeout(resolve, 1000));
-      } else {
-        console.log(`   ℹ️  No "All Names" link found - may already be selected`);
       }
 
-      // Step 6: Set the date filter to 11/23/1980
-      console.log(`📅 Setting date filter to 11/23/1980...`);
-      const dateSet = await bodyFrame.evaluate(() => {
-        // Try multiple possible selectors for the "from" date field
+      // Set the date filter to 11/23/1980
+      await bodyFrame.evaluate(() => {
         const selectors = [
           'input[name="recDateIDFrom"]',
           'input[name="fromDate"]',
@@ -386,7 +293,7 @@ export class KofileDriver extends BaseDriver {
             if (inputId && typeof $ !== 'undefined' && $.fn && $.fn.datebox) {
               try {
                 $(`#${inputId}`).datebox('setValue', '11/23/1980');
-                return { success: true, method: 'easyui-datebox', selector };
+                return;
               } catch(e) {
                 // Fall through to manual setting
               }
@@ -396,21 +303,13 @@ export class KofileDriver extends BaseDriver {
             dateInput.value = '11/23/1980';
             dateInput.dispatchEvent(new Event('input', { bubbles: true }));
             dateInput.dispatchEvent(new Event('change', { bubbles: true }));
-            return { success: true, method: 'direct', selector };
+            return;
           }
         }
-        return { success: false, selectorsChecked: selectors.length };
       });
-      console.log(`   Date set:`, JSON.stringify(dateSet));
-
-      // Step 3: Find and fill the name input with EasyUI textbox handling
-      console.log(`✏️  Looking for name input field...`);
 
       // For EasyUI textboxes, we need to use their API or find the actual hidden input
       const nameInputFilled = await bodyFrame.evaluate((searchName) => {
-        // First, try to find the EasyUI textbox by looking for the wrapper span
-        // and finding the associated input
-
         // Look for textbox-text input (visible but readonly)
         const visibleInput = document.querySelector('input.textbox-text:not([readonly])') ||
                              document.querySelector('input.textbox-text');
@@ -421,10 +320,8 @@ export class KofileDriver extends BaseDriver {
           if (inputId && typeof $ !== 'undefined' && $.fn && $.fn.textbox) {
             try {
               $(`#${inputId}`).textbox('setValue', searchName);
-              return { success: true, method: 'easyui-api', selector: `#${inputId}` };
-            } catch(e) {
-              console.log('EasyUI API failed:', e.message);
-            }
+              return { success: true };
+            } catch(e) {}
           }
 
           // Find the parent span and look for hidden input with actual name attribute
@@ -437,10 +334,9 @@ export class KofileDriver extends BaseDriver {
             const hiddenInput = parent.querySelector('input[type="hidden"].textbox-value');
             if (hiddenInput) {
               hiddenInput.value = searchName;
-              // Also set visible input for display
               visibleInput.value = searchName;
               visibleInput.dispatchEvent(new Event('change', { bubbles: true }));
-              return { success: true, method: 'hidden-input', name: hiddenInput.name };
+              return { success: true };
             }
           }
 
@@ -449,7 +345,7 @@ export class KofileDriver extends BaseDriver {
           visibleInput.value = searchName;
           visibleInput.dispatchEvent(new Event('input', { bubbles: true }));
           visibleInput.dispatchEvent(new Event('change', { bubbles: true }));
-          return { success: true, method: 'direct-readonly-removed', selector: visibleInput.className };
+          return { success: true };
         }
 
         // Fallback: try other selectors
@@ -466,27 +362,20 @@ export class KofileDriver extends BaseDriver {
             input.value = searchName;
             input.dispatchEvent(new Event('input', { bubbles: true }));
             input.dispatchEvent(new Event('change', { bubbles: true }));
-            return { success: true, method: 'fallback', selector };
+            return { success: true };
           }
         }
 
-        return { success: false, method: 'none' };
+        return { success: false };
       }, name);
-
-      console.log(`   Name input filled: ${JSON.stringify(nameInputFilled)}`);
 
       if (!nameInputFilled.success) {
         throw new Error('Could not find name input field with any known selector');
       }
 
-      // Step 7: Select "All Document Types" using EasyUI tree checkbox
-      console.log(`📄 Selecting "All Document Types"...`);
-
-      // Search all frames for the tree checkbox
-      let docTypesSet = { success: false };
+      // Search all frames for the tree checkbox to select "All Document Types"
       for (const frame of page.frames()) {
-        docTypesSet = await frame.evaluate(() => {
-          // The Document Types is an EasyUI tree component with custom checkboxes
+        const result = await frame.evaluate(() => {
           const treeCheckboxes = Array.from(document.querySelectorAll('.tree-checkbox'));
           const allDocsTreeCheckbox = treeCheckboxes.find(cb => {
             const parentNode = cb.closest('.tree-node');
@@ -496,7 +385,7 @@ export class KofileDriver extends BaseDriver {
 
           if (allDocsTreeCheckbox) {
             allDocsTreeCheckbox.click();
-            return { success: true, method: 'tree-checkbox', checkboxes: treeCheckboxes.length };
+            return true;
           }
 
           // Try EasyUI tree API
@@ -508,45 +397,22 @@ export class KofileDriver extends BaseDriver {
                 const root = tree.tree('getRoot');
                 if (root) {
                   tree.tree('check', root.target);
-                  return { success: true, method: 'easyui-api', treeId: treeEl.id };
+                  return true;
                 }
               } catch(e) {}
             }
           }
 
-          return {
-            success: false,
-            treeCheckboxes: treeCheckboxes.length,
-            titles: treeCheckboxes.slice(0, 2).map(cb =>
-              cb.closest('.tree-node')?.querySelector('.tree-title')?.textContent?.trim()
-            )
-          };
-        }).catch(() => ({ success: false }));
+          return false;
+        }).catch(() => false);
 
-        if (docTypesSet.success) {
-          console.log(`   ✓ Found Document Types tree in frame: ${frame.name() || 'main'}`);
-          break;
-        }
+        if (result) break;
       }
 
-      console.log(`   Document types:`, JSON.stringify(docTypesSet));
-
-      // Step 8: Submit search (using submitFrame, not formFrame)
-      console.log(`🔍 Submitting search...`);
-
+      // Submit search
       const targetFrame = submitFrame || bodyFrame;
       const submitClicked = await targetFrame.evaluate(() => {
-        // Try multiple submit button selectors
-        const selectors = [
-          'input[type="submit"]',
-          'button[type="submit"]',
-          'input[value*="Search"]',
-          'button:contains("Search")',
-          'a.linkbutton'  // EasyUI link button
-        ];
-
-        // Also try finding by text content
-        const buttons = Array.from(document.querySelectorAll('button, input[type="button"], a'));
+        const buttons = Array.from(document.querySelectorAll('button, input[type="button"], input[type="submit"], a'));
         const searchBtn = buttons.find(b =>
           b.textContent?.toLowerCase().includes('search') ||
           b.value?.toLowerCase().includes('search') ||
@@ -554,26 +420,22 @@ export class KofileDriver extends BaseDriver {
         );
 
         if (searchBtn) {
-          console.log(`Found submit button: ${searchBtn.tagName} - clicking`);
           searchBtn.click();
-          return { success: true, type: searchBtn.tagName };
+          return true;
         }
 
-        return { success: false, type: null };
-      }).catch(() => ({ success: false, type: null }));
+        return false;
+      }).catch(() => false);
 
-      if (!submitClicked.success) {
+      if (!submitClicked) {
         throw new Error('Could not find submit button');
       }
-
-      console.log(`   ✓ Submit clicked (${submitClicked.type})`);
 
       // Wait for results to load - look for resultFrame
       await new Promise(resolve => setTimeout(resolve, 5000));
 
       let resultFrame = page.frames().find(f => f.name() === 'resultFrame');
       if (!resultFrame) {
-        console.log(`   ⚠️  No resultFrame found, trying fallback frames...`);
         // Try fallback frames
         resultFrame = page.frames().find(f =>
           f.name() === 'searchResults' ||
@@ -582,32 +444,17 @@ export class KofileDriver extends BaseDriver {
         if (!resultFrame) {
           resultFrame = bodyFrame; // Last resort: fall back to search frame
         }
-      } else {
-        console.log(`   ✓ Found resultFrame`);
       }
 
       // Look for nested resultListFrame
       if (resultFrame) {
-        console.log(`   🔍 Looking for nested resultListFrame...`);
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         const resultListFrame = page.frames().find(f => f.name() === 'resultListFrame');
         if (resultListFrame) {
-          console.log(`   ✓ Found resultListFrame (nested)`);
           resultFrame = resultListFrame; // Use the nested frame for parsing
-        } else {
-          console.log(`   ℹ️  No resultListFrame found, using resultFrame directly`);
         }
       }
-
-      // Wait for and detect datagrid rows
-      console.log(`   🔍 Checking for datagrid rows...`);
-      const hasDatagrid = await resultFrame.evaluate(() => {
-        const rows = document.querySelectorAll('[id^="datagrid-row"]');
-        return rows.length > 0 ? rows.length : 0;
-      }).catch(() => 0);
-
-      console.log(`   ${hasDatagrid > 0 ? '✓' : '⚠️'} Datagrid rows found: ${hasDatagrid}`);
 
       // Get HTML from the results iframe
       const html = await resultFrame.content();
@@ -683,8 +530,6 @@ export class KofileDriver extends BaseDriver {
     const datagridRows = document.querySelectorAll('[id^="datagrid-row"]');
 
     if (datagridRows.length > 0) {
-      console.log(`   Found ${datagridRows.length} datagrid rows`);
-
       for (let i = 0; i < Math.min(datagridRows.length, 3); i++) {
         const row = datagridRows[i];
         const cells = row.querySelectorAll('td');
@@ -693,14 +538,11 @@ export class KofileDriver extends BaseDriver {
         if (record) liens.push(record);
       }
 
-      console.log(`   Extracted ${liens.length} records from datagrid`);
       return liens;
     }
 
     // Fallback: Look for results table rows
     const rows = document.querySelectorAll('table tbody tr');
-
-    console.log(`   Found ${rows.length} table result rows (fallback)`);
 
     for (let i = 0; i < Math.min(rows.length, 3); i++) {
       const row = rows[i];
@@ -733,13 +575,11 @@ export class KofileDriver extends BaseDriver {
       liens.push(record);
     }
 
-    console.log(`   Extracted ${liens.length} records from results table`);
     return liens;
   }
 
   parseDatagridRow(cells) {
     if (cells.length < 5) {
-      console.log(`   ⚠️  Skipping row with only ${cells.length} cells`);
       return null;
     }
 

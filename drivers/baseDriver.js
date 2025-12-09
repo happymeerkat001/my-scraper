@@ -1,6 +1,15 @@
 // Base Driver Interface
 // All county record system drivers must implement this interface
 
+// Standardized timeout constants (all drivers should use these)
+export const TIMEOUTS = {
+  NAVIGATION: 30000,      // page.goto()
+  WAIT_SELECTOR: 15000,   // waitForSelector()
+  WAIT_NETWORK: 30000,    // waitForNetworkIdle / networkidle2
+  POST_LOAD_DELAY: 2000,  // wait after DOM ready
+  RETRY_DELAY: 2000       // between retry attempts
+};
+
 export class BaseDriver {
   constructor(config = {}) {
     this.config = config;
@@ -10,7 +19,7 @@ export class BaseDriver {
     this.browserStartTime = null;
     this.consecutiveFailures = 0;
     this.browserMaxAge = config.browserMaxAge || 30 * 60 * 1000; // 30 min default
-    this.maxConsecutiveFailures = config.maxConsecutiveFailures || 4;
+    this.maxConsecutiveFailures = config.maxConsecutiveFailures || 3;
   }
 
   /**
@@ -83,11 +92,29 @@ export class BaseDriver {
   async initBrowser() {
     if (!this.browser) {
       const puppeteer = await import('puppeteer');
-      this.browser = await puppeteer.default.launch({
-        headless: false,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
-      this.browserStartTime = Date.now();
+
+      // Retry browser launch up to 2 times
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          this.browser = await puppeteer.default.launch({
+            headless: 'new',
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-gpu',
+              '--single-process'
+            ]
+          });
+          this.browserStartTime = Date.now();
+          this.consecutiveFailures = 0;
+          return this.browser;
+        } catch (e) {
+          console.log(`⚠️  Browser launch attempt ${attempt}/2 failed: ${e.message}`);
+          if (attempt === 2) throw e;
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
     }
     return this.browser;
   }
@@ -123,5 +150,60 @@ export class BaseDriver {
     await this.initBrowser();
     this.consecutiveFailures = 0;
     console.log(`✓ Browser refreshed successfully`);
+  }
+
+  /**
+   * Safely create a new page with health checks and recovery
+   * @returns {Promise<Page>} Puppeteer page instance
+   */
+  async safePageCreate() {
+    if (this.shouldRefreshBrowser()) {
+      await this.refreshBrowser();
+    }
+
+    await this.initBrowser();
+
+    try {
+      return await this.browser.newPage();
+    } catch (e) {
+      if (e.message.includes('Target closed') || e.message.includes('Connection closed')) {
+        console.log(`⚠️  Browser connection lost, refreshing...`);
+        await this.refreshBrowser();
+        return await this.browser.newPage();
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Execute an async function with retry logic
+   * @param {Function} fn - Async function to execute
+   * @param {Object} options - Retry options
+   * @returns {Promise<any>} Result of fn
+   */
+  async withRetry(fn, options = {}) {
+    const maxAttempts = options.maxAttempts || 2;
+    const delayMs = options.delayMs || TIMEOUTS.RETRY_DELAY;
+    let lastError;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await fn();
+      } catch (e) {
+        lastError = e;
+        console.log(`⚠️  Attempt ${attempt}/${maxAttempts} failed: ${e.message}`);
+
+        if (e.message.includes('Connection closed') || e.message.includes('Target closed')) {
+          this.consecutiveFailures++;
+        }
+
+        if (attempt < maxAttempts) {
+          console.log(`   Retrying in ${delayMs / 1000}s...`);
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+      }
+    }
+
+    throw lastError;
   }
 }

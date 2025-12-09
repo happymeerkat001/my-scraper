@@ -24,7 +24,7 @@ export function extractEmbeddedJSON(html, patterns = null) {
         const jsonStr = match[1].trim();
         return JSON.parse(jsonStr);
       } catch (e) {
-        console.log(`⚠️  Found JSON pattern but failed to parse:`, e.message);
+        // Failed to parse JSON, continue to next pattern
       }
     }
   }
@@ -40,7 +40,7 @@ export function extractJSONFromScript(html, scriptId) {
     try {
       return JSON.parse(match[1].trim());
     } catch (e) {
-      console.log(`⚠️  Failed to parse JSON from script#${scriptId}:`, e.message);
+      // Failed to parse JSON
     }
   }
 

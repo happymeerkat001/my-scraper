@@ -29,7 +29,15 @@
       "WebFetch(domain:www.mclennan.gov)",
       "Bash(TEST_LIMIT=2 INPUT_FILE=test-mclennan-2.csv OUTPUT_FILE=test-mclennan-2-output.csv node:*)",
       "WebFetch(domain:mclennancountytx-web.tylerhost.net)",
-      "Bash(TEST_LIMIT=1 INPUT_FILE=test-mclennan-1.csv OUTPUT_FILE=test-mclennan-1-output.csv node:*)"
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-mclennan-1.csv OUTPUT_FILE=test-mclennan-1-output.csv node:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm ls:*)",
+      "Bash(TEST_LIMIT=1 node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=test-tarrant-api-output.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=test-tarrant-output.csv node:*)",
+      "Bash(HEADLESS=false TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=test-tarrant-debug.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=test-output.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=test-b6-output.csv node:*)"
     ],
     "deny": [],
     "ask": []

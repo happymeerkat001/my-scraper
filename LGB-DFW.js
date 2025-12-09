@@ -162,7 +162,6 @@ async function getProperties(county) {          // Listen > Start
 
   try {                                         // Run > Plan > Check
     while (true) {                              // Run > Execute > Flow (loop control)
-      console.log(`Fetching ${county} properties, offset: ${offset}`); // Render > Internal
       const { data } = await axios.get(`${BASE_URL}/property_sales/`, {
         params: { county, state: 'TX', limit, offset }
       });                                       // Run > Execute > Flow (API call)
@@ -236,7 +235,6 @@ async function getPropertyDetails(uid) {
   try {
     const { data } = await axios.get(`${BASE_URL}/property_sales/${uid}/`);
     await delay(200);
-    console.log('DEBUG property DATA', data);
     // normalize fields once here so callers can rely on them
     const legal_description = data.legal_desc_l || data.legal_desc_s || '';
     const coordsArray = data.geometry?.coordinates || [];
@@ -281,10 +279,8 @@ async function main() {                                  // Connect > Entry  (pr
   // Loop through each county
   for (const county of counties) {                       // Run > Execute > Flow
     try {                                                // Run > Plan > Check
-      console.log(`Building uid->address map for ${county}`);       // Render > Internal
       const uidMap = await fetchUidAddressMapForCounty(county);     // Listen > Wait
       const props = await getProperties(county);                    // Listen > Wait
-      console.log(`   → ${props.length} listings found for ${county}`); // Render > Internal
 
       // Local counters
       const apiSourced = [];                              // Memory > Variables
@@ -295,18 +291,15 @@ async function main() {                                  // Connect > Entry  (pr
       // Loop over each property
       for (const p of props) {                            // Run > Execute > Flow
         if (p.status && p.status.toLowerCase().includes('cancel')) {  // Run > Plan > Check
-          console.log(`⏭️ Skipping cancelled: ${county} (${p.uid})`); // Render > Internal
           continue;
         }
 
         const minBid = parseFloat((p.minimum_bid || '').toString().replace(/[^0-9.]/g, '')) || 0; // Run > Execute > Work
         if (minBid > 5000) {                              // Run > Plan > Check
-          console.log(`⏭️ Skipping high price ($${minBid.toLocaleString()}): ${county} (${p.uid})`); // Render > Internal
           continue;
         }
 
         const details = await getPropertyDetails(p.uid);   // Listen > Wait
-        console.log('DEBUG details', details);             // Render > Internal
 
         // Determine address precedence
         const uidStr = (p.uid || '').toString();           // Run > Execute > Work
@@ -334,7 +327,6 @@ async function main() {                                  // Connect > Entry  (pr
         // Vacancy detection (use centralized helper)
         const vacancyMatch = detectVacancy(details.legal_description || '', details.prop_address_one || '', p.sale_notes || '');
         if (!vacancyMatch) { // Run > Plan > Check
-          console.log(`⏭️ Skipping non-vacant property: ${county} (${p.uid})`);
           continue;
         }
 
@@ -362,8 +354,6 @@ async function main() {                                  // Connect > Entry  (pr
         if (TEST_LIMIT && results.length >= TEST_LIMIT) break; // Run > Plan > Check
       }
 
-      // Per-county summary
-      console.log(`  Address sources for ${county}: api_list=${apiSourced.length}, detail=${detailSourced.length}, listing=${listSourced.length}, approximated=${approximated.length}`); // Render > Internal
       totalAddressSourceCounts.api_list += apiSourced.length;
       totalAddressSourceCounts.detail += detailSourced.length;
       totalAddressSourceCounts.listing += listSourced.length;
@@ -380,8 +370,6 @@ async function main() {                                  // Connect > Entry  (pr
     console.log('⚠️ No records collected.');             // Render > Internal
     return;                                              // Run > Execute > Flow (exit)
   }
-
-  console.log(`🧮 Address source totals: api_list=${totalAddressSourceCounts.api_list}, detail=${totalAddressSourceCounts.detail}, listing=${totalAddressSourceCounts.listing}, approximated=${totalAddressSourceCounts.approximated}`); // Render > Internal
 
   const fields = ['uid','address','address_source','county','sale_date','adjudged_value','min_bid','status','sale_type','cause_number','case_style','legal_description','coordinates','sale_notes','vacant_keyword','vacant_source']; // Memory > Values
   const csv = parse(results, { fields });                // Run > Execute > Work (convert JSON → CSV)

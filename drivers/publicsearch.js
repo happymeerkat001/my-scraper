@@ -1,7 +1,7 @@
 // PublicSearch.us Driver
 // Handles counties using tx.publicsearch.us system
 
-import { BaseDriver } from './baseDriver.js';
+import { BaseDriver, TIMEOUTS } from './baseDriver.js';
 
 export class PublicSearchDriver extends BaseDriver {
   constructor(config = {}) {
@@ -50,24 +50,18 @@ export class PublicSearchDriver extends BaseDriver {
 
     console.log(`🔗 URL: ${url}`);
 
-    // Check browser health before search
-    if (this.shouldRefreshBrowser()) {
-      await this.refreshBrowser();
-    }
-
     let page;
     try {
-      await this.initBrowser();
-      page = await this.browser.newPage();
+      page = await this.safePageCreate();
       await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
 
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 10000 });
+      await page.goto(url, { waitUntil: 'networkidle2', timeout: TIMEOUTS.NAVIGATION });
 
       // Wait for loading placeholder to disappear
-      await page.waitForSelector('.table-placeholder', { hidden: true, timeout: 15000 }).catch(() => {});
+      await page.waitForSelector('.table-placeholder', { hidden: true, timeout: TIMEOUTS.WAIT_SELECTOR }).catch(() => {});
 
       // Additional wait for table to fully render
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, TIMEOUTS.POST_LOAD_DELAY));
 
       const html = await page.content();
 

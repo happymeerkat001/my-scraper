@@ -51,8 +51,7 @@ export class TylerDriver extends BaseDriver {
 
     let page;
     try {
-      await this.initBrowser();
-      page = await this.browser.newPage();
+      page = await this.safePageCreate();
       await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
 
       // Navigate to search page (increased timeout for slow TylerTech sites)
@@ -61,28 +60,19 @@ export class TylerDriver extends BaseDriver {
       // Check for disclaimer page and accept if present
       const disclaimerButton = await page.$('#submitDisclaimerAccept').catch(() => null);
       if (disclaimerButton) {
-        console.log(`📋 Accepting disclaimer...`);
-
         // Wait for button to be enabled (it starts disabled)
-        console.log(`   ⏳ Waiting for disclaimer button to be enabled...`);
         await page.waitForFunction(
           () => !document.querySelector('#submitDisclaimerAccept').disabled,
           { timeout: 10000 }
         );
-        console.log(`   ✓ Button enabled`);
 
         // Click the button
-        console.log(`   🖱️  Clicking disclaimer button...`);
         await disclaimerButton.click();
-        console.log(`   ✓ Button clicked`);
 
         // Wait for search form to appear (disclaimer uses AJAX, not page navigation)
-        console.log(`   ⏳ Waiting for search form to appear...`);
         try {
           await page.waitForSelector('#field_BothNamesID', { timeout: 15000 });
-          console.log(`   ✓ Search form ready`);
         } catch (formError) {
-          console.log(`   ⚠️  Search form not found: ${formError.message}`);
           // Continue anyway - might already have results
         }
       }
@@ -91,20 +81,11 @@ export class TylerDriver extends BaseDriver {
       await Promise.race([
         page.waitForSelector('#field_BothNamesID', { timeout: 15000 }),
         page.waitForSelector('.selfServiceSearchRowRight', { timeout: 15000 })
-      ]).catch(async () => {
-        // If both fail, dump HTML for debugging
-        console.log(`⚠️  Neither form nor results found, dumping HTML...`);
-        const html = await page.content();
-        const fs = await import('fs');
-        const timestamp = Date.now();
-        fs.default.writeFileSync(`tyler-debug-${timestamp}.html`, html);
-        console.log(`   Saved to tyler-debug-${timestamp}.html`);
-      });
+      ]).catch(() => {});
 
       // Check if we're already on results page
       const hasResults = await page.$('.selfServiceSearchRowRight').catch(() => null);
       if (hasResults) {
-        console.log(`✓ Already on results page, skipping search form`);
         const html = await page.content();
         return await this.parseRecords(html);
       }
@@ -116,18 +97,12 @@ export class TylerDriver extends BaseDriver {
       await page.click('#searchButton');
 
       // Wait for results to load (Tyler uses AJAX, not page navigation)
-      console.log(`   ⏳ Waiting for search results...`);
       await page.waitForSelector('.selfServiceSearchRowRight', { timeout: 30000 });
 
       // Brief pause for all results to render
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       const html = await page.content();
-
-      // DEBUG: Save results HTML
-      const fs = await import('fs');
-      fs.default.writeFileSync('tyler-results-debug.html', html);
-      console.log(`   📄 Saved results HTML to tyler-results-debug.html`);
 
       return await this.parseRecords(html);
 
@@ -147,8 +122,6 @@ export class TylerDriver extends BaseDriver {
 
     const liens = [];
     const rows = document.querySelectorAll('.selfServiceSearchRowRight');
-
-    console.log(`   Found ${rows.length} result rows`);
 
     for (let i = 0; i < Math.min(rows.length, 3); i++) {
       const row = rows[i];
@@ -190,8 +163,6 @@ export class TylerDriver extends BaseDriver {
         legalDescription: getText('Legal'),
         references: ''
       };
-
-      console.log(`   Row ${i + 1}: ${record.docNumber} | ${record.docType} | ${record.grantor}`);
 
       liens.push(record);
     }

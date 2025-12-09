@@ -35,22 +35,14 @@ export class OdysseyDriver extends BaseDriver {
     console.log(`⚠️  CAPTCHA required - manual solving needed`);
 
     try {
-      await this.initBrowser();
-      const page = await this.browser.newPage();
+      const page = await this.safePageCreate();
       await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
 
       // Navigate to dashboard
       await page.goto(config.url, { waitUntil: 'networkidle2', timeout: 30000 });
 
-      // Wait for user to solve captcha (if present)
-      console.log(`⏸️  Waiting for captcha to be solved...`);
-      console.log(`   (In headful mode, user would solve captcha manually)`);
-      console.log(`   (In production, integrate with 2captcha or similar service)`);
-
-      // For now, wait for the main search interface to be ready
-      await page.waitForSelector('#SearchCriteria', { timeout: 60000 }).catch(() => {
-        console.log(`⚠️  Search form not found - captcha may need manual solving`);
-      });
+      // Wait for the main search interface to be ready (user may need to solve captcha)
+      await page.waitForSelector('#SearchCriteria', { timeout: 60000 }).catch(() => {});
 
       // Use page.evaluate() to call the API directly
       const results = await page.evaluate(async (apiEndpoint, searchName) => {
@@ -105,7 +97,6 @@ export class OdysseyDriver extends BaseDriver {
 
   parseRecords(data) {
     if (!data || !Array.isArray(data)) {
-      console.log(`⚠️  No results array in API response`);
       return [];
     }
 
@@ -128,7 +119,6 @@ export class OdysseyDriver extends BaseDriver {
       liens.push(record);
     }
 
-    console.log(`   Extracted ${liens.length} records from API response`);
     return liens;
   }
 }
