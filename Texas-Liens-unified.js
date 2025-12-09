@@ -11,6 +11,16 @@ import { OdysseyDriver } from './drivers/odyssey.js';
 import { KofileDriver } from './drivers/kofile.js';
 import { detectSystem } from './utils/systemDetector.js';
 
+// Pre-compiled regex patterns for parseName (avoid recreation per call)
+const RE_VS_SPLIT = /\s+(?:VS|V\.?)\s+/i;
+const RE_ET_AL = /,?\s*ET AL.*$/i;
+const RE_NOISE_LEGAL = /\b(DECEASED|ESTATE OF|EXECUTOR OF|EXECUTRIX|HEIR|HEIRS OF)\b/gi;
+const RE_NOISE_ENTITIES = /\b(INDEPENDENT SCHOOL DISTRICT|SCHOOL DISTRICT|ISD|COUNTY SHERIFF|SHERIFF'?S DEED)\b/gi;
+const RE_ALIAS = /,?\s*(AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i;
+const RE_TRUSTEE = /,?\s*AS TRUSTEE.*$/i;
+const RE_BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|CORPORATION|LP|LLP|LTD|CO|COMPANY|BANK|INVESTMENTS|PROPERTIES|ENTERPRISES|MINISTRIES)\b/i;
+const RE_SUFFIX = /^(JR|SR|III|II|IV|V)$/i;
+
 // Driver Registry
 const drivers = {
   'publicsearch': new PublicSearchDriver(),
@@ -19,8 +29,77 @@ const drivers = {
   'kofile': new KofileDriver()
 };
 
+// Pre-computed driver entries (avoid Object.entries() per lookup)
+const DRIVER_ENTRIES = Object.entries(drivers);
+
+// County → driver cache (avoid repeated lookups for same county)
+const driverCache = new Map();
+
 // Configuration
 const RATE_LIMIT_MS = 2000;
+
+// Pre-computed CSV header (avoid recreation per writeCSV call)
+const CSV_HEADER = [
+  { id: 'uid', title: 'uid' },
+  { id: 'address', title: 'address' },
+  { id: 'address_source', title: 'address_source' },
+  { id: 'county', title: 'county' },
+  { id: 'sale_date', title: 'sale_date' },
+  { id: 'adjudged_value', title: 'adjudged_value' },
+  { id: 'min_bid', title: 'min_bid' },
+  { id: 'status', title: 'status' },
+  { id: 'sale_type', title: 'sale_type' },
+  { id: 'cause_number', title: 'cause_number' },
+  { id: 'case_style', title: 'case_style' },
+  { id: 'legal_description', title: 'legal_description' },
+  { id: 'coordinates', title: 'coordinates' },
+  { id: 'sale_notes', title: 'sale_notes' },
+  { id: 'vacant_keyword', title: 'vacant_keyword' },
+  { id: 'vacant_source', title: 'vacant_source' },
+  { id: 'scrape_status', title: 'scrape_status' },
+  { id: 'scrape_error', title: 'scrape_error' },
+  { id: 'driver_used', title: 'driver_used' },
+  { id: 'matched_variation', title: 'matched_variation' },
+  { id: 'parsed_name', title: 'parsed_name' },
+  { id: 'row1_grantor', title: 'row1_grantor' },
+  { id: 'row1_grantee', title: 'row1_grantee' },
+  { id: 'row1_docType', title: 'row1_docType' },
+  { id: 'row1_recordedDate', title: 'row1_recordedDate' },
+  { id: 'row1_docNumber', title: 'row1_docNumber' },
+  { id: 'row1_bookVolumePage', title: 'row1_bookVolumePage' },
+  { id: 'row1_legalDescription', title: 'row1_legalDescription' },
+  { id: 'row1_references', title: 'row1_references' },
+  { id: 'row2_grantor', title: 'row2_grantor' },
+  { id: 'row2_grantee', title: 'row2_grantee' },
+  { id: 'row2_docType', title: 'row2_docType' },
+  { id: 'row2_recordedDate', title: 'row2_recordedDate' },
+  { id: 'row2_docNumber', title: 'row2_docNumber' },
+  { id: 'row2_bookVolumePage', title: 'row2_bookVolumePage' },
+  { id: 'row2_legalDescription', title: 'row2_legalDescription' },
+  { id: 'row2_references', title: 'row2_references' },
+  { id: 'row3_grantor', title: 'row3_grantor' },
+  { id: 'row3_grantee', title: 'row3_grantee' },
+  { id: 'row3_docType', title: 'row3_docType' },
+  { id: 'row3_recordedDate', title: 'row3_recordedDate' },
+  { id: 'row3_docNumber', title: 'row3_docNumber' },
+  { id: 'row3_bookVolumePage', title: 'row3_bookVolumePage' },
+  { id: 'row3_legalDescription', title: 'row3_legalDescription' },
+  { id: 'row3_references', title: 'row3_references' }
+];
+
+// Pre-computed record field keys (avoid template literal recreation per row)
+const RECORD_FIELD_KEYS = [
+  ['row1_grantor', 'row1_grantee', 'row1_docType', 'row1_recordedDate',
+   'row1_docNumber', 'row1_bookVolumePage', 'row1_legalDescription', 'row1_references'],
+  ['row2_grantor', 'row2_grantee', 'row2_docType', 'row2_recordedDate',
+   'row2_docNumber', 'row2_bookVolumePage', 'row2_legalDescription', 'row2_references'],
+  ['row3_grantor', 'row3_grantee', 'row3_docType', 'row3_recordedDate',
+   'row3_docNumber', 'row3_bookVolumePage', 'row3_legalDescription', 'row3_references']
+];
+
+// Source field names (order matches RECORD_FIELD_KEYS)
+const RECORD_SOURCE_FIELDS = ['grantor', 'grantee', 'docType', 'recordedDate',
+                               'docNumber', 'bookVolumePage', 'legalDescription', 'references'];
 
 // STEP 1: Read CSV file
 async function readCSV(path, limit = null) {
@@ -38,39 +117,7 @@ async function readCSV(path, limit = null) {
 async function writeCSV(data, path) {
   const csvWriter = createObjectCsvWriter({
     path,
-    header: [
-      { id: 'uid', title: 'uid' },
-      { id: 'address', title: 'address' },
-      { id: 'address_source', title: 'address_source' },
-      { id: 'county', title: 'county' },
-      { id: 'sale_date', title: 'sale_date' },
-      { id: 'adjudged_value', title: 'adjudged_value' },
-      { id: 'min_bid', title: 'min_bid' },
-      { id: 'status', title: 'status' },
-      { id: 'sale_type', title: 'sale_type' },
-      { id: 'cause_number', title: 'cause_number' },
-      { id: 'case_style', title: 'case_style' },
-      { id: 'legal_description', title: 'legal_description' },
-      { id: 'coordinates', title: 'coordinates' },
-      { id: 'sale_notes', title: 'sale_notes' },
-      { id: 'vacant_keyword', title: 'vacant_keyword' },
-      { id: 'vacant_source', title: 'vacant_source' },
-      { id: 'scrape_status', title: 'scrape_status' },
-      { id: 'scrape_error', title: 'scrape_error' },
-      { id: 'driver_used', title: 'driver_used' },
-      { id: 'matched_variation', title: 'matched_variation' },
-      { id: 'parsed_name', title: 'parsed_name' },
-      ...Array.from({ length: 3 }, (_, i) => [
-        { id: `row${i + 1}_grantor`, title: `row${i + 1}_grantor` },
-        { id: `row${i + 1}_grantee`, title: `row${i + 1}_grantee` },
-        { id: `row${i + 1}_docType`, title: `row${i + 1}_docType` },
-        { id: `row${i + 1}_recordedDate`, title: `row${i + 1}_recordedDate` },
-        { id: `row${i + 1}_docNumber`, title: `row${i + 1}_docNumber` },
-        { id: `row${i + 1}_bookVolumePage`, title: `row${i + 1}_bookVolumePage` },
-        { id: `row${i + 1}_legalDescription`, title: `row${i + 1}_legalDescription` },
-        { id: `row${i + 1}_references`, title: `row${i + 1}_references` }
-      ]).flat()
-    ]
+    header: CSV_HEADER
   });
   await csvWriter.writeRecords(data);
 }
@@ -81,20 +128,20 @@ function parseName(caseStyle, driverType = 'default') {
 
   // Split on VS to extract defendant
   const text = caseStyle.trim();
-  const parts = text.split(/\s+(?:VS|V\.?)\s+/i);
+  const parts = text.split(RE_VS_SPLIT);
   if (parts.length < 2) return { original: '', variations: [] };
 
   let defendant = parts[1].trim();
 
   // Remove ET AL and everything after it
-  defendant = defendant.replace(/,?\s*ET AL.*$/i, '');
+  defendant = defendant.replace(RE_ET_AL, '');
 
   // Remove noise patterns (but keep the name core)
   defendant = defendant
-    .replace(/\b(DECEASED|ESTATE OF|EXECUTOR OF|EXECUTRIX|HEIR|HEIRS OF)\b/gi, '')
-    .replace(/\b(INDEPENDENT SCHOOL DISTRICT|SCHOOL DISTRICT|ISD|COUNTY SHERIFF|SHERIFF'?S DEED)\b/gi, '')
-    .replace(/,?\s*(AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i, '')
-    .replace(/,?\s*AS TRUSTEE.*$/i, '')
+    .replace(RE_NOISE_LEGAL, '')
+    .replace(RE_NOISE_ENTITIES, '')
+    .replace(RE_ALIAS, '')
+    .replace(RE_TRUSTEE, '')
     .replace(/\./g, '')
     .replace(/,/g, '')
     .replace(/\s+/g, ' ')
@@ -103,14 +150,13 @@ function parseName(caseStyle, driverType = 'default') {
   if (!defendant) return { original: '', variations: [] };
 
   // Check for business entities (refined: exclude personal trusts)
-  const BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|CORPORATION|LP|LLP|LTD|CO|COMPANY|BANK|INVESTMENTS|PROPERTIES|ENTERPRISES|MINISTRIES)\b/i;
-  if (BUSINESS_KEYWORDS.test(defendant)) {
+  if (RE_BUSINESS_KEYWORDS.test(defendant)) {
     return { original: defendant, variations: [defendant] };
   }
 
   // Individual name parsing
   // Remove suffixes from word list for parsing
-  const words = defendant.split(/\s+/).filter(w => w && !/^(JR|SR|III|II|IV|V)$/i.test(w));
+  const words = defendant.split(/\s+/).filter(w => w && !RE_SUFFIX.test(w));
 
   if (words.length === 0) return { original: defendant, variations: [] };
   if (words.length === 1) return { original: defendant, variations: [words[0]] };
@@ -158,17 +204,28 @@ function parseName(caseStyle, driverType = 'default') {
   return { original: defendant, variations };
 }
 
-// STEP 4: Find appropriate driver for county
+// STEP 4: Find appropriate driver for county (with caching)
 function findDriver(county) {
-  for (const [name, driver] of Object.entries(drivers)) {
+  // Check cache first
+  if (driverCache.has(county)) {
+    return driverCache.get(county);
+  }
+
+  // Find driver and cache result
+  for (const [name, driver] of DRIVER_ENTRIES) {
     if (driver.canHandle(county)) {
-      return { name, driver };
+      const result = { name, driver };
+      driverCache.set(county, result);
+      return result;
     }
   }
+
+  // Cache null result for unsupported counties
+  driverCache.set(county, null);
   return null;
 }
 
-// STEP 5: Enrich row with lien data
+// STEP 5: Enrich row with lien data (optimized)
 function enrichRow(row, records, metadata = {}) {
   const out = { ...row };
 
@@ -179,17 +236,13 @@ function enrichRow(row, records, metadata = {}) {
   out.matched_variation = metadata.matchedVariation || '';
   out.parsed_name = metadata.parsedName || '';
 
+  // Flatten records using pre-computed keys
   for (let i = 0; i < 3; i++) {
     const rec = records[i] || {};
-    const prefix = `row${i + 1}_`;
-    out[`${prefix}grantor`] = rec.grantor || '';
-    out[`${prefix}grantee`] = rec.grantee || '';
-    out[`${prefix}docType`] = rec.docType || '';
-    out[`${prefix}recordedDate`] = rec.recordedDate || '';
-    out[`${prefix}docNumber`] = rec.docNumber || '';
-    out[`${prefix}bookVolumePage`] = rec.bookVolumePage || '';
-    out[`${prefix}legalDescription`] = rec.legalDescription || '';
-    out[`${prefix}references`] = rec.references || '';
+    const keys = RECORD_FIELD_KEYS[i];
+    for (let j = 0; j < RECORD_SOURCE_FIELDS.length; j++) {
+      out[keys[j]] = rec[RECORD_SOURCE_FIELDS[j]] || '';
+    }
   }
 
   return out;
@@ -243,8 +296,6 @@ async function main() {
         const enriched = enrichRow(row, [], { status: 'unsupported_no_driver', error: 'No driver for county', driver: 'none' });
         results.push(enriched);
         failedRows.push(enriched);
-        // DEBUG: Print countyFailures after unsupported (should NOT be incremented)
-        console.log(`🔍 DEBUG countyFailures (after unsupported):`, JSON.stringify(countyFailures));
         continue;
       }
 
@@ -353,9 +404,6 @@ async function main() {
       if (status !== 'success') {
         failedRows.push(enriched);
       }
-
-      // DEBUG: Print countyFailures after each iteration
-      console.log(`🔍 DEBUG countyFailures:`, JSON.stringify(countyFailures));
 
     } catch (e) {
       console.log(`❌ Unhandled error for row ${i + 1}: ${e.message}`);

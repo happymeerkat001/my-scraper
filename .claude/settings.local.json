@@ -48,7 +48,10 @@
       "Bash(INPUT_FILE=test-multi-county.csv OUTPUT_FILE=integration-test-output.csv node:*)",
       "Bash(mv:*)",
       "Bash(HEADLESS=false DEBUG=1 TEST_LIMIT=1 INPUT_FILE=test-kaufman-debug.csv OUTPUT_FILE=test-kaufman-debug-output.csv node:*)",
-      "Bash(TEST_LIMIT=1 INPUT_FILE=texas-future-sales.csv OUTPUT_FILE=out.csv node:*)"
+      "Bash(TEST_LIMIT=1 INPUT_FILE=texas-future-sales.csv OUTPUT_FILE=out.csv node:*)",
+      "Bash(TEST_LIMIT=3 INPUT_FILE=test-b8-verification.csv OUTPUT_FILE=test-b9-output.csv node:*)",
+      "Bash(md5:*)",
+      "Bash(TEST_LIMIT=3 INPUT_FILE=test-b8-verification.csv OUTPUT_FILE=test-b10-output.csv node:*)"
     ],
     "deny": [],
     "ask": []
