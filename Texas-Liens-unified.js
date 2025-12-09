@@ -218,11 +218,13 @@ async function main() {
     failed: 0,
     parseFailed: 0,
     unsupported: 0,
-    error: 0
+    error: 0,
+    skipped: 0
   };
   const unsupportedCounties = new Set();
   const driverStats = {};
   const failedRows = [];
+  const countyFailures = {}; // Track consecutive failures per county
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
@@ -238,13 +240,28 @@ async function main() {
         console.log(`\n[${i + 1}/${rows.length}] ⚠️  ${county} - No driver available`);
         stats.unsupported++;
         unsupportedCounties.add(county);
-        const enriched = enrichRow(row, [], { status: 'unsupported', error: 'No driver for county', driver: 'none' });
+        const enriched = enrichRow(row, [], { status: 'unsupported_no_driver', error: 'No driver for county', driver: 'none' });
         results.push(enriched);
         failedRows.push(enriched);
+        // DEBUG: Print countyFailures after unsupported (should NOT be incremented)
+        console.log(`🔍 DEBUG countyFailures (after unsupported):`, JSON.stringify(countyFailures));
         continue;
       }
 
       const { name: driverName, driver } = driverInfo;
+
+      // Check if county should be auto-skipped
+      if (countyFailures[county] >= 3) {
+        stats.skipped++;
+        const enriched = enrichRow(row, [], {
+          status: 'skipped_county',
+          error: 'auto-skip: first 3 attempts failed',
+          driver: driverName
+        });
+        results.push(enriched);
+        failedRows.push(enriched);
+        continue;
+      }
 
       // Track driver usage
       driverStats[driverName] = (driverStats[driverName] || 0) + 1;
@@ -314,6 +331,16 @@ async function main() {
         stats.noRecords++;
       }
 
+      // Track consecutive failures per county
+      if (status === 'success') {
+        countyFailures[county] = 0;
+      } else {
+        countyFailures[county] = (countyFailures[county] || 0) + 1;
+        if (countyFailures[county] === 3) {
+          console.log(`⏭️  Skipping ${county} after 3 failed searches.`);
+        }
+      }
+
       const enriched = enrichRow(row, records, {
         status,
         error: searchError || '',
@@ -326,6 +353,9 @@ async function main() {
       if (status !== 'success') {
         failedRows.push(enriched);
       }
+
+      // DEBUG: Print countyFailures after each iteration
+      console.log(`🔍 DEBUG countyFailures:`, JSON.stringify(countyFailures));
 
     } catch (e) {
       console.log(`❌ Unhandled error for row ${i + 1}: ${e.message}`);
@@ -371,6 +401,7 @@ async function main() {
   console.log(`   ⚠ Parse Failed: ${stats.parseFailed.toString().padStart(4)} (${((stats.parseFailed / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ⊘ Unsupported:  ${stats.unsupported.toString().padStart(4)} (${((stats.unsupported / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ✗ Error:        ${stats.error.toString().padStart(4)} (${((stats.error / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ⏭ Skipped:      ${stats.skipped.toString().padStart(4)} (${((stats.skipped / stats.total) * 100).toFixed(1)}%)`);
 
   if (stats.unsupported > 0) {
     console.log(`\n⚠️  Unsupported Counties:`);
