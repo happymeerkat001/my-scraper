@@ -44,7 +44,11 @@
       "Bash(DEBUG=1 TEST_LIMIT=1 INPUT_FILE=\"Archive my-scraper/test-multi-publicsearch.csv\" OUTPUT_FILE=test-debug.csv node:*)",
       "Bash(HEADLESS=false TEST_LIMIT=3 INPUT_FILE=\"Archive my-scraper/test-multi-publicsearch.csv\" OUTPUT_FILE=test-b7-output.csv node:*)",
       "Bash(TEST_LIMIT=3 INPUT_FILE=\"Archive my-scraper/test-multi-publicsearch.csv\" OUTPUT_FILE=test-b7-verify.csv node:*)",
-      "Bash(TEST_LIMIT=3 INPUT_FILE=texas-future-sales.csv OUTPUT_FILE=integration-test-output.csv node:*)"
+      "Bash(TEST_LIMIT=3 INPUT_FILE=texas-future-sales.csv OUTPUT_FILE=integration-test-output.csv node:*)",
+      "Bash(INPUT_FILE=test-multi-county.csv OUTPUT_FILE=integration-test-output.csv node:*)",
+      "Bash(mv:*)",
+      "Bash(HEADLESS=false DEBUG=1 TEST_LIMIT=1 INPUT_FILE=test-kaufman-debug.csv OUTPUT_FILE=test-kaufman-debug-output.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=texas-future-sales.csv OUTPUT_FILE=out.csv node:*)"
     ],
     "deny": [],
     "ask": []

@@ -115,6 +115,21 @@ function parseName(caseStyle, driverType = 'default') {
   if (words.length === 0) return { original: defendant, variations: [] };
   if (words.length === 1) return { original: defendant, variations: [words[0]] };
 
+  // Special case: Two single-letter initials + surname (e.g., "A C MARTIN")
+  if (words.length === 3 &&
+      words[0].length === 1 &&
+      words[1].length === 1 &&
+      words[2].length > 1 &&
+      /^[A-Z]+$/i.test(words[2])) {
+    const lastName = words[2];
+    const firstMiddle = `${words[0]} ${words[1]}`;
+    const fullName = `${lastName} ${firstMiddle}`;
+    return {
+      original: defendant,
+      variations: [fullName, lastName]
+    };
+  }
+
   // Assume case style format: "LAST FIRST [MIDDLE]" (most common in TX court records)
   const lastName = words[0];
   const fullName = words.join(' ');
@@ -123,13 +138,20 @@ function parseName(caseStyle, driverType = 'default') {
 
   switch (driverType) {
     case 'publicsearch':
-    case 'tyler':
     case 'kofile':
     case 'odyssey':
     default:
-      // All drivers: full name first, then last name as fallback
+      // Default: full name first, then last name as fallback
       variations.push(fullName);
       variations.push(lastName);
+      break;
+    case 'tyler':
+      // Tyler: full name, then "LAST FIRST" (no middle) if applicable
+      variations.push(fullName);
+      if (words.length >= 3) {
+        variations.push(`${words[0]} ${words[1]}`);
+      }
+      // Skip last-only fallback (too broad)
       break;
   }
 
