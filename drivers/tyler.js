@@ -96,11 +96,15 @@ export class TylerDriver extends BaseDriver {
       // Click search button
       await page.click('#searchButton');
 
-      // Wait for results to load (Tyler uses AJAX, not page navigation)
-      await page.waitForSelector('.selfServiceSearchRowRight', { timeout: 30000 });
+      // Wait for network to settle after search
+      await page.waitForNetworkIdle({ idleTime: 500, timeout: 30000 });
 
-      // Brief pause for all results to render
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait for results OR no-results indicator
+      await Promise.race([
+        page.waitForSelector('.selfServiceSearchRowRight', { timeout: 15000 }),
+        page.waitForSelector('#noResultsPanel', { timeout: 15000 }),
+        page.waitForSelector('.searchResultsContainer', { timeout: 15000 })
+      ]).catch(() => {});
 
       const html = await page.content();
 

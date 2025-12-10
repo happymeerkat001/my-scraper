@@ -1,6 +1,12 @@
 // Base Driver Interface
 // All county record system drivers must implement this interface
 
+// --- Puppeteer with stealth anti-detection ---
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+puppeteer.use(StealthPlugin());
+// ---------------------------------------------
+
 // Debug flag: set to true to see browser window during scraping
 const DEBUG_VISIBLE = process.env.DEBUG === '1' || false;
 
@@ -94,12 +100,10 @@ export class BaseDriver {
    */
   async initBrowser() {
     if (!this.browser) {
-      const puppeteer = await import('puppeteer');
-
       // Retry browser launch up to 2 times
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-          this.browser = await puppeteer.default.launch({
+          this.browser = await puppeteer.launch({
             headless: DEBUG_VISIBLE ? false : 'new',
             args: [
               '--no-sandbox',

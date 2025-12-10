@@ -56,7 +56,9 @@
       "Bash(npm install)",
       "Bash(TEST_LIMIT=1 INPUT_FILE=test-limestone.csv OUTPUT_FILE=verify-jsdom-fix.csv node index.js:*)",
       "Bash(TEST_LIMIT=1 INPUT_FILE=test-limestone.csv OUTPUT_FILE=verify-jsdom-fix.csv node:*)",
-      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=verify-jsdom-fix.csv node Texas-Liens-unified.js:*)"
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=verify-jsdom-fix.csv node Texas-Liens-unified.js:*)",
+      "Bash(grep:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-headless.csv node:*)"
     ],
     "deny": [],
     "ask": []
