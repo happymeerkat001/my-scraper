@@ -101,6 +101,21 @@ const RECORD_FIELD_KEYS = [
 const RECORD_SOURCE_FIELDS = ['grantor', 'grantee', 'docType', 'recordedDate',
                                'docNumber', 'bookVolumePage', 'legalDescription', 'references'];
 
+// Pre-parse normalization for case_style input
+function normalizeCaseStyle(input) {
+  if (!input) return '';
+  return input
+    .normalize('NFKC')                    // Unicode normalize
+    .trim()                               // Remove leading/trailing whitespace
+    .replace(/\s+/g, ' ')                 // Collapse internal whitespace
+    .replace(/^[^\w"']+|[^\w"']+$/g, ''); // Remove stray boundary punctuation
+}
+
+// Driver-specific name normalization hook (identity for now)
+function normalizeForDriver(name, driverType) {
+  return name; // No driver-specific transforms yet
+}
+
 // STEP 1: Read CSV file
 async function readCSV(path, limit = null) {
   return new Promise((resolve, reject) => {
@@ -123,11 +138,12 @@ async function writeCSV(data, path) {
 }
 
 // STEP 3: Parse name and generate search variations
-function parseName(caseStyle, driverType = 'default') {
+function parseName(rawCaseStyle, driverType = 'default') {
+  const caseStyle = normalizeCaseStyle(rawCaseStyle);
   if (!caseStyle) return { original: '', variations: [] };
 
   // Split on VS to extract defendant
-  const text = caseStyle.trim();
+  const text = caseStyle; // Already normalized
   const parts = text.split(RE_VS_SPLIT);
   if (parts.length < 2) return { original: '', variations: [] };
 
@@ -136,12 +152,13 @@ function parseName(caseStyle, driverType = 'default') {
   // Remove ET AL and everything after it
   defendant = defendant.replace(RE_ET_AL, '');
 
-  // Remove noise patterns (but keep the name core)
+  // Remove noise patterns and normalize defendant text
   defendant = defendant
     .replace(RE_NOISE_LEGAL, '')
     .replace(RE_NOISE_ENTITIES, '')
     .replace(RE_ALIAS, '')
     .replace(RE_TRUSTEE, '')
+    .normalize('NFKC')                    // Unicode normalize defendant
     .replace(/\./g, '')
     .replace(/,/g, '')
     .replace(/\s+/g, ' ')
@@ -201,7 +218,9 @@ function parseName(caseStyle, driverType = 'default') {
       break;
   }
 
-  return { original: defendant, variations };
+  // Apply driver-specific normalization to variations
+  const normalizedVariations = variations.map(v => normalizeForDriver(v, driverType));
+  return { original: defendant, variations: normalizedVariations };
 }
 
 // STEP 4: Find appropriate driver for county (with caching)
