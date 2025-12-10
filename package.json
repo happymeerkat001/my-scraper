@@ -14,7 +14,7 @@
     "axios": "^1.13.1",
     "csv-parser": "^3.2.0",
     "csv-writer": "^1.6.0",
-    "jsdom": "^27.2.0",
+    "jsdom": "26.1.0",
     "json2csv": "^6.0.0-alpha.2",
     "puppeteer": "^24.25.0"
   }
