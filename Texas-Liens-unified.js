@@ -20,6 +20,7 @@ const RE_ALIAS = /,?\s*(AKA|DBA|FKA|A\/K\/A|D\/B\/A|F\/K\/A).*$/i;
 const RE_TRUSTEE = /,?\s*AS TRUSTEE.*$/i;
 const RE_BUSINESS_KEYWORDS = /\b(LLC|INC|CORP|CORPORATION|LP|LLP|LTD|CO|COMPANY|BANK|INVESTMENTS|PROPERTIES|ENTERPRISES|MINISTRIES)\b/i;
 const RE_SUFFIX = /^(JR|SR|III|II|IV|V)$/i;
+const RE_PARENTHETICAL = /\s*\([^)]*\)\s*/g;
 
 // Driver Registry
 const drivers = {
@@ -111,6 +112,24 @@ function normalizeCaseStyle(input) {
     .replace(/^[^\w"']+|[^\w"']+$/g, ''); // Remove stray boundary punctuation
 }
 
+// County input normalization
+function normalizeCounty(county) {
+  if (!county) return { normalized: '', valid: false, reason: 'empty' };
+
+  let normalized = county.trim().toUpperCase();
+
+  // Detect invalid values
+  if (normalized.length < 5) return { normalized, valid: false, reason: 'too_short' };
+  if (normalized === 'TX' || normalized === 'TEXAS') return { normalized, valid: false, reason: 'state_only' };
+
+  // Ensure " COUNTY" suffix
+  if (!normalized.endsWith(' COUNTY')) {
+    normalized = normalized + ' COUNTY';
+  }
+
+  return { normalized, valid: true, reason: null };
+}
+
 // Driver-specific name normalization hook (identity for now)
 function normalizeForDriver(name, driverType) {
   return name; // No driver-specific transforms yet
@@ -158,6 +177,7 @@ function parseName(rawCaseStyle, driverType = 'default') {
     .replace(RE_NOISE_ENTITIES, '')
     .replace(RE_ALIAS, '')
     .replace(RE_TRUSTEE, '')
+    .replace(RE_PARENTHETICAL, ' ')        // Strip parentheticals: (IN REM), (MINOR), etc.
     .normalize('NFKC')                    // Unicode normalize defendant
     .replace(/\./g, '')
     .replace(/,/g, '')
@@ -294,6 +314,7 @@ async function main() {
     failed: 0,
     parseFailed: 0,
     unsupported: 0,
+    invalidCounty: 0,
     error: 0,
     skipped: 0
   };
@@ -307,7 +328,24 @@ async function main() {
     stats.total++;
 
     try {
-      const county = row.county;
+      const rawCounty = row.county;
+
+      // Normalize and validate county input
+      const countyInfo = normalizeCounty(rawCounty);
+      if (!countyInfo.valid) {
+        console.log(`\n[${i + 1}/${rows.length}] ⚠️  Invalid county: "${rawCounty}" (${countyInfo.reason})`);
+        stats.invalidCounty++;
+        const enriched = enrichRow(row, [], {
+          status: 'invalid_county',
+          error: `Invalid county: ${countyInfo.reason}`,
+          driver: 'none'
+        });
+        results.push(enriched);
+        failedRows.push(enriched);
+        continue;
+      }
+
+      const county = countyInfo.normalized;
 
       // Find appropriate driver
       const driverInfo = findDriver(county);
@@ -392,6 +430,25 @@ async function main() {
         if (records.length > 0) break;
       }
 
+      // Fallback: Try swapped name order for 2-word names with no results
+      if (records.length === 0 && !searchError) {
+        const nameWords = nameObj.original.split(/\s+/).filter(w => w);
+        if (nameWords.length === 2) {
+          const swappedName = `${nameWords[1]} ${nameWords[0]}`;
+          console.log(`\n🔄 Trying swapped name order: "${swappedName}"`);
+
+          try {
+            records = await driver.search(county, swappedName);
+            if (records.length > 0) {
+              console.log(`✓ Found ${records.length} records with swapped name`);
+              matchedVariation = swappedName + ' (swapped)';
+            }
+          } catch (e) {
+            console.log(`⚠️  Swapped search failed: ${e.message}`);
+          }
+        }
+      }
+
       // Determine status
       let status;
       if (records.length > 0) {
@@ -470,6 +527,7 @@ async function main() {
   console.log(`   ○ No Records:   ${stats.noRecords.toString().padStart(4)} (${((stats.noRecords / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ✗ Failed:       ${stats.failed.toString().padStart(4)} (${((stats.failed / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ⚠ Parse Failed: ${stats.parseFailed.toString().padStart(4)} (${((stats.parseFailed / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   ⚠ Invalid County: ${stats.invalidCounty.toString().padStart(3)} (${((stats.invalidCounty / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ⊘ Unsupported:  ${stats.unsupported.toString().padStart(4)} (${((stats.unsupported / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ✗ Error:        ${stats.error.toString().padStart(4)} (${((stats.error / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ⏭ Skipped:      ${stats.skipped.toString().padStart(4)} (${((stats.skipped / stats.total) * 100).toFixed(1)}%)`);
