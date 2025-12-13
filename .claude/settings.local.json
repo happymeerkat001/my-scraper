@@ -58,7 +58,17 @@
       "Bash(TEST_LIMIT=1 INPUT_FILE=test-limestone.csv OUTPUT_FILE=verify-jsdom-fix.csv node:*)",
       "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=verify-jsdom-fix.csv node Texas-Liens-unified.js:*)",
       "Bash(grep:*)",
-      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-headless.csv node:*)"
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-headless.csv node:*)",
+      "Bash(HEADLESS=false TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-debug.csv node:*)",
+      "Bash(DEBUG=1 TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-debug.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-headless-v2.csv node:*)",
+      "Bash(TEST_LIMIT=3 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-mclennan-headless-v2.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-headless-fix.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-fix-v2.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-fix.csv node:*)",
+      "Bash(DEBUG=1 TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=debug-output.csv node:*)",
+      "Bash(DEBUG=1 TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=verify-button-fix.csv node:*)",
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-tyler-mclennan.csv OUTPUT_FILE=test-trace.csv node:*)"
     ],
     "deny": [],
     "ask": []

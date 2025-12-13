@@ -209,12 +209,16 @@ function parseName(rawCaseStyle, driverType = 'default') {
       variations.push(lastName);
       break;
     case 'tyler':
-      // Tyler: full name, then "LAST FIRST" (no middle) if applicable
-      variations.push(fullName);
-      if (words.length >= 3) {
-        variations.push(`${words[0]} ${words[1]}`);
+      // Tyler requires "LAST FIRST" format
+      // Input is "FIRST LAST" (e.g., "JOHN SMITH"), convert to "SMITH JOHN"
+      const tylerLast = words[words.length - 1];
+      const tylerFirst = words.slice(0, -1).join(' ');
+      const tylerFormat = tylerFirst ? `${tylerLast} ${tylerFirst}` : tylerLast;
+      variations.push(tylerFormat);
+      // Also try just last name as fallback
+      if (words.length > 1) {
+        variations.push(tylerLast);
       }
-      // Skip last-only fallback (too broad)
       break;
   }
 

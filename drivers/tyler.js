@@ -57,34 +57,37 @@ export class TylerDriver extends BaseDriver {
       // Navigate to search page (increased timeout for slow TylerTech sites)
       await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
-      // Check for disclaimer page and accept if present
-      const disclaimerButton = await page.$('#submitDisclaimerAccept').catch(() => null);
+      // Wait for page to be ready: either disclaimer OR search form must appear
+      // This establishes explicit readiness guarantee for headless mode
+      await Promise.race([
+        page.waitForSelector('#submitDisclaimerAccept', { timeout: 20000 }),
+        page.waitForSelector('#field_BothNamesID', { timeout: 20000 })
+      ]);
+
+      // Check if we're on disclaimer page and accept it
+      const disclaimerButton = await page.$('#submitDisclaimerAccept');
       if (disclaimerButton) {
-        // Wait for button to be enabled (it starts disabled)
         await page.waitForFunction(
           () => !document.querySelector('#submitDisclaimerAccept').disabled,
           { timeout: 10000 }
         );
 
-        // Click the button
-        await disclaimerButton.click();
+        // Trigger click via jQuery to ensure handler fires in headless
+        await page.evaluate(() => {
+          if (typeof $ !== 'undefined') {
+            $('#submitDisclaimerAccept').trigger('click');
+          } else {
+            document.querySelector('#submitDisclaimerAccept').click();
+          }
+        });
 
-        // Wait for search form to appear (disclaimer uses AJAX, not page navigation)
-        try {
-          await page.waitForSelector('#field_BothNamesID', { timeout: 15000 });
-        } catch (formError) {
-          // Continue anyway - might already have results
-        }
+        // Wait for AJAX transition to complete
+        await page.waitForNetworkIdle({ idleTime: 500, timeout: 15000 });
+        await page.waitForSelector('#field_BothNamesID', { timeout: 15000 });
       }
 
-      // Wait for either search form OR results (flexible wait)
-      await Promise.race([
-        page.waitForSelector('#field_BothNamesID', { timeout: 15000 }),
-        page.waitForSelector('.selfServiceSearchRowRight', { timeout: 15000 })
-      ]).catch(() => {});
-
       // Check if we're already on results page
-      const hasResults = await page.$('.selfServiceSearchRowRight').catch(() => null);
+      const hasResults = await page.$('.selfServiceSearchRowRight');
       if (hasResults) {
         const html = await page.content();
         return await this.parseRecords(html);
