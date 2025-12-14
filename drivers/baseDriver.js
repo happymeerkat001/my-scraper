@@ -105,6 +105,7 @@ export class BaseDriver {
         try {
           this.browser = await puppeteer.launch({
             headless: DEBUG_VISIBLE ? false : 'new',
+            executablePath: '/Users/leon/.cache/puppeteer/chrome/mac_arm-143.0.7499.42/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
             args: [
               '--no-sandbox',
               '--disable-setuid-sandbox',
