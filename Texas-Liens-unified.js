@@ -159,12 +159,12 @@ async function writeCSV(data, path) {
 // STEP 3: Parse name and generate search variations
 function parseName(rawCaseStyle, driverType = 'default') {
   const caseStyle = normalizeCaseStyle(rawCaseStyle);
-  if (!caseStyle) return { original: '', variations: [] };
+  if (!caseStyle) return { original: rawCaseStyle || '', variations: [], reason: 'empty_input' };
 
   // Split on VS to extract defendant
   const text = caseStyle; // Already normalized
   const parts = text.split(RE_VS_SPLIT);
-  if (parts.length < 2) return { original: '', variations: [] };
+  if (parts.length < 2) return { original: caseStyle, variations: [], reason: 'no_vs_separator' };
 
   let defendant = parts[1].trim();
 
@@ -184,7 +184,7 @@ function parseName(rawCaseStyle, driverType = 'default') {
     .replace(/\s+/g, ' ')
     .trim();
 
-  if (!defendant) return { original: '', variations: [] };
+  if (!defendant) return { original: caseStyle, variations: [], reason: 'empty_defendant' };
 
   // Check for business entities (refined: exclude personal trusts)
   if (RE_BUSINESS_KEYWORDS.test(defendant)) {
@@ -195,7 +195,7 @@ function parseName(rawCaseStyle, driverType = 'default') {
   // Remove suffixes from word list for parsing
   const words = defendant.split(/\s+/).filter(w => w && !RE_SUFFIX.test(w));
 
-  if (words.length === 0) return { original: defendant, variations: [] };
+  if (words.length === 0) return { original: defendant, variations: [], reason: 'only_suffixes' };
   if (words.length === 1) return { original: defendant, variations: [words[0]] };
 
   // Special case: Two single-letter initials + surname (e.g., "A C MARTIN")
@@ -383,9 +383,15 @@ async function main() {
       const nameObj = parseName(row.case_style, driverName);
 
       if (!nameObj.variations.length) {
-        console.log(`⚠️  Could not parse name from: "${row.case_style}"`);
+        const reason = nameObj.reason || 'unknown';
+        console.log(`⚠️  Could not parse name from: "${row.case_style}" (${reason})`);
         stats.parseFailed++;
-        const enriched = enrichRow(row, [], { status: 'parse_failed', error: 'Could not parse defendant name', driver: driverName });
+        const enriched = enrichRow(row, [], {
+          status: 'parse_failed',
+          error: `parse_failed: ${reason}`,
+          driver: driverName,
+          parsedName: nameObj.original || row.case_style || ''
+        });
         results.push(enriched);
         failedRows.push(enriched);
         continue;
