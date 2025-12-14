@@ -62,6 +62,10 @@ const CSV_HEADER = [
   { id: 'driver_used', title: 'driver_used' },
   { id: 'matched_variation', title: 'matched_variation' },
   { id: 'parsed_name', title: 'parsed_name' },
+  { id: 'classification_status', title: 'classification_status' },
+  { id: 'html_length', title: 'html_length' },
+  { id: 'retry_count', title: 'retry_count' },
+  { id: 'classification_indicators', title: 'classification_indicators' },
   { id: 'row1_grantor', title: 'row1_grantor' },
   { id: 'row1_grantee', title: 'row1_grantee' },
   { id: 'row1_docType', title: 'row1_docType' },
@@ -279,6 +283,12 @@ function enrichRow(row, records, metadata = {}) {
   out.matched_variation = metadata.matchedVariation || '';
   out.parsed_name = metadata.parsedName || '';
 
+  // Add classification fields
+  out.classification_status = metadata.classificationStatus || '';
+  out.html_length = metadata.htmlLength || 0;
+  out.retry_count = metadata.retryCount || 0;
+  out.classification_indicators = metadata.classificationIndicators || '';
+
   // Flatten records using pre-computed keys
   for (let i = 0; i < 3; i++) {
     const rec = records[i] || {};
@@ -316,11 +326,13 @@ async function main() {
     unsupported: 0,
     invalidCounty: 0,
     error: 0,
-    skipped: 0
+    skipped: 0,
+    manual: 0
   };
   const unsupportedCounties = new Set();
   const driverStats = {};
   const failedRows = [];
+  const manualRows = []; // Rows requiring manual CAPTCHA (Odyssey)
   const countyFailures = {}; // Track consecutive failures per county
 
   for (let i = 0; i < rows.length; i++) {
@@ -361,6 +373,24 @@ async function main() {
       }
 
       const { name: driverName, driver } = driverInfo;
+
+      // Route Odyssey (Dallas) to manual queue - requires CAPTCHA
+      if (driverName === 'odyssey') {
+        console.log(`\n[${i + 1}/${rows.length}] 📋 ${county} - Routing to manual queue (CAPTCHA required)`);
+        stats.manual++;
+        const nameObj = parseName(row.case_style, driverName);
+        const enriched = enrichRow(row, [], {
+          status: 'blocked:captcha',
+          error: 'Dallas County requires manual CAPTCHA - routed to manual queue',
+          driver: driverName,
+          parsedName: nameObj.original || row.case_style || '',
+          classificationStatus: 'blocked:captcha',
+          classificationIndicators: 'captcha_required'
+        });
+        results.push(enriched);
+        manualRows.push(enriched);
+        continue;
+      }
 
       // Check if county should be auto-skipped
       if (countyFailures[county] >= 3) {
@@ -404,22 +434,52 @@ async function main() {
       let records = [];
       let searchError = null;
       let matchedVariation = '';
+      let classification = null;
+      let htmlLength = 0;
+      let indicators = [];
+      let retryCount = 0;
 
       for (let v = 0; v < nameObj.variations.length && records.length === 0; v++) {
         console.log(`\n🔍 Trying variation ${v + 1}/${nameObj.variations.length}: "${nameObj.variations[v]}"`);
 
         // Retry up to 3 times with exponential backoff
         for (let attempt = 1; attempt <= 3; attempt++) {
+          retryCount++;
           try {
-            records = await driver.search(county, nameObj.variations[v]);
+            const result = await driver.search(county, nameObj.variations[v]);
+
+            // Handle new return format (object with classification) vs legacy (array)
+            if (result && typeof result === 'object' && !Array.isArray(result)) {
+              records = result.records || [];
+              classification = result.classification || null;
+              htmlLength = result.htmlLength || 0;
+              indicators = result.indicators || [];
+            } else {
+              // Legacy format (array only) - other drivers
+              records = result || [];
+            }
 
             if (records.length > 0) {
               console.log(`✓ Found ${records.length} records`);
               matchedVariation = nameObj.variations[v];
               break;
             }
-            // No records found, move to next variation
-            break;
+
+            // Stop retrying on terminal classifications (confirmed no results)
+            if (classification === 'no_results:confirmed') {
+              console.log(`○ No results (confirmed)`);
+              break;
+            }
+
+            // If blocked, log it but allow retry
+            if (classification && classification.startsWith('blocked:')) {
+              console.log(`⚠️  Response classified as: ${classification}`);
+            }
+
+            // No records found, move to next variation (unless retrying blocked)
+            if (!classification || !classification.startsWith('blocked:')) {
+              break;
+            }
           } catch (e) {
             searchError = e.message;
             if (attempt < 3) {
@@ -437,14 +497,26 @@ async function main() {
       }
 
       // Fallback: Try swapped name order for 2-word names with no results
-      if (records.length === 0 && !searchError) {
+      if (records.length === 0 && !searchError && classification !== 'no_results:confirmed') {
         const nameWords = nameObj.original.split(/\s+/).filter(w => w);
         if (nameWords.length === 2) {
           const swappedName = `${nameWords[1]} ${nameWords[0]}`;
           console.log(`\n🔄 Trying swapped name order: "${swappedName}"`);
+          retryCount++;
 
           try {
-            records = await driver.search(county, swappedName);
+            const result = await driver.search(county, swappedName);
+
+            // Handle new return format
+            if (result && typeof result === 'object' && !Array.isArray(result)) {
+              records = result.records || [];
+              classification = result.classification || classification;
+              htmlLength = result.htmlLength || htmlLength;
+              indicators = result.indicators || indicators;
+            } else {
+              records = result || [];
+            }
+
             if (records.length > 0) {
               console.log(`✓ Found ${records.length} records with swapped name`);
               matchedVariation = swappedName + ' (swapped)';
@@ -483,7 +555,11 @@ async function main() {
         error: searchError || '',
         driver: driverName,
         matchedVariation,
-        parsedName: nameObj.original
+        parsedName: nameObj.original,
+        classificationStatus: classification || '',
+        htmlLength: htmlLength || 0,
+        retryCount,
+        classificationIndicators: indicators.join(',')
       });
       results.push(enriched);
 
@@ -519,6 +595,12 @@ async function main() {
     await writeCSV(failedRows, failedFile);
   }
 
+  // Write manual queue CSV (Odyssey rows requiring CAPTCHA)
+  const manualFile = outputFile.replace(/\.csv$/, '-manual.csv');
+  if (manualRows.length > 0) {
+    await writeCSV(manualRows, manualFile);
+  }
+
   console.log(`\n${'='.repeat(60)}`);
   console.log(`📊 RESULTS SUMMARY`);
   console.log(`${'='.repeat(60)}`);
@@ -526,6 +608,9 @@ async function main() {
   console.log(`   Main:   ${outputFile} (${results.length} rows)`);
   if (failedRows.length > 0) {
     console.log(`   Failed: ${failedFile} (${failedRows.length} rows)`);
+  }
+  if (manualRows.length > 0) {
+    console.log(`   Manual: ${manualFile} (${manualRows.length} rows - CAPTCHA required)`);
   }
 
   console.log(`\n📈 Status Breakdown:`);
@@ -537,6 +622,7 @@ async function main() {
   console.log(`   ⊘ Unsupported:  ${stats.unsupported.toString().padStart(4)} (${((stats.unsupported / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ✗ Error:        ${stats.error.toString().padStart(4)} (${((stats.error / stats.total) * 100).toFixed(1)}%)`);
   console.log(`   ⏭ Skipped:      ${stats.skipped.toString().padStart(4)} (${((stats.skipped / stats.total) * 100).toFixed(1)}%)`);
+  console.log(`   📋 Manual:       ${stats.manual.toString().padStart(4)} (${((stats.manual / stats.total) * 100).toFixed(1)}%)`);
 
   if (stats.unsupported > 0) {
     console.log(`\n⚠️  Unsupported Counties:`);

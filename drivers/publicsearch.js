@@ -3,6 +3,20 @@
 
 import { BaseDriver, TIMEOUTS } from './baseDriver.js';
 
+// Classification constants for response analysis
+const CLASSIFICATION = {
+  MIN_VALID_HTML_LENGTH: 5000,
+  BLOCKED_PATTERNS: [
+    /access\s+denied/i,
+    /too\s+many\s+requests/i,
+    /rate\s+limit/i,
+    /please\s+try\s+again\s+later/i,
+    /service\s+unavailable/i,
+    /temporarily\s+unavailable/i,
+    /request\s+blocked/i
+  ]
+};
+
 export class PublicSearchDriver extends BaseDriver {
   constructor(config = {}) {
     super(config);
@@ -45,7 +59,12 @@ export class PublicSearchDriver extends BaseDriver {
     const url = this.buildURL(county, name);
     if (!url) {
       console.log(`⚠️  ${county} not in PublicSearch system`);
-      return [];
+      return {
+        records: [],
+        classification: 'error:invalid_county',
+        htmlLength: 0,
+        indicators: ['county_not_mapped']
+      };
     }
 
     console.log(`🔗 URL: ${url}`);
@@ -80,17 +99,51 @@ export class PublicSearchDriver extends BaseDriver {
         }
       }
 
-      // If no rows found after max wait, return empty results
+      // If no rows found after max wait, classify the response
       if (rowCount === 0) {
-        return [];
+        const html = await page.content();
+        const htmlLength = html.length;
+
+        // Classify the empty response
+        let classification = 'no_results:confirmed';
+        let indicators = [];
+
+        // Check for suspiciously short HTML (likely blocked)
+        if (htmlLength < CLASSIFICATION.MIN_VALID_HTML_LENGTH) {
+          classification = 'blocked:soft_block';
+          indicators.push('html_too_short');
+        } else {
+          // Check for blocked patterns in HTML
+          for (const pattern of CLASSIFICATION.BLOCKED_PATTERNS) {
+            if (pattern.test(html)) {
+              classification = 'blocked:rate_limit';
+              indicators.push('blocked_pattern_found');
+              break;
+            }
+          }
+        }
+
+        return {
+          records: [],
+          classification,
+          htmlLength,
+          indicators
+        };
       }
 
       const html = await page.content();
+      const htmlLength = html.length;
 
       // Reset failure counter on success
       this.consecutiveFailures = 0;
 
-      return await this.parseRecords(html);
+      const records = await this.parseRecords(html);
+      return {
+        records,
+        classification: records.length > 0 ? 'success' : 'no_results:confirmed',
+        htmlLength,
+        indicators: []
+      };
 
     } catch (e) {
       console.log(`❌ Error:`, e.message);
