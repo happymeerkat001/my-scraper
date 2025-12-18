@@ -215,38 +215,21 @@ function parseName(rawCaseStyle, driverType = 'default') {
     const fullName = `${lastName} ${firstMiddle}`;
     return {
       original: defendant,
-      variations: [fullName, lastName]
+      variations: [fullName]
     };
   }
 
-  // Assume case style format: "LAST FIRST [MIDDLE]" (most common in TX court records)
-  const lastName = words[0];
-  const fullName = words.join(' ');
+  // Input format: FIRST [MIDDLE...] LAST
+  // Output format: LAST FIRST [MIDDLE...] (uniform for all non-Polk drivers)
+  const lastName = words[words.length - 1];
+  const firstMiddle = words.slice(0, -1).join(' ');
+  const normalizedName = firstMiddle ? `${lastName} ${firstMiddle}` : lastName;
 
   const variations = [];
 
-  switch (driverType) {
-    case 'publicsearch':
-    case 'kofile':
-    case 'odyssey':
-    default:
-      // Default: full name first, then last name as fallback
-      variations.push(fullName);
-      variations.push(lastName);
-      break;
-    case 'tyler':
-      // Tyler requires "LAST FIRST" format
-      // Input is "FIRST LAST" (e.g., "JOHN SMITH"), convert to "SMITH JOHN"
-      const tylerLast = words[words.length - 1];
-      const tylerFirst = words.slice(0, -1).join(' ');
-      const tylerFormat = tylerFirst ? `${tylerLast} ${tylerFirst}` : tylerLast;
-      variations.push(tylerFormat);
-      // Also try just last name as fallback
-      if (words.length > 1) {
-        variations.push(tylerLast);
-      }
-      break;
-  }
+  // All non-Polk drivers use LAST FIRST [MIDDLE...] format
+  // No last-name-only fallbacks
+  variations.push(normalizedName);
 
   // Apply driver-specific normalization to variations
   const normalizedVariations = variations.map(v => normalizeForDriver(v, driverType));

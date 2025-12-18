@@ -2,7 +2,10 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 
 async function investigateTylerTech() {
-  const browser = await puppeteer.launch({ headless: false }); // Open browser to see
+  const browser = await puppeteer.launch({
+    headless: false,
+    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  });
   const page = await browser.newPage();
 
   // Enable request interception to capture API calls
