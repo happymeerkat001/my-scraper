@@ -75,7 +75,9 @@
       "Bash(TEST_LIMIT=1 INPUT_FILE=test-tarrant-api.csv OUTPUT_FILE=verify-chrome-path.csv node:*)",
       "Bash(wc:*)",
       "Bash(TEST_LIMIT=3 INPUT_FILE=test-classification.csv OUTPUT_FILE=test-classification-output.csv node:*)",
-      "Bash(TEST_LIMIT=1 INPUT_FILE=test-noresults.csv OUTPUT_FILE=test-noresults-output.csv node:*)"
+      "Bash(TEST_LIMIT=1 INPUT_FILE=test-noresults.csv OUTPUT_FILE=test-noresults-output.csv node:*)",
+      "Bash(curl:*)",
+      "Bash(DEBUG=1 node:*)"
     ],
     "deny": [],
     "ask": []

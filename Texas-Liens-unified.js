@@ -9,6 +9,7 @@ import { PublicSearchDriver } from './drivers/publicsearch.js';
 import { TylerDriver } from './drivers/tyler.js';
 import { OdysseyDriver } from './drivers/odyssey.js';
 import { KofileDriver } from './drivers/kofile.js';
+import { PolkDriver } from './drivers/polk.js';
 import { detectSystem } from './utils/systemDetector.js';
 
 // Pre-compiled regex patterns for parseName (avoid recreation per call)
@@ -27,7 +28,8 @@ const drivers = {
   'publicsearch': new PublicSearchDriver(),
   'tyler': new TylerDriver(),
   'odyssey': new OdysseyDriver(),
-  'kofile': new KofileDriver()
+  'kofile': new KofileDriver(),
+  'polk': new PolkDriver()
 };
 
 // Pre-computed driver entries (avoid Object.entries() per lookup)
