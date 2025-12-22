@@ -215,21 +215,26 @@ function parseName(rawCaseStyle, driverType = 'default') {
     const fullName = `${lastName} ${firstMiddle}`;
     return {
       original: defendant,
-      variations: [fullName]
+      variations: [fullName, words.join(' ')]
     };
   }
 
   // Input format: FIRST [MIDDLE...] LAST
-  // Output format: LAST FIRST [MIDDLE...] (uniform for all non-Polk drivers)
+  // Try both original and LAST FIRST formats to cover all system types
   const lastName = words[words.length - 1];
   const firstMiddle = words.slice(0, -1).join(' ');
-  const normalizedName = firstMiddle ? `${lastName} ${firstMiddle}` : lastName;
+  const lastFirstFormat = firstMiddle ? `${lastName} ${firstMiddle}` : lastName;
+  const originalFormat = words.join(' ');
 
   const variations = [];
 
-  // All non-Polk drivers use LAST FIRST [MIDDLE...] format
-  // No last-name-only fallbacks
-  variations.push(normalizedName);
+  // Try original format first (works for free-text searches like PublicSearch, Kofile)
+  variations.push(originalFormat);
+
+  // Then try LAST FIRST format (works for structured fields like Tyler)
+  if (lastFirstFormat !== originalFormat) {
+    variations.push(lastFirstFormat);
+  }
 
   // Apply driver-specific normalization to variations
   const normalizedVariations = variations.map(v => normalizeForDriver(v, driverType));

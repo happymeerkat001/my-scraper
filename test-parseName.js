@@ -77,21 +77,26 @@ function parseName(rawCaseStyle, driverType = 'default') {
     const fullName = `${lastName} ${firstMiddle}`;
     return {
       original: defendant,
-      variations: [fullName]
+      variations: [fullName, words.join(' ')]
     };
   }
 
   // Input format: FIRST [MIDDLE...] LAST
-  // Output format: LAST FIRST [MIDDLE...] (uniform for all non-Polk drivers)
+  // Try both original and LAST FIRST formats to cover all system types
   const lastName = words[words.length - 1];
   const firstMiddle = words.slice(0, -1).join(' ');
-  const normalizedName = firstMiddle ? `${lastName} ${firstMiddle}` : lastName;
+  const lastFirstFormat = firstMiddle ? `${lastName} ${firstMiddle}` : lastName;
+  const originalFormat = words.join(' ');
 
   const variations = [];
 
-  // All non-Polk drivers use LAST FIRST [MIDDLE...] format
-  // No last-name-only fallbacks
-  variations.push(normalizedName);
+  // Try original format first (works for free-text searches like PublicSearch, Kofile)
+  variations.push(originalFormat);
+
+  // Then try LAST FIRST format (works for structured fields like Tyler)
+  if (lastFirstFormat !== originalFormat) {
+    variations.push(lastFirstFormat);
+  }
 
   // Apply driver-specific normalization to variations
   const normalizedVariations = variations.map(v => normalizeForDriver(v, driverType));
@@ -100,13 +105,31 @@ function parseName(rawCaseStyle, driverType = 'default') {
 
 // Run tests
 console.log('Test 1: JOHN SMITH');
-console.log(JSON.stringify(parseName('STATE OF TEXAS VS JOHN SMITH'), null, 2));
+const test1 = parseName('STATE OF TEXAS VS JOHN SMITH');
+console.log(JSON.stringify(test1, null, 2));
+console.log('Expected: ["JOHN SMITH", "SMITH JOHN"]');
+console.log('Pass:', JSON.stringify(test1.variations) === '["JOHN SMITH","SMITH JOHN"]');
 
 console.log('\nTest 2: JOHN MICHAEL SMITH');
-console.log(JSON.stringify(parseName('STATE OF TEXAS VS JOHN MICHAEL SMITH'), null, 2));
+const test2 = parseName('STATE OF TEXAS VS JOHN MICHAEL SMITH');
+console.log(JSON.stringify(test2, null, 2));
+console.log('Expected: ["JOHN MICHAEL SMITH", "SMITH JOHN MICHAEL"]');
+console.log('Pass:', JSON.stringify(test2.variations) === '["JOHN MICHAEL SMITH","SMITH JOHN MICHAEL"]');
 
 console.log('\nTest 3: A C MARTIN');
-console.log(JSON.stringify(parseName('STATE OF TEXAS VS A C MARTIN'), null, 2));
+const test3 = parseName('STATE OF TEXAS VS A C MARTIN');
+console.log(JSON.stringify(test3, null, 2));
+console.log('Expected: ["MARTIN A C", "A C MARTIN"]');
+console.log('Pass:', JSON.stringify(test3.variations) === '["MARTIN A C","A C MARTIN"]');
 
-console.log('\nTest 4: J R SMITH');
-console.log(JSON.stringify(parseName('STATE OF TEXAS VS J R SMITH'), null, 2));
+console.log('\nTest 4: J R SMITH (matches multi-initial pattern)');
+const test4 = parseName('STATE OF TEXAS VS J R SMITH');
+console.log(JSON.stringify(test4, null, 2));
+console.log('Expected: ["SMITH J R", "J R SMITH"] (multi-initial: LAST FIRST first)');
+console.log('Pass:', JSON.stringify(test4.variations) === '["SMITH J R","J R SMITH"]');
+
+console.log('\nTest 5: MARY JANE DOE (3-word name, NOT multi-initial)');
+const test5 = parseName('STATE OF TEXAS VS MARY JANE DOE');
+console.log(JSON.stringify(test5, null, 2));
+console.log('Expected: ["MARY JANE DOE", "DOE MARY JANE"]');
+console.log('Pass:', JSON.stringify(test5.variations) === '["MARY JANE DOE","DOE MARY JANE"]');
