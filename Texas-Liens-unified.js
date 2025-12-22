@@ -461,15 +461,20 @@ async function main() {
               break;
             }
 
-            // If blocked, log it but allow retry
+            // If blocked, retry SAME variation with exponential backoff
             if (classification && classification.startsWith('blocked:')) {
               console.log(`⚠️  Response classified as: ${classification}`);
+              if (attempt < 3) {
+                const delay = Math.pow(2, attempt) * 1000; // 2s, 4s
+                console.log(`   Retrying same variation in ${delay / 1000}s...`);
+                await setTimeout(delay);
+                continue; // Retry same variation
+              }
+              // After 3 blocked attempts, fall through to break inner loop
             }
 
-            // No records found, move to next variation (unless retrying blocked)
-            if (!classification || !classification.startsWith('blocked:')) {
-              break;
-            }
+            // Legacy driver (null) or exhausted blocked retries → break inner, try next variation
+            break;
           } catch (e) {
             searchError = e.message;
             if (attempt < 3) {
