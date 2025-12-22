@@ -3,10 +3,9 @@
     "url": "https://navarrocountytx-web.tylerhost.net/web/search/DOCSEARCH144S1",
     "method": "GET",
     "headers": {
-      "accept-language": "en-US,en;q=0.9",
       "upgrade-insecure-requests": "1",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "sec-ch-ua-platform": "\"macOS\"",
       "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
@@ -16,14 +15,13 @@
     "url": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
     "method": "GET",
     "headers": {
-      "accept-language": "en-US,en;q=0.9",
       "upgrade-insecure-requests": "1",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "sec-ch-ua-platform": "\"macOS\"",
       "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -32,12 +30,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -46,12 +43,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -60,12 +56,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -74,12 +69,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -88,12 +82,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -102,12 +95,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -116,12 +108,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -130,12 +121,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -144,12 +134,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -158,12 +147,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -172,12 +160,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -186,12 +173,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -200,12 +186,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -214,12 +199,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -228,12 +212,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -242,12 +225,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -256,12 +238,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -270,12 +251,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -284,12 +264,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -298,12 +277,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -312,12 +290,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -326,12 +303,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -340,12 +316,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -354,12 +329,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -368,12 +342,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -382,12 +355,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -396,12 +368,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -410,12 +381,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -424,12 +394,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -438,12 +407,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -452,19 +420,18 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%2214%2C3%2011%2C0%207%2C4%203%2C0%200%2C3%204%2C7%200%2C11%203%2C14%207%2C10%2011%2C14%2014%2C11%2010%2C7%20%22%2F%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -472,7 +439,7 @@
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%2214%2C4%2011%2C1%205.003%2C6.997%203%2C5%200%2C8%204.966%2C13%204.983%2C12.982%205%2C13%20%22%2F%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -480,40 +447,38 @@
     "url": "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
   {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/cart/embedded?includeButtons=true&request=1763566482204&_=1763566481963",
+    "url": "https://navarrocountytx-web.tylerhost.net/web/cart/embedded?includeButtons=true&request=1766073825233&_=1766073824959",
     "method": "GET",
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "text/html, */*; q=0.01",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/session/pingSession?_=1763566481964",
+    "url": "https://navarrocountytx-web.tylerhost.net/web/session/pingSession?_=1766073824960",
     "method": "GET",
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -522,14 +487,13 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1",
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551",
       "origin": "https://navarrocountytx-web.tylerhost.net"
     }
   },
@@ -539,12 +503,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/controller/customColors.css?v=2023.1.17",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551"
     }
   },
   {
@@ -553,9 +516,8 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
     }
@@ -566,31 +528,29 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "application/json, text/javascript, */*; q=0.01",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1",
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551",
       "origin": "https://navarrocountytx-web.tylerhost.net"
     }
   },
   {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/search/DOCSEARCH144S1?_=1763566481965",
+    "url": "https://navarrocountytx-web.tylerhost.net/web/search/DOCSEARCH144S1?_=1766073824961",
     "method": "GET",
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "text/html, */*; q=0.01",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   },
   {
@@ -599,44 +559,41 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "text/css,*/*;q=0.1",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   },
   {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/cart/embedded?includeButtons=true&request=1763566486110&_=1763566481966",
+    "url": "https://navarrocountytx-web.tylerhost.net/web/cart/embedded?includeButtons=true&request=1766073829574&_=1766073824962",
     "method": "GET",
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "text/html, */*; q=0.01",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   },
   {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/session/pingSession?_=1763566481967",
+    "url": "https://navarrocountytx-web.tylerhost.net/web/session/pingSession?_=1766073824963",
     "method": "GET",
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   },
   {
@@ -645,14 +602,13 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/user/disclaimer",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "ajaxrequest": "true",
       "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true",
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true",
       "origin": "https://navarrocountytx-web.tylerhost.net"
     }
   },
@@ -660,7 +616,7 @@
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20d%3D%22M10.171%2C8.766c0.617-0.888%2C0.979-1.964%2C0.979-3.126c0-3.037-2.463-5.5-5.5-5.5s-5.5%2C2.463-5.5%2C5.5s2.463%2C5.5%2C5.5%2C5.5%20c1.152%2C0%2C2.223-0.355%2C3.104-0.962l3.684%2C3.683l1.414-1.414L10.171%2C8.766z%20M5.649%2C9.14c-1.933%2C0-3.5-1.567-3.5-3.5%20c0-1.933%2C1.567-3.5%2C3.5-3.5c1.933%2C0%2C3.5%2C1.567%2C3.5%2C3.5C9.149%2C7.572%2C7.582%2C9.14%2C5.649%2C9.14z%22%2F%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -668,7 +624,7 @@
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20d%3D%22M0%2C8h2V6H0V8z%20M3%2C8h2V6H3V8z%20M6%2C8h2V6H6V8z%20M9%2C8h2V6H9V8z%20M12%2C8h2V6h-2V8z%20M0%2C11h2V9H0V11z%20M3%2C11h2V9H3V11z%20M6%2C11h2V9H6V11z%20%20M9%2C11h2V9H9V11z%20M12%2C11h2V9h-2V11z%20M0%2C14h2v-2H0V14z%20M3%2C14h2v-2H3V14z%20M6%2C14h2v-2H6V14z%20M9%2C14h2v-2H9V14z%20M12%2C1%20c0-0.553-0.447-1-1-1s-1%2C0.447-1%2C1H4c0-0.553-0.447-1-1-1S2%2C0.447%2C2%2C1H0v4h14V1H12z%22%2F%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -676,7 +632,7 @@
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20d%3D%22M7%2C0C3.134%2C0%2C0%2C3.134%2C0%2C7s3.134%2C7%2C7%2C7s7-3.134%2C7-7S10.866%2C0%2C7%2C0z%20M7%2C12c-2.762%2C0-5-2.238-5-5s2.238-5%2C5-5s5%2C2.238%2C5%2C5%20S9.762%2C12%2C7%2C12z%20M9%2C6H8V4c0-0.553-0.447-1-1-1S6%2C3.447%2C6%2C4v3c0%2C0.553%2C0.447%2C1%2C1%2C1h2c0.553%2C0%2C1-0.447%2C1-1S9.553%2C6%2C9%2C6z%22%2F%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -684,7 +640,7 @@
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214.001px%22%20height%3D%2214.002px%22%20viewBox%3D%220%200%2014.001%2014.002%22%20style%3D%22enable-background%3Anew%200%200%2014.001%2014.002%3B%22%20%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20d%3D%22M14.001%2C6.001v-6l-2.06%2C2.06c-0.423-0.424-0.897-0.809-1.44-1.122C7.153-0.994%2C2.872%2C0.153%2C0.939%2C3.501%20c-1.933%2C3.348-0.786%2C7.629%2C2.562%2C9.562c3.348%2C1.933%2C7.629%2C0.785%2C9.562-2.562l-1.732-1c-1.381%2C2.392-4.438%2C3.211-6.83%2C1.83%20s-3.211-4.438-1.83-6.83s4.438-3.211%2C6.83-1.83c0.389%2C0.225%2C0.718%2C0.506%2C1.02%2C0.81l-2.52%2C2.52H14.001z%22%2F%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -692,7 +648,7 @@
     "url": "data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2214px%22%20height%3D%2214px%22%20viewBox%3D%220%200%2014%2014%22%20style%3D%22enable-background%3Anew%200%200%2014%2014%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%227%2C5%207%2C0%200%2C7%207%2C14%207%2C9%2014%2C9%2014%2C5%20%22%2F%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3Cg%3E%3C%2Fg%3E%3C%2Fsvg%3E",
     "method": "GET",
     "headers": {
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
       "referer": ""
     }
   },
@@ -702,12 +658,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/controller/customColors.css?v=2023.1.17",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   },
   {
@@ -716,12 +671,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/controller/customColors.css?v=2023.1.17",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   },
   {
@@ -730,77 +684,11 @@
     "headers": {
       "sec-ch-ua-platform": "\"macOS\"",
       "referer": "https://navarrocountytx-web.tylerhost.net/web/controller/customColors.css?v=2023.1.17",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+      "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
       "sec-ch-ua-mobile": "?0",
       "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
-    }
-  },
-  {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/searchPost/DOCSEARCH144S1",
-    "method": "POST",
-    "postData": "field_BothNamesID-searchInput=PRICE+CHARLIE&field_BothNamesID-containsInput=Contains+Any&field_BothNamesID=&field_GrantorID-containsInput=Contains+Any&field_GrantorID=&field_GranteeID-containsInput=Contains+Any&field_GranteeID=&field_RecordingDateID_DOT_StartDate=&field_RecordingDateID_DOT_EndDate=&field_DocumentNumberID=&field_BookPageID_DOT_Book-containsInput=Contains+Any&field_BookPageID_DOT_Book=&field_BookPageID_DOT_Volume=&field_BookPageID_DOT_Page=&field_LegalRemarksID-containsInput=Contains+Any&field_LegalRemarksID=&field_PlattedLegalID_DOT_Town=&field_PlattedLegalID_DOT_Subdivision-containsInput=Contains+Any&field_PlattedLegalID_DOT_Subdivision=&field_PlattedLegalID_DOT_Lot=&field_PlattedLegalID_DOT_Block=&field_PlattedLegalID_DOT_Tract=&field_PlattedLegalID_DOT_Unit=&field_PlattedLegalID_DOT_Custom1=&field_PlattedLegalID_DOT_Custom2=&field_PlattedLegalID_DOT_Custom3=&field_selfservice_documentTypes-containsInput=Contains+Any&field_selfservice_documentTypes=&field_UseAdvancedSearch=",
-    "headers": {
-      "sec-ch-ua-platform": "\"macOS\"",
-      "referer": "https://navarrocountytx-web.tylerhost.net/web/search/DOCSEARCH144S1",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "sec-ch-ua-mobile": "?0",
-      "ajaxrequest": "true",
-      "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-      "accept": "application/json, text/javascript, */*; q=0.01",
-      "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true",
-      "origin": "https://navarrocountytx-web.tylerhost.net"
-    }
-  },
-  {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/searchResults/DOCSEARCH144S1?page=1&_=1763566481968",
-    "method": "GET",
-    "headers": {
-      "sec-ch-ua-platform": "\"macOS\"",
-      "referer": "https://navarrocountytx-web.tylerhost.net/web/search/DOCSEARCH144S1",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "sec-ch-ua-mobile": "?0",
-      "ajaxrequest": "true",
-      "x-requested-with": "XMLHttpRequest",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-      "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
-    }
-  },
-  {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/resources/fonts/materialdesignicons-webfont.woff2?v=1.8.36",
-    "method": "GET",
-    "headers": {
-      "origin": "https://navarrocountytx-web.tylerhost.net",
-      "sec-ch-ua-platform": "\"macOS\"",
-      "referer": "https://navarrocountytx-web.tylerhost.net/web/resources/css/materialdesignicons.css?v=2023.1.17",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-      "sec-ch-ua-mobile": "?0",
-      "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
-    }
-  },
-  {
-    "url": "https://navarrocountytx-web.tylerhost.net/web/resources/fonts/materialdesignicons-webfont.woff2?v=1.8.36",
-    "method": "GET",
-    "headers": {
-      "origin": "https://navarrocountytx-web.tylerhost.net",
-      "sec-ch-ua-platform": "\"macOS\"",
-      "referer": "https://navarrocountytx-web.tylerhost.net/web/resources/css/materialdesignicons.css?v=2023.1.17",
-      "accept-language": "en-US,en;q=0.9",
-      "sec-ch-ua": "\"Chromium\";v=\"141\", \"Not?A_Brand\";v=\"8\"",
-      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-      "sec-ch-ua-mobile": "?0",
-      "accept": "*/*",
-      "cookie": "JSESSIONID=064CCE91FC1BE1821C524CBCEF8406A1; disclaimerAccepted=true"
+      "cookie": "JSESSIONID=202621A46CECA9940A07A3FC2B3DF551; disclaimerAccepted=true"
     }
   }
 ]
