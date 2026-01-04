@@ -104,14 +104,11 @@ export class BaseDriver {
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
           this.browser = await puppeteer.launch({
-            headless: DEBUG_VISIBLE ? false : 'new',
-            executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+            headless: true,
             args: [
               '--no-sandbox',
               '--disable-setuid-sandbox',
-              '--disable-dev-shm-usage',
-              '--disable-gpu',
-              '--single-process'
+              '--disable-dev-shm-usage'
             ]
           });
           this.browserStartTime = Date.now();

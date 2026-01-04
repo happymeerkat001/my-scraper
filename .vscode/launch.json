@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+ {
+  "type": "node",
+  "request": "launch",
+  "name": "Debug - publicsearch (TEST_LIMIT=3)",
+  "program": "${workspaceFolder}/Texas-Liens-unified.js",
+  "cwd": "${workspaceFolder}",
+  "env": {
+    "TEST_LIMIT": "3",
+    "DRIVER_ONLY": "publicsearch"
+  },
+  "console": "integratedTerminal",
+  "skipFiles": ["<node_internals>/**"]
+}
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current File",
+      "program": "${file}",
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
